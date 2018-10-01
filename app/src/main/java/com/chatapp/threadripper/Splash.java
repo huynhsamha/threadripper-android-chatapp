@@ -28,7 +28,7 @@ public class Splash extends AppCompatActivity {
                 startActivity(new Intent(Splash.this, SetupPhoneNumber.class));
                 finish();
             }
-        }, 5 * 1000);
+        }, 2 * 1000);
     }
 
     private void changeStatusBarColor() {
