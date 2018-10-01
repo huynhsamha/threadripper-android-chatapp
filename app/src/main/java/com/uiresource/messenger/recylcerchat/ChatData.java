@@ -1,8 +1,5 @@
 package com.uiresource.messenger.recylcerchat;
 
-/**
- * Created by Dytstudio.
- */
 
 public class ChatData {
     String type, text, time;

@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity
     TextView chats;
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,13 +54,13 @@ public class MainActivity extends BaseActivity
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
 
-        chats =(TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+        chats = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
                 findItem(R.id.nav_chats));
         initializeCountDrawer();
 
     }
 
-    private void initializeCountDrawer(){
+    private void initializeCountDrawer() {
         chats.setGravity(Gravity.CENTER);
         chats.setTypeface(null, Typeface.BOLD);
         chats.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -119,6 +120,7 @@ public class MainActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         return super.onPrepareOptionsMenu(menu);

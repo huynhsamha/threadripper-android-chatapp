@@ -35,7 +35,7 @@ public class Conversation extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ConversationRecyclerView(this,setData());
+        mAdapter = new ConversationRecyclerView(this, setData());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.postDelayed(new Runnable() {
             @Override
@@ -60,7 +60,7 @@ public class Conversation extends BaseActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!text.getText().equals("")){
+                if (!text.getText().equals("")) {
                     List<ChatData> data = new ArrayList<ChatData>();
                     ChatData item = new ChatData();
                     item.setTime("6:00pm");
@@ -68,21 +68,21 @@ public class Conversation extends BaseActivity {
                     item.setText(text.getText().toString());
                     data.add(item);
                     mAdapter.addItem(data);
-                    mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() -1);
+                    mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
                     text.setText("");
                 }
             }
         });
     }
 
-    public List<ChatData> setData(){
+    public List<ChatData> setData() {
         List<ChatData> data = new ArrayList<>();
 
-        String text[] = {"15 September","Hi, Julia! How are you?", "Hi, Joe, looks great! :) ", "I'm fine. Wanna go out somewhere?", "Yes! Coffe maybe?", "Great idea! You can come 9:00 pm? :)))", "Ok!", "Ow my good, this Kit is totally awesome", "Can you provide other kit?", "I don't have much time, :`("};
+        String text[] = {"15 September", "Hi, Julia! How are you?", "Hi, Joe, looks great! :) ", "I'm fine. Wanna go out somewhere?", "Yes! Coffe maybe?", "Great idea! You can come 9:00 pm? :)))", "Ok!", "Ow my good, this Kit is totally awesome", "Can you provide other kit?", "I don't have much time, :`("};
         String time[] = {"", "5:30pm", "5:35pm", "5:36pm", "5:40pm", "5:41pm", "5:42pm", "5:40pm", "5:41pm", "5:42pm"};
         String type[] = {"0", "2", "1", "1", "2", "1", "2", "2", "2", "1"};
 
-        for (int i=0; i<text.length; i++){
+        for (int i = 0; i < text.length; i++) {
             ChatData item = new ChatData();
             item.setType(type[i]);
             item.setText(text[i]);

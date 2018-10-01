@@ -15,9 +15,6 @@ import com.uiresource.messenger.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Dytstudio.
- */
 
 public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
 
@@ -26,8 +23,7 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
     private ViewHolder.ClickListener clickListener;
 
 
-
-    public ChatAdapter (Context context, List<Chat> arrayList,ViewHolder.ClickListener clickListener) {
+    public ChatAdapter(Context context, List<Chat> arrayList, ViewHolder.ClickListener clickListener) {
         this.mArrayList = arrayList;
         this.mContext = context;
         this.clickListener = clickListener;
@@ -37,12 +33,12 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
     // Create new views
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                        int viewType) {
+                                                     int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_item_chat, null);
 
-        ViewHolder viewHolder = new ViewHolder(itemLayoutView,clickListener);
+        ViewHolder viewHolder = new ViewHolder(itemLayoutView, clickListener);
 
         return viewHolder;
     }
@@ -54,15 +50,15 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
         if (isSelected(position)) {
             viewHolder.checked.setChecked(true);
             viewHolder.checked.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             viewHolder.checked.setChecked(false);
             viewHolder.checked.setVisibility(View.GONE);
         }
         viewHolder.tvTime.setText(mArrayList.get(position).getTime());
         viewHolder.userPhoto.setImageResource(mArrayList.get(position).getImage());
-        if (mArrayList.get(position).getOnline()){
+        if (mArrayList.get(position).getOnline()) {
             viewHolder.onlineView.setVisibility(View.VISIBLE);
-        }else
+        } else
             viewHolder.onlineView.setVisibility(View.INVISIBLE);
 
         viewHolder.tvLastChat.setText(mArrayList.get(position).getLastChat());
@@ -73,7 +69,7 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
         return mArrayList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener,View.OnLongClickListener  {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvName;
         public TextView tvTime;
@@ -86,7 +82,7 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
         //private final View selectedOverlay;
 
 
-        public ViewHolder(View itemLayoutView,ClickListener listener) {
+        public ViewHolder(View itemLayoutView, ClickListener listener) {
             super(itemLayoutView);
 
             this.listener = listener;
@@ -101,19 +97,20 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
 
             itemLayoutView.setOnClickListener(this);
 
-            itemLayoutView.setOnLongClickListener (this);
+            itemLayoutView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onItemClicked(getAdapterPosition ());
+                listener.onItemClicked(getAdapterPosition());
             }
         }
+
         @Override
-        public boolean onLongClick (View view) {
+        public boolean onLongClick(View view) {
             if (listener != null) {
-                return listener.onItemLongClicked(getAdapterPosition ());
+                return listener.onItemLongClicked(getAdapterPosition());
             }
             return false;
         }

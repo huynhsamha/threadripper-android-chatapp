@@ -15,9 +15,6 @@ import com.uiresource.messenger.R;
 
 import java.util.List;
 
-/**
- * Created by Dytstudio.
- */
 
 public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder> {
 
@@ -26,8 +23,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
     private ContactAdapter.ViewHolder.ClickListener clickListener;
 
 
-
-    public ContactAdapter (Context context, List<Contact> arrayList,ContactAdapter.ViewHolder.ClickListener clickListener) {
+    public ContactAdapter(Context context, List<Contact> arrayList, ContactAdapter.ViewHolder.ClickListener clickListener) {
         this.mArrayList = arrayList;
         this.mContext = context;
         this.clickListener = clickListener;
@@ -37,12 +33,12 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
     // Create new views
     @Override
     public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+                                                        int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_item_contact, null);
 
-        ContactAdapter.ViewHolder viewHolder = new ContactAdapter.ViewHolder(itemLayoutView,clickListener);
+        ContactAdapter.ViewHolder viewHolder = new ContactAdapter.ViewHolder(itemLayoutView, clickListener);
 
         return viewHolder;
     }
@@ -59,7 +55,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
         return mArrayList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener,View.OnLongClickListener  {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvName;
         public ImageView userPhoto;
@@ -67,7 +63,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
         //private final View selectedOverlay;
 
 
-        public ViewHolder(View itemLayoutView,ContactAdapter.ViewHolder.ClickListener listener) {
+        public ViewHolder(View itemLayoutView, ContactAdapter.ViewHolder.ClickListener listener) {
             super(itemLayoutView);
 
             this.listener = listener;
@@ -77,19 +73,20 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
 
             itemLayoutView.setOnClickListener(this);
 
-            itemLayoutView.setOnLongClickListener (this);
+            itemLayoutView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onItemClicked(getAdapterPosition ());
+                listener.onItemClicked(getAdapterPosition());
             }
         }
+
         @Override
-        public boolean onLongClick (View view) {
+        public boolean onLongClick(View view) {
             if (listener != null) {
-                return listener.onItemLongClicked(getAdapterPosition ());
+                return listener.onItemLongClicked(getAdapterPosition());
             }
             return false;
         }

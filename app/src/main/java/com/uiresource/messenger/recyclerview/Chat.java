@@ -1,9 +1,5 @@
 package com.uiresource.messenger.recyclerview;
 
-/**
- * Created by Dytstudio.
- */
-
 public class Chat {
 
     private String mName;
@@ -44,11 +40,11 @@ public class Chat {
         mImage = image;
     }
 
-    public boolean getOnline(){
+    public boolean getOnline() {
         return online;
     }
 
-    public void setOnline(boolean on){
+    public void setOnline(boolean on) {
         online = on;
     }
 }

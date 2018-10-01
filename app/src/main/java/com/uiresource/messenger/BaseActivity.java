@@ -11,14 +11,12 @@ import android.widget.TextView;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-/**
- * Created by Dytstudio.
- */
 
 public class BaseActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView title;
-    public final void changeTitle(int toolbarId, String titlePage){
+
+    public final void changeTitle(int toolbarId, String titlePage) {
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
 
@@ -26,7 +24,8 @@ public class BaseActivity extends AppCompatActivity {
         title.setText(titlePage);
         getSupportActionBar().setTitle("");
     }
-    public final void setupToolbar(int toolbarId, String titlePage){
+
+    public final void setupToolbar(int toolbarId, String titlePage) {
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
 
@@ -35,7 +34,8 @@ public class BaseActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("");
     }
-    public void setupToolbarWithUpNav(int toolbarId, String titlePage, @DrawableRes int res){
+
+    public void setupToolbarWithUpNav(int toolbarId, String titlePage, @DrawableRes int res) {
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
 
@@ -46,6 +46,7 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(res);
         getSupportActionBar().setTitle("");
     }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));

@@ -6,9 +6,6 @@ import android.widget.TextView;
 
 import com.uiresource.messenger.R;
 
-/**
- * Created by Dytstudio.
- */
 
 public class HolderMe extends RecyclerView.ViewHolder {
 

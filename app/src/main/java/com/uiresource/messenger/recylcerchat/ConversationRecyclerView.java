@@ -10,10 +10,6 @@ import com.uiresource.messenger.R;
 
 import java.util.List;
 
-/**
- * Created by Dytstudio.
- */
-
 public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // The items to display in your RecyclerView
@@ -41,7 +37,7 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
             return DATE;
         } else if (items.get(position).getType().equals("1")) {
             return YOU;
-        }else if (items.get(position).getType().equals("2")) {
+        } else if (items.get(position).getType().equals("2")) {
             return ME;
         }
         return -1;
@@ -68,10 +64,12 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
         }
         return viewHolder;
     }
+
     public void addItem(List<ChatData> item) {
         items.addAll(item);
         notifyDataSetChanged();
     }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (viewHolder.getItemViewType()) {
@@ -91,16 +89,17 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
     }
 
     private void configureViewHolder3(HolderMe vh1, int position) {
-            vh1.getTime().setText(items.get(position).getTime());
-            vh1.getChatText().setText(items.get(position).getText());
+        vh1.getTime().setText(items.get(position).getTime());
+        vh1.getChatText().setText(items.get(position).getText());
     }
 
     private void configureViewHolder2(HolderYou vh1, int position) {
-            vh1.getTime().setText(items.get(position).getTime());
-            vh1.getChatText().setText(items.get(position).getText());
+        vh1.getTime().setText(items.get(position).getTime());
+        vh1.getChatText().setText(items.get(position).getText());
     }
+
     private void configureViewHolder1(HolderDate vh1, int position) {
-            vh1.getDate().setText(items.get(position).getText());
+        vh1.getDate().setText(items.get(position).getText());
     }
 
 }
