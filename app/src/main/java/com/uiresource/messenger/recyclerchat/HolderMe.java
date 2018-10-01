@@ -1,4 +1,4 @@
-package com.uiresource.messenger.recylcerchat;
+package com.uiresource.messenger.recyclerchat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

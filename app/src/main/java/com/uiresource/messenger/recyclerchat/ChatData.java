@@ -1,4 +1,4 @@
-package com.uiresource.messenger.recylcerchat;
+package com.uiresource.messenger.recyclerchat;
 
 
 public class ChatData {

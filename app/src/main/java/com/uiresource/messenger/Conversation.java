@@ -5,14 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.uiresource.messenger.recyclerview.Chat;
-import com.uiresource.messenger.recylcerchat.ChatData;
-import com.uiresource.messenger.recylcerchat.ConversationRecyclerView;
+import com.uiresource.messenger.recyclerchat.ChatData;
+import com.uiresource.messenger.recyclerchat.ConversationRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
