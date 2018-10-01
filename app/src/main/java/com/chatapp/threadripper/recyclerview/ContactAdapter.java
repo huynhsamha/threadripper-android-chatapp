@@ -1,6 +1,7 @@
-package com.uiresource.messenger.recyclerview;
+package com.chatapp.threadripper.recyclerview;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,20 +11,19 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.uiresource.messenger.R;
+import com.chatapp.threadripper.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
+public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder> {
 
-    private List<Chat> mArrayList;
+    private List<Contact> mArrayList;
     private Context mContext;
-    private ViewHolder.ClickListener clickListener;
+    private ContactAdapter.ViewHolder.ClickListener clickListener;
 
 
-    public ChatAdapter(Context context, List<Chat> arrayList, ViewHolder.ClickListener clickListener) {
+    public ContactAdapter(Context context, List<Contact> arrayList, ContactAdapter.ViewHolder.ClickListener clickListener) {
         this.mArrayList = arrayList;
         this.mContext = context;
         this.clickListener = clickListener;
@@ -32,36 +32,22 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
 
     // Create new views
     @Override
-    public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                        int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.list_item_chat, null);
+                R.layout.list_item_contact, null);
 
-        ViewHolder viewHolder = new ViewHolder(itemLayoutView, clickListener);
+        ContactAdapter.ViewHolder viewHolder = new ContactAdapter.ViewHolder(itemLayoutView, clickListener);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ContactAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.tvName.setText(mArrayList.get(position).getName());
-        if (isSelected(position)) {
-            viewHolder.checked.setChecked(true);
-            viewHolder.checked.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.checked.setChecked(false);
-            viewHolder.checked.setVisibility(View.GONE);
-        }
-        viewHolder.tvTime.setText(mArrayList.get(position).getTime());
         viewHolder.userPhoto.setImageResource(mArrayList.get(position).getImage());
-        if (mArrayList.get(position).getOnline()) {
-            viewHolder.onlineView.setVisibility(View.VISIBLE);
-        } else
-            viewHolder.onlineView.setVisibility(View.INVISIBLE);
-
-        viewHolder.tvLastChat.setText(mArrayList.get(position).getLastChat());
     }
 
     @Override
@@ -72,28 +58,18 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvName;
-        public TextView tvTime;
-        public TextView tvLastChat;
         public ImageView userPhoto;
-        public boolean online = false;
-        private final View onlineView;
-        public CheckBox checked;
-        private ClickListener listener;
+        private ContactAdapter.ViewHolder.ClickListener listener;
         //private final View selectedOverlay;
 
 
-        public ViewHolder(View itemLayoutView, ClickListener listener) {
+        public ViewHolder(View itemLayoutView, ContactAdapter.ViewHolder.ClickListener listener) {
             super(itemLayoutView);
 
             this.listener = listener;
 
             tvName = (TextView) itemLayoutView.findViewById(R.id.tv_user_name);
-            //selectedOverlay = (View) itemView.findViewById(R.id.selected_overlay);
-            tvTime = (TextView) itemLayoutView.findViewById(R.id.tv_time);
-            tvLastChat = (TextView) itemLayoutView.findViewById(R.id.tv_last_chat);
             userPhoto = (ImageView) itemLayoutView.findViewById(R.id.iv_user_photo);
-            onlineView = (View) itemLayoutView.findViewById(R.id.online_indicator);
-            checked = (CheckBox) itemLayoutView.findViewById(R.id.chk_list);
 
             itemLayoutView.setOnClickListener(this);
 

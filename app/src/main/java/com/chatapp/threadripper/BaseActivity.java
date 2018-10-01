@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;

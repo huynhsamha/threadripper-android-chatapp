@@ -1,17 +1,17 @@
-package com.uiresource.messenger.recyclerchat;
+package com.chatapp.threadripper.recyclerchat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.uiresource.messenger.R;
+import com.chatapp.threadripper.R;
 
 
-public class HolderYou extends RecyclerView.ViewHolder {
+public class HolderMe extends RecyclerView.ViewHolder {
 
     private TextView time, chatText;
 
-    public HolderYou(View v) {
+    public HolderMe(View v) {
         super(v);
         time = (TextView) v.findViewById(R.id.tv_time);
         chatText = (TextView) v.findViewById(R.id.tv_chat_text);

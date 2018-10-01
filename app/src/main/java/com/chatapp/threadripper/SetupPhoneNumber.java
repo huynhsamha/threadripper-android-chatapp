@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

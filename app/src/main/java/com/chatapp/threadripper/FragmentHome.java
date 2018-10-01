@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.uiresource.messenger.recyclerview.Chat;
-import com.uiresource.messenger.recyclerview.ChatAdapter;
+import com.chatapp.threadripper.recyclerview.Chat;
+import com.chatapp.threadripper.recyclerview.ChatAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

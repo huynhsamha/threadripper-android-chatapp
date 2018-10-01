@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import org.junit.Test;
 

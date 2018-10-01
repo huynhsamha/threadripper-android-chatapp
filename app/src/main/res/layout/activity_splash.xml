@@ -4,7 +4,7 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uiresource.messenger.Splash"
+    tools:context="com.chatapp.threadripper.Splash"
     android:background="@drawable/bg_gradient">
     <ImageView
         android:layout_width="wrap_content"

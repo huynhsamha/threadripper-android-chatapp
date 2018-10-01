@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import android.graphics.Typeface;
 import android.os.Build;

@@ -1,4 +1,4 @@
-package com.uiresource.messenger;
+package com.chatapp.threadripper;
 
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -12,8 +12,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.uiresource.messenger.recyclerview.Contact;
-import com.uiresource.messenger.recyclerview.ContactAdapter;
+import com.chatapp.threadripper.recyclerview.Contact;
+import com.chatapp.threadripper.recyclerview.ContactAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

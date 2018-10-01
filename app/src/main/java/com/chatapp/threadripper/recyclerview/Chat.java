@@ -1,4 +1,4 @@
-package com.uiresource.messenger.recyclerview;
+package com.chatapp.threadripper.recyclerview;
 
 public class Chat {
 

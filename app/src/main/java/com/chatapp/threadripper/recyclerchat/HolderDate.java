@@ -1,10 +1,10 @@
-package com.uiresource.messenger.recyclerchat;
+package com.chatapp.threadripper.recyclerchat;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.uiresource.messenger.R;
+import com.chatapp.threadripper.R;
 
 
 public class HolderDate extends RecyclerView.ViewHolder {
