@@ -5,24 +5,24 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:paddingBottom="@dimen/spaceLR"
     android:paddingTop="@dimen/spaceLR"
-    android:paddingBottom="@dimen/spaceLR">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/userpic"
-        android:layout_marginTop="@dimen/space20"/>
+        android:layout_marginTop="@dimen/space20"
+        android:src="@drawable/userpic" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/space20"
         android:text="Ashley Harrison"
-        android:textSize="@dimen/h1"
+        android:textAppearance="@style/Light"
         android:textColor="@android:color/white"
-        android:textAppearance="@style/Light"/>
+        android:textSize="@dimen/h1" />
 
 </LinearLayout>

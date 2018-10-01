@@ -7,10 +7,12 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
+
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_drawer_container"
         android:layout_width="wrap_content"
@@ -22,28 +24,27 @@
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/menu_drawer"
+            android:layout_gravity="top"
             android:background="@color/colorRedDark"
+            app:headerLayout="@layout/nav_header_main"
             app:itemIconTint="@color/navColor"
             app:itemTextAppearance="@style/Light"
             app:itemTextColor="@color/navColor"
-            android:layout_gravity="top"/>
+            app:menu="@menu/menu_drawer" />
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_view_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:menu="@menu/menu_drawer_bottom"
+            android:layout_gravity="bottom"
             android:background="@color/colorRedDark"
             app:itemIconTint="@color/navColor"
             app:itemTextAppearance="@style/Light"
             app:itemTextColor="@color/navColor"
-            android:layout_gravity="bottom"/>
+            app:menu="@menu/menu_drawer_bottom" />
 
 
     </android.support.design.widget.NavigationView>
-
 
 
 </android.support.v4.widget.DrawerLayout>

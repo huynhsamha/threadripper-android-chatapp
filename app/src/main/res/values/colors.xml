@@ -8,4 +8,5 @@
     <color name="colorTextInfo">#9b9b9b</color>
     <color name="colorGreen">#56c203</color>
     <color name="navColor">#80FFFFFF</color>
+    <color name="colorTextWhite">#ffffff</color>
 </resources>

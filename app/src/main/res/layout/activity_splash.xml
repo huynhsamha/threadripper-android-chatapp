@@ -4,12 +4,13 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.chatapp.threadripper.Splash"
-    android:background="@drawable/bg_gradient">
+    android:background="@drawable/bg_gradient"
+    tools:context="com.chatapp.threadripper.Splash">
+
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@mipmap/ic_launcher"
         android:layout_centerInParent="true"
-        android:id="@+id/imageView" />
+        android:src="@mipmap/ic_launcher" />
 </RelativeLayout>

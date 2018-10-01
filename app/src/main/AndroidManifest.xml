@@ -23,10 +23,13 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.Trans"></activity>
+            android:theme="@style/AppTheme.Trans" />
         <activity
             android:name=".Conversation"
-            android:theme="@style/AppTheme.Trans"></activity>
+            android:theme="@style/AppTheme.Trans" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppThemeFull"></activity>
     </application>
 
 </manifest>

@@ -31,7 +31,7 @@
         <item name="android:textSize">@dimen/h3</item>
         <item name="android:textColor">@color/colorTextBlack</item>
         <item name="android:textColorHint">@color/colorTextHint</item>
-        <item name="android:padding">@dimen/space20</item>
+        <item name="android:padding">@dimen/space15</item>
         <item name="android:background">@drawable/bg_top_grey</item>
         <item name="android:textAppearance">@style/Light</item>
     </style>
@@ -48,7 +48,7 @@
         <item name="android:background">@drawable/btn_pink</item>
         <item name="android:gravity">center</item>
         <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:padding">@dimen/space20</item>
+        <item name="android:padding">@dimen/space15</item>
     </style>
 
     <style name="Light" parent="android:TextAppearance">
