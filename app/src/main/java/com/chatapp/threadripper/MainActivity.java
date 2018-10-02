@@ -112,7 +112,11 @@ public class MainActivity extends BaseActivity
             FragmentHome fragmentHome = new FragmentHome();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentHome).commit();
-        } else if (id == R.id.nav_trash) {
+        } else if (id == R.id.nav_groups) {
+            FragmentGroups fragmentGroups = new FragmentGroups();
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.frameLayout, fragmentGroups).commit();
+        } else if (id == R.id.nav_call) {
         } else if (id == R.id.nav_settings) {
         } else if (id == R.id.nav_logout) {
         }

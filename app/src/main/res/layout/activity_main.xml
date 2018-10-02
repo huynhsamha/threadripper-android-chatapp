@@ -29,7 +29,7 @@
             app:headerLayout="@layout/nav_header_main"
             app:itemIconTint="@color/navColor"
             app:itemTextAppearance="@style/Light"
-            app:itemTextColor="@color/navColor"
+            app:itemTextColor="#fff"
             app:menu="@menu/menu_drawer" />
 
         <android.support.design.widget.NavigationView
