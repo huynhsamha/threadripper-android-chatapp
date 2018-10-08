@@ -1,4 +1,4 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authentication;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+
+import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.MainActivity;
+import com.chatapp.threadripper.R;
 
 public class SignUpActivity extends BaseActivity {
 

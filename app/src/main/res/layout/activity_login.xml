@@ -8,7 +8,7 @@
     android:background="@drawable/bg_gradient"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.chatapp.threadripper.LoginActivity">
+    tools:context="com.chatapp.threadripper.authentication.LoginActivity">
 
     <ImageView
         android:id="@+id/imageView"

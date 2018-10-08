@@ -8,7 +8,7 @@
     android:background="@drawable/bg_gradient"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.chatapp.threadripper.SignUpActivity">
+    tools:context="com.chatapp.threadripper.authentication.SignUpActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -28,13 +28,13 @@
             android:name=".Conversation"
             android:theme="@style/AppTheme.Trans" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".authentication.LoginActivity"
             android:theme="@style/AppThemeFull"></activity>
         <activity
-            android:name=".SignUpActivity"
+            android:name=".authentication.SignUpActivity"
             android:theme="@style/AppThemeFull"></activity>
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".authentication.ForgotPasswordActivity"
             android:theme="@style/AppThemeFull"></activity>
     </application>
 

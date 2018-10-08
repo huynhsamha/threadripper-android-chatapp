@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import com.chatapp.threadripper.authentication.LoginActivity;
 
 public class Splash extends AppCompatActivity {
 
