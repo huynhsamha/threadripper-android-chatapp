@@ -29,18 +29,16 @@
             android:layout_height="match_parent"
             android:src="@drawable/placeholder_user_avatar"/>
 
-        <TextView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+        <View
+            android:id="@+id/online_indicator"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="-2dp"
-            android:background="@drawable/bg_unread"
-            android:gravity="center"
-            android:text="3"
-            android:textAppearance="@style/Light"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/h4" />
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/bg_online" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -63,16 +61,6 @@
                 android:layout_height="wrap_content"
                 android:text="Laura Owens"
                 android:textAppearance="@style/Light" />
-
-            <View
-                android:id="@+id/online_indicator"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_alignTop="@id/tv_user_name"
-                android:layout_marginLeft="@dimen/space5"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/tv_user_name"
-                android:background="@drawable/bg_online" />
 
             <TextView
                 android:id="@+id/tv_last_chat"
