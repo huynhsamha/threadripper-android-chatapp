@@ -18,14 +18,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SetupPhoneNumber"
+            android:name=".authenticated.SetupPhoneNumber"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name=".authenticated.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.Trans" />
         <activity
-            android:name=".Conversation"
+            android:name=".authenticated.Conversation"
             android:theme="@style/AppTheme.Trans" />
         <activity
             android:name=".authentication.LoginActivity"

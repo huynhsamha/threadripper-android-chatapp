@@ -1,4 +1,4 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authenticated;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.chatapp.threadripper.recyclerchat.ChatData;
-import com.chatapp.threadripper.recyclerchat.ConversationRecyclerView;
+import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.recyclerchat.ChatData;
+import com.chatapp.threadripper.authenticated.recyclerchat.ConversationRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;

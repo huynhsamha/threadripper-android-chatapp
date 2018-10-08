@@ -1,4 +1,4 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authenticated.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -12,8 +12,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.chatapp.threadripper.recyclerview.Contact;
-import com.chatapp.threadripper.recyclerview.ContactAdapter;
+import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.recyclerview.Contact;
+import com.chatapp.threadripper.authenticated.recyclerview.ContactAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

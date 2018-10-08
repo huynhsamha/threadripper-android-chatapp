@@ -1,12 +1,8 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authenticated.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,11 +10,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-//import com.chatapp.threadripper.recyclerview.Contact;
-//import com.chatapp.threadripper.recyclerview.ContactAdapter;
+//import com.chatapp.threadripper.authenticated.recyclerview.Contact;
+//import com.chatapp.threadripper.authenticated.recyclerview.ContactAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.MainActivity;
 
 
 public class FragmentGroups extends Fragment {

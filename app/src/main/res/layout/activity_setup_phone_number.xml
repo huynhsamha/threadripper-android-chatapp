@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.chatapp.threadripper.SetupPhoneNumber">
+    tools:context="com.chatapp.threadripper.authenticated.SetupPhoneNumber">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

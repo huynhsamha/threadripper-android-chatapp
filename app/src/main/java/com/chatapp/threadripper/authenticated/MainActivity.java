@@ -1,27 +1,24 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authenticated;
 
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.SubMenu;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
+import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
+import com.chatapp.threadripper.authenticated.fragments.FragmentHome;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {

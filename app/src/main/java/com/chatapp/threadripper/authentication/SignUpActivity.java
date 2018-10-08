@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.chatapp.threadripper.BaseActivity;
-import com.chatapp.threadripper.MainActivity;
+import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.R;
 
 public class SignUpActivity extends BaseActivity {

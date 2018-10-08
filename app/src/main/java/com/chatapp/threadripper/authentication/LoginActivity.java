@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.BaseActivity;
-import com.chatapp.threadripper.MainActivity;
+import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.R;
 
 public class LoginActivity extends BaseActivity {

@@ -14,7 +14,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class BaseActivity extends AppCompatActivity {
-    Toolbar toolbar;
+    protected Toolbar toolbar;
     TextView title;
 
     public final void changeTitle(int toolbarId, String titlePage) {

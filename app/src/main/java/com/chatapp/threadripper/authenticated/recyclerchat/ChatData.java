@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.recyclerchat;
+package com.chatapp.threadripper.authenticated.recyclerchat;
 
 
 public class ChatData {

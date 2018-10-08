@@ -1,12 +1,10 @@
-package com.chatapp.threadripper;
+package com.chatapp.threadripper.authenticated.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.chatapp.threadripper.recyclerview.Chat;
-import com.chatapp.threadripper.recyclerview.ChatAdapter;
+import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.Conversation;
+import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.recyclerview.Chat;
+import com.chatapp.threadripper.authenticated.recyclerview.ChatAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
