@@ -10,13 +10,14 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgDrawerUserAvatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="@dimen/space20"
         android:src="@drawable/userpic" />
 
     <TextView
+        android:id="@+id/tvDrawerUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/space20"

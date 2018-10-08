@@ -5,27 +5,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_contacts"
+            app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_action_contacts"
             android:title="Contacts" />
         <item
             android:id="@+id/nav_chats"
             app:actionViewClass="android.widget.TextView"
-            android:icon="@drawable/ic_action_chats"
+            android:icon="@drawable/ic_action_chat"
             android:title="Chats" />
-        <!--<item-->
-            <!--android:id="@+id/nav_trash"-->
-            <!--app:actionViewClass="android.widget.TextView"-->
-            <!--android:icon="@drawable/ic_action_trash"-->
-            <!--android:title="Trash" />-->
         <item
             android:id="@+id/nav_groups"
             app:actionViewClass="android.widget.TextView"
-            android:icon="@drawable/ic_action_trash"
+            android:icon="@drawable/ic_action_group"
             android:title="Groups" />
         <item
             android:id="@+id/nav_call"
             app:actionViewClass="android.widget.TextView"
-            android:icon="@drawable/ic_action_trash"
-            android:title="Call" />
+            android:icon="@drawable/ic_action_missed_video_call"
+            android:title="Video Call" />
     </group>
 </menu>

@@ -10,4 +10,5 @@
     <color name="navColor">#80FFFFFF</color>
     <color name="colorTextWhite">#ffffff</color>
     <color name="colorYellow">#ff9a5f</color>
+    <color name="colorWhiteDark">#fdfdfd</color>
 </resources>

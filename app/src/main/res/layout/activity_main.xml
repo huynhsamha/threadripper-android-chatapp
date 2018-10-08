@@ -27,9 +27,9 @@
             android:layout_gravity="top"
             android:background="@color/colorRedDark"
             app:headerLayout="@layout/nav_header_main"
-            app:itemIconTint="@color/navColor"
+            app:itemIconTint="@color/colorWhiteDark"
             app:itemTextAppearance="@style/Light"
-            app:itemTextColor="#fff"
+            app:itemTextColor="@color/colorWhiteDark"
             app:menu="@menu/menu_drawer" />
 
         <android.support.design.widget.NavigationView
@@ -38,9 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/colorRedDark"
-            app:itemIconTint="@color/navColor"
+            app:itemIconTint="@color/colorWhiteDark"
             app:itemTextAppearance="@style/Light"
-            app:itemTextColor="@color/navColor"
+            app:itemTextColor="@color/colorWhiteDark"
             app:menu="@menu/menu_drawer_bottom" />
 
 
