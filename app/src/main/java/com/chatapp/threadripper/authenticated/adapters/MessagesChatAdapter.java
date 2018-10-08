@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.authenticated.recyclerview;
+package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,26 +7,25 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.utils.ImageLoader;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
+public class MessagesChatAdapter extends SelectableAdapter<MessagesChatAdapter.ViewHolder> {
 
-    private List<Chat> mArrayList;
+    private List<MessagesChat> mArrayList;
     private Context mContext;
     private ViewHolder.ClickListener clickListener;
 
 
-    public ChatAdapter(Context context, List<Chat> arrayList, ViewHolder.ClickListener clickListener) {
+    public MessagesChatAdapter(Context context, List<MessagesChat> arrayList, ViewHolder.ClickListener clickListener) {
         this.mArrayList = arrayList;
         this.mContext = context;
         this.clickListener = clickListener;
@@ -35,8 +34,8 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
 
     // Create new views
     @Override
-    public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+    public MessagesChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                             int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_item_chat, null);

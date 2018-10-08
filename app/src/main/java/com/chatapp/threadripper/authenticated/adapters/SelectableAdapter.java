@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.authenticated.recyclerview;
+package com.chatapp.threadripper.authenticated.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;

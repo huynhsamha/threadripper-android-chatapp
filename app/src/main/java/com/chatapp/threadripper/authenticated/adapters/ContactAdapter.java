@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.authenticated.recyclerview;
+package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.models.Contact;
 
 import java.util.List;
 

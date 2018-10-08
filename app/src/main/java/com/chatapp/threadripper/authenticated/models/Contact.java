@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.authenticated.recyclerview;
+package com.chatapp.threadripper.authenticated.models;
 
 import android.support.annotation.DrawableRes;
 

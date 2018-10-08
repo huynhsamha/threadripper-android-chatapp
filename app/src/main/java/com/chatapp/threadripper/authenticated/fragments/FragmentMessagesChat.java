@@ -2,7 +2,6 @@ package com.chatapp.threadripper.authenticated.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,16 +16,16 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.MainActivity;
-import com.chatapp.threadripper.authenticated.recyclerview.Chat;
-import com.chatapp.threadripper.authenticated.recyclerview.ChatAdapter;
+import com.chatapp.threadripper.authenticated.models.MessagesChat;
+import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentMessagesChat extends Fragment implements ChatAdapter.ViewHolder.ClickListener {
+public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
     private RecyclerView mRecyclerView;
-    private ChatAdapter mAdapter;
+    private MessagesChatAdapter mAdapter;
     private TextView tv_selection;
 
     public FragmentMessagesChat() {
@@ -49,14 +48,14 @@ public class FragmentMessagesChat extends Fragment implements ChatAdapter.ViewHo
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new ChatAdapter(getContext(), setData(), this);
+        mAdapter = new MessagesChatAdapter(getContext(), setData(), this);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }
 
-    public List<Chat> setData() {
-        List<Chat> data = new ArrayList<>();
+    public List<MessagesChat> setData() {
+        List<MessagesChat> data = new ArrayList<>();
         String name[] = {"Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris", "Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris"};
         String lastchat[] = {"Hi Laura Owens", "Hi there how are you", "Can we meet?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "How are you?"};
         boolean online[] = {true, false, true, false, true, true, true, false, false, true};
@@ -74,13 +73,13 @@ public class FragmentMessagesChat extends Fragment implements ChatAdapter.ViewHo
         };
 
         for (int i = 0; i < 10; i++) {
-            Chat chat = new Chat();
-            chat.setTime("5:04pm");
-            chat.setName(name[i]);
-            chat.setImage(img[i]);
-            chat.setOnline(online[i]);
-            chat.setLastChat(lastchat[i]);
-            data.add(chat);
+            MessagesChat messagesChat = new MessagesChat();
+            messagesChat.setTime("5:04pm");
+            messagesChat.setName(name[i]);
+            messagesChat.setImage(img[i]);
+            messagesChat.setOnline(online[i]);
+            messagesChat.setLastChat(lastchat[i]);
+            data.add(messagesChat);
         }
         return data;
     }

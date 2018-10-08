@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.MainActivity;
-import com.chatapp.threadripper.authenticated.recyclerview.Contact;
-import com.chatapp.threadripper.authenticated.recyclerview.ContactAdapter;
+import com.chatapp.threadripper.authenticated.models.Contact;
+import com.chatapp.threadripper.authenticated.adapters.ContactAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

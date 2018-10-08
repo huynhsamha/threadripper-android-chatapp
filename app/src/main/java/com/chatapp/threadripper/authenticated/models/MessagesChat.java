@@ -1,6 +1,6 @@
-package com.chatapp.threadripper.authenticated.recyclerview;
+package com.chatapp.threadripper.authenticated.models;
 
-public class Chat {
+public class MessagesChat {
 
     private String mName;
     private String mLastChat;
