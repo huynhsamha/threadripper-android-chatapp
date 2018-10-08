@@ -16,13 +16,14 @@
         >
         <Button
             android:id="@+id/btnBack"
-            android:layout_width="15dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="22dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/ic_action_back"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
+            android:background="#00ffffff"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:drawableTop="@drawable/ic_action_back"
             />
 
         <ImageView
