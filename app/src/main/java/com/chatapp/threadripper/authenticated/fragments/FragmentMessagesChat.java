@@ -59,8 +59,19 @@ public class FragmentMessagesChat extends Fragment implements ChatAdapter.ViewHo
         List<Chat> data = new ArrayList<>();
         String name[] = {"Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris", "Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris"};
         String lastchat[] = {"Hi Laura Owens", "Hi there how are you", "Can we meet?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "How are you?"};
-        @DrawableRes int img[] = {R.drawable.userpic, R.drawable.user1, R.drawable.user2, R.drawable.user3, R.drawable.user4, R.drawable.userpic, R.drawable.user1, R.drawable.user2, R.drawable.user3, R.drawable.user4};
         boolean online[] = {true, false, true, false, true, true, true, false, false, true};
+        String img[] = {
+                "http://2sao.vietnamnetjsc.vn/2016/07/01/23/15/xtm1a.jpg",
+                "https://znews-photo-td.zadn.vn/w660/Uploaded/bpivpjbp/2018_08_20/mpen180803MB002__1.jpg",
+                "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg",
+                "https://2sao.vietnamnetjsc.vn/images/2018/07/17/11/43/xa-thi-man-4.jpg",
+                "https://cdn.iconscout.com/icon/free/png-256/avatar-369-456321.png",
+                "https://cdn1.iconfinder.com/data/icons/business-charts/512/customer-512.png",
+                "http://abc.com/abc.jpg",
+                "http://abc.com/abc.jpg",
+                "http://abc.com/abc.jpg",
+                "http://abc.com/abc.jpg"
+        };
 
         for (int i = 0; i < 10; i++) {
             Chat chat = new Chat();

@@ -5,7 +5,7 @@ public class Chat {
     private String mName;
     private String mLastChat;
     private String mTime;
-    private int mImage;
+    private String mImage;
     private boolean online;
 
     public String getName() {
@@ -32,11 +32,11 @@ public class Chat {
         mTime = time;
     }
 
-    public int getImage() {
+    public String getImage() {
         return mImage;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         mImage = image;
     }
 

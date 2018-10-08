@@ -23,11 +23,11 @@
         android:layout_marginRight="@dimen/space10"
         android:layout_toRightOf="@id/chk_list">
 
-        <ImageView
-            android:id="@+id/iv_user_photo"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cirImgUserAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/userpic" />
+            android:src="@drawable/placeholder_user_avatar"/>
 
         <TextView
             android:layout_width="28dp"

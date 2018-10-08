@@ -11,8 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.utils.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
@@ -54,7 +58,9 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
             viewHolder.checked.setVisibility(View.GONE);
         }
         viewHolder.tvTime.setText(mArrayList.get(position).getTime());
-        viewHolder.userPhoto.setImageResource(mArrayList.get(position).getImage());
+
+        ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getImage());
+
         if (mArrayList.get(position).getOnline()) {
             viewHolder.onlineView.setVisibility(View.VISIBLE);
         } else
@@ -73,7 +79,7 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
         public TextView tvName;
         public TextView tvTime;
         public TextView tvLastChat;
-        public ImageView userPhoto;
+        public CircleImageView cirImgUserAvatar;
         public boolean online = false;
         private final View onlineView;
         public CheckBox checked;
@@ -90,7 +96,7 @@ public class ChatAdapter extends SelectableAdapter<ChatAdapter.ViewHolder> {
             //selectedOverlay = (View) itemView.findViewById(R.id.selected_overlay);
             tvTime = (TextView) itemLayoutView.findViewById(R.id.tv_time);
             tvLastChat = (TextView) itemLayoutView.findViewById(R.id.tv_last_chat);
-            userPhoto = (ImageView) itemLayoutView.findViewById(R.id.iv_user_photo);
+            cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
             onlineView = (View) itemLayoutView.findViewById(R.id.online_indicator);
             checked = (CheckBox) itemLayoutView.findViewById(R.id.chk_list);
 
