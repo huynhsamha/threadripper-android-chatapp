@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -19,6 +20,8 @@ public class BaseActivity extends AppCompatActivity {
     public final void changeTitle(int toolbarId, String titlePage) {
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
+
+        loadFonts();
 
         title = (TextView) toolbar.findViewById(R.id.tv_title);
         title.setText(titlePage);
@@ -50,5 +53,14 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+
+    private void loadFonts() {
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Lato-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
     }
 }

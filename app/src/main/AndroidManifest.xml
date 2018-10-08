@@ -30,6 +30,12 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppThemeFull"></activity>
+        <activity
+            android:name=".SignUpActivity"
+            android:theme="@style/AppThemeFull"></activity>
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:theme="@style/AppThemeFull"></activity>
     </application>
 
 </manifest>

@@ -51,17 +51,45 @@
         <item name="android:padding">@dimen/space15</item>
     </style>
 
+    <style name="ButtonGrey">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_grey</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:padding">@dimen/space15</item>
+    </style>
+
+    <style name="ButtonYellow">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_yellow</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:padding">@dimen/space15</item>
+    </style>
+
     <style name="Light" parent="android:TextAppearance">
-        <item name="fontPath">font/Nunito_Regular.ttf</item>
+        <item name="fontPath">font/Nunito-Regular.ttf</item>
     </style>
 
     <style name="LightNav" parent="android:TextAppearance">
         <item name="android:textSize">@dimen/h3</item>
-        <item name="fontPath">font/Nunito_Regular.ttf</item>
+        <item name="fontPath">font/Nunito-Regular.ttf</item>
     </style>
 
     <style name="ExtraLight" parent="android:TextAppearance">
-        <item name="fontPath">font/Nunito_Light.ttf</item>
+        <item name="fontPath">font/Nunito-Light.ttf</item>
+    </style>
+
+    <style name="QuicksandBold" parent="android:TextAppearance">
+        <item name="fontPath">font/Quicksand-Bold.ttf</item>
+    </style>
+
+    <style name="QuicksandMedium" parent="android:TextAppearance">
+        <item name="fontPath">font/Quicksand-Medium.ttf</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

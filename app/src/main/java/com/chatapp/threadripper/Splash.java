@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class Splash extends AppCompatActivity {
 
     @Override
@@ -38,4 +40,5 @@ public class Splash extends AppCompatActivity {
             window.setStatusBarColor(Color.TRANSPARENT);
         }
     }
+
 }
