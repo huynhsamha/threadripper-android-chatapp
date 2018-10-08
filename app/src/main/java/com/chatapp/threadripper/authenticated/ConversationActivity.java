@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Conversation extends BaseActivity {
+public class ConversationActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private ConversationRecyclerView mAdapter;
@@ -30,7 +30,7 @@ public class Conversation extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        setupToolbarWithUpNav(R.id.toolbar, "Julia Harriss", R.drawable.ic_action_back);
+        setupToolbarWithBackButton(R.id.toolbar, "Julia Harriss");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);

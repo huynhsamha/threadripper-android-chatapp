@@ -12,12 +12,12 @@
             android:id="@+id/nav_chats"
             app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_action_chat"
-            android:title="Chats" />
+            android:title="Messages Chat" />
         <item
             android:id="@+id/nav_groups"
             app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_action_group"
-            android:title="Groups" />
+            android:title="Groups Chat" />
         <item
             android:id="@+id/nav_call"
             app:actionViewClass="android.widget.TextView"

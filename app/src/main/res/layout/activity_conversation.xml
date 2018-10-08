@@ -15,7 +15,9 @@
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
+
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_conversation" />
+
 </android.support.design.widget.CoordinatorLayout>

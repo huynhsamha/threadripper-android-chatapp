@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class BaseActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     TextView title;
+    ImageView btnImgBack;
 
     public final void changeTitle(int toolbarId, String titlePage) {
         toolbar = (Toolbar) findViewById(toolbarId);
@@ -38,16 +40,17 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
     }
 
-    public void setupToolbarWithUpNav(int toolbarId, String titlePage, @DrawableRes int res) {
-        toolbar = (Toolbar) findViewById(toolbarId);
-        setSupportActionBar(toolbar);
+    public void setupToolbarWithBackButton(int toolbarId, String titlePage) {
+        setupToolbar(toolbarId, titlePage);
 
-        title = (TextView) toolbar.findViewById(R.id.tv_title);
-        title.setText(titlePage);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(res);
-        getSupportActionBar().setTitle("");
+        btnImgBack = (ImageView) findViewById(R.id.btnImgBack);
+        btnImgBack.setVisibility(View.VISIBLE);
+        btnImgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override

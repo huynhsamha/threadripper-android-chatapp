@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.Conversation;
+import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.authenticated.recyclerview.Chat;
 import com.chatapp.threadripper.authenticated.recyclerview.ChatAdapter;
@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentHome extends Fragment implements ChatAdapter.ViewHolder.ClickListener {
+public class FragmentMessagesChat extends Fragment implements ChatAdapter.ViewHolder.ClickListener {
     private RecyclerView mRecyclerView;
     private ChatAdapter mAdapter;
     private TextView tv_selection;
 
-    public FragmentHome() {
+    public FragmentMessagesChat() {
         setHasOptionsMenu(true);
     }
 
@@ -40,7 +40,7 @@ public class FragmentHome extends Fragment implements ChatAdapter.ViewHolder.Cli
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, null, false);
+        View view = inflater.inflate(R.layout.fragment_messages_chat, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
         ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
@@ -64,7 +64,7 @@ public class FragmentHome extends Fragment implements ChatAdapter.ViewHolder.Cli
 
         for (int i = 0; i < 10; i++) {
             Chat chat = new Chat();
-            chat.setmTime("5:04pm");
+            chat.setTime("5:04pm");
             chat.setName(name[i]);
             chat.setImage(img[i]);
             chat.setOnline(online[i]);
@@ -76,7 +76,7 @@ public class FragmentHome extends Fragment implements ChatAdapter.ViewHolder.Cli
 
     @Override
     public void onItemClicked(int position) {
-        startActivity(new Intent(getActivity(), Conversation.class));
+        startActivity(new Intent(getActivity(), ConversationActivity.class));
     }
 
     @Override

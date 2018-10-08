@@ -18,7 +18,7 @@ import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
-import com.chatapp.threadripper.authenticated.fragments.FragmentHome;
+import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,9 +34,9 @@ public class MainActivity extends BaseActivity
         setupToolbar(R.id.toolbar, "Messages");
 
         FragmentTransaction ft;
-        FragmentHome fragmentHome = new FragmentHome();
+        FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
         ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.frameLayout, fragmentHome).commit();
+        ft.add(R.id.frameLayout, fragmentMessagesChat).commit();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -106,9 +106,9 @@ public class MainActivity extends BaseActivity
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
         } else if (id == R.id.nav_chats) {
-            FragmentHome fragmentHome = new FragmentHome();
+            FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
             ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayout, fragmentHome).commit();
+            ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
         } else if (id == R.id.nav_groups) {
             FragmentGroups fragmentGroups = new FragmentGroups();
             ft = getSupportFragmentManager().beginTransaction();

@@ -71,6 +71,16 @@
         <item name="android:padding">@dimen/space15</item>
     </style>
 
+    <style name="ButtonTransparent">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:padding">@dimen/space15</item>
+    </style>
+
     <style name="Light" parent="android:TextAppearance">
         <item name="fontPath">font/Nunito-Regular.ttf</item>
     </style>

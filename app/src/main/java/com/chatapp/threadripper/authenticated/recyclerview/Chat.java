@@ -28,7 +28,7 @@ public class Chat {
         return mTime;
     }
 
-    public void setmTime(String time) {
+    public void setTime(String time) {
         mTime = time;
     }
 
