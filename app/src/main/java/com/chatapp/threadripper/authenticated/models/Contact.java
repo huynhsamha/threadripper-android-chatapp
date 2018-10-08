@@ -5,13 +5,13 @@ import android.support.annotation.DrawableRes;
 
 public class Contact {
     String name;
-    int image;
+    String image;
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(@DrawableRes int img) {
+    public void setImage(String img) {
         image = img;
     }
 

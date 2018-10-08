@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.models.Contact;
+import com.chatapp.threadripper.utils.ImageLoader;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder> {
@@ -46,7 +49,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
     public void onBindViewHolder(ContactAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.tvName.setText(mArrayList.get(position).getName());
-        viewHolder.userPhoto.setImageResource(mArrayList.get(position).getImage());
+        ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getImage());
     }
 
     @Override
@@ -57,7 +60,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public TextView tvName;
-        public ImageView userPhoto;
+        public CircleImageView cirImgUserAvatar;
         private ContactAdapter.ViewHolder.ClickListener listener;
         //private final View selectedOverlay;
 
@@ -68,7 +71,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
             this.listener = listener;
 
             tvName = (TextView) itemLayoutView.findViewById(R.id.tv_user_name);
-            userPhoto = (ImageView) itemLayoutView.findViewById(R.id.iv_user_photo);
+            cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
 
             itemLayoutView.setOnClickListener(this);
 
