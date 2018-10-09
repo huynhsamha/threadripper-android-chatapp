@@ -14,17 +14,23 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         >
-        <Button
+        <com.andexert.library.RippleView
             android:id="@+id/btnBack"
-            android:layout_width="18dp"
-            android:layout_height="22dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:background="#00ffffff"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:drawableTop="@drawable/ic_action_back"
-            />
+            app:rv_centered="true"
+            app:rv_color="@color/colorRippleView"
+            app:rv_rippleDuration="250">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_back" />
+        </com.andexert.library.RippleView>
 
         <ImageView
             android:id="@+id/imageView"
@@ -84,6 +90,7 @@
             android:layout_height="wrap_content"
             android:text="Create account"
             android:textAllCaps="true"
+            android:layout_marginTop="15dp"
             android:textAppearance="@style/QuicksandBold"
             />
 

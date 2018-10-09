@@ -10,12 +10,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 
 public class ForgotPasswordActivity extends BaseActivity {
 
-    Button btnResetPassword, btnBack;
+    Button btnResetPassword;
+    RippleView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +41,10 @@ public class ForgotPasswordActivity extends BaseActivity {
             }
         });
 
-        btnBack = (Button) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        btnBack = (RippleView) findViewById(R.id.btnBack);
+        btnBack.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
             @Override
-            public void onClick(View view) {
+            public void onComplete(RippleView rippleView) {
                 onBackPressed();
             }
         });
