@@ -18,25 +18,25 @@
         android:paddingRight="@dimen/space5"
         android:paddingTop="@dimen/space5">
 
-        <Button
-            android:id="@+id/bt_send"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/imgBtnSend"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:background="@drawable/btn_grey"
+            android:background="@drawable/btn_grey_circle"
             android:gravity="center"
+            android:layout_margin="6dp"
             android:stateListAnimator="@null"
-            android:text="Send"
-            android:textAppearance="@style/Light"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/h3" />
+            android:foregroundGravity="center"
+            android:src="@drawable/ic_action_send"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/bt_send"
+            android:layout_toLeftOf="@id/imgBtnSend"
             android:background="@drawable/bg_white_rounded">
 
             <ImageButton
@@ -50,7 +50,7 @@
                 app:srcCompat="@drawable/ic_attachment" />
 
             <EditText
-                android:id="@+id/et_message"
+                android:id="@+id/edtMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/bt_attachment"

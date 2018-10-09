@@ -4,12 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
@@ -19,7 +16,6 @@ import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
 import com.chatapp.threadripper.utils.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -28,8 +24,8 @@ public class ConversationActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
-    private EditText text;
-    private Button send;
+    private EditText edtMessage;
+    private ImageButton imgBtnSend;
     private CircleImageView cirImgUserAvatar;
     View onlineIndicator;
 
@@ -47,8 +43,8 @@ public class ConversationActivity extends BaseActivity {
 
         setupToolbarWithBackButton(R.id.toolbar, username);
 
-        text = (EditText) findViewById(R.id.et_message);
-        send = (Button) findViewById(R.id.bt_send);
+        edtMessage = (EditText) findViewById(R.id.edtMessage);
+        imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
 
 
         // Load User Avatar & Online ?
@@ -75,31 +71,29 @@ public class ConversationActivity extends BaseActivity {
     }
 
     void setListeners() {
-        text.setOnClickListener(new View.OnClickListener() {
+        edtMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
+                        scrollToBottom();
                     }
                 }, 500);
             }
         });
 
-        send.setOnClickListener(new View.OnClickListener() {
+        imgBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!text.getText().equals("")) {
-                    ArrayList<Message> data = new ArrayList<Message>();
+                if (edtMessage.getText().length() > 0) {
                     Message item = new Message();
                     item.setTime("6:00pm");
                     item.setType("2");
-                    item.setText(text.getText().toString());
-                    data.add(item);
-                    mAdapter.addItemsList(data);
-                    mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
-                    text.setText("");
+                    item.setText(edtMessage.getText().toString());
+                    mAdapter.addItem(item);
+                    scrollToBottom();
+                    edtMessage.setText("");
                 }
             }
         });
@@ -128,12 +122,7 @@ public class ConversationActivity extends BaseActivity {
     }
 
     void scrollToBottom() {
-        mRecyclerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
-            }
-        }, 1000);
+        mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
     }
 
     // @Override

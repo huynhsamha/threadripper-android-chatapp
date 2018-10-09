@@ -19,13 +19,13 @@ import java.util.List;
 public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // The items to display in your RecyclerView
-    private List<Message> items;
+    private ArrayList<Message> items;
     private Context mContext;
 
     private final int DATE = 0, YOU = 1, ME = 2;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ConversationAdapter(Context context, List<Message> items) {
+    public ConversationAdapter(Context context, ArrayList<Message> items) {
         this.mContext = context;
         this.items = items;
 
@@ -40,14 +40,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
 
-    public void addItemsList(ArrayList<Message> items) {
-        items.addAll(items);
-        notifyDataSetChanged();
-    }
-
     public void addItem(Message item) {
-        items.add(item);
-        notifyItemChanged(items.size()-1);
+        this.items.add(item);
+        // notifyItemChanged(items.size()-1);
+        this.notifyDataSetChanged();
     }
 
     public void setItemsList(ArrayList<Message> items) {
@@ -71,6 +67,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
 
@@ -97,13 +94,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         switch (viewHolder.getItemViewType()) {
             case DATE:
                 configureViewHolderDate((ViewHolderDate) viewHolder, position);
-                return;
+                break;
             case YOU:
                 configureViewHolderYou((ViewHolderYou) viewHolder, position);
-                return;
+                break;
             default:
                 configureViewHolderMe((ViewHolderMe) viewHolder, position);
-                return;
+                break;
         }
     }
 
