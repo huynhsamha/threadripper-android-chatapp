@@ -13,6 +13,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.models.Contact;
 import com.chatapp.threadripper.utils.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -20,16 +21,28 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder> {
 
-    private List<Contact> mArrayList;
+    private ArrayList<Contact> mArrayList;
     private Context mContext;
     private ContactAdapter.ViewHolder.ClickListener clickListener;
 
 
-    public ContactAdapter(Context context, List<Contact> arrayList, ContactAdapter.ViewHolder.ClickListener clickListener) {
-        this.mArrayList = arrayList;
+    public ContactAdapter(Context context, ArrayList<Contact> arrayList, ContactAdapter.ViewHolder.ClickListener clickListener) {
         this.mContext = context;
         this.clickListener = clickListener;
 
+        if (arrayList != null) this.mArrayList = arrayList;
+        else this.mArrayList = new ArrayList<>();
+    }
+
+    public void setArrayList(ArrayList<Contact> arrayList) {
+        this.mArrayList.clear();
+        this.mArrayList.addAll(arrayList);
+        this.notifyDataSetChanged();
+    }
+
+    public void addItem(Contact item) {
+        this.mArrayList.add(item);
+        this.notifyItemChanged(this.mArrayList.size()-1);
     }
 
     // Create new views
