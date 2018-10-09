@@ -12,6 +12,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.BaseActivity;
@@ -20,10 +22,11 @@ import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
+import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.Preferences;
 
-public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    TextView chats;
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
 
@@ -32,13 +35,16 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FragmentTransaction ft;
+
+        // Default Fragment is Messages Chat Screen
         setupToolbar(R.id.toolbar, "Messages");
 
-        FragmentTransaction ft;
         FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
         ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.frameLayout, fragmentMessagesChat).commit();
 
+        // Drawer
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -51,22 +57,31 @@ public class MainActivity extends BaseActivity
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
-
-        chats = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
-                findItem(R.id.nav_chats));
-        initializeCountDrawer();
-
+        configDrawerUserInfo();
     }
 
-    private void initializeCountDrawer() {
-        chats.setGravity(Gravity.CENTER);
-        chats.setTypeface(null, Typeface.BOLD);
-        chats.setTextColor(getResources().getColor(R.color.colorAccent));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            chats.setTextAppearance(R.style.LightNav);
-            chats.setTextColor(getResources().getColor(R.color.colorAccent));
-        }
-        chats.setText("99+");
+    void configDrawerUserInfo() {
+        String username = Preferences.getUsername();
+        String userAvatar = Preferences.getUserAvatar();
+        if (username == null || username.length() == 0)
+            username = "Username";
+        if (userAvatar == null || userAvatar.length() == 0)
+            userAvatar = "https://abc.xyz/f.png";
+
+        changeDrawerUsername(username);
+        changeDrawerUserAvatar(userAvatar);
+    }
+
+    void changeDrawerUserAvatar(String url) {
+        View navHeaderView = navigationView.getHeaderView(0);
+        ImageView imgDrawerUserAvatar = (ImageView) navHeaderView.findViewById(R.id.imgDrawerUserAvatar);
+        ImageLoader.loadUserAvatar(imgDrawerUserAvatar, url);
+    }
+
+    void changeDrawerUsername(String username) {
+        View navHeaderView = navigationView.getHeaderView(0);
+        TextView tvDrawerUsername = (TextView) navHeaderView.findViewById(R.id.tvDrawerUsername);
+        tvDrawerUsername.setText(username);
     }
 
     @Override
@@ -108,26 +123,21 @@ public class MainActivity extends BaseActivity
             FragmentContacts fragmentContacts = new FragmentContacts();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
-        }
-        else if (id == R.id.nav_chats) {
+        } else if (id == R.id.nav_chats) {
             FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
-        }
-        else if (id == R.id.nav_groups) {
+        } else if (id == R.id.nav_groups) {
             FragmentGroups fragmentGroups = new FragmentGroups();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentGroups).commit();
-        }
-        else if (id == R.id.nav_call) {
+        } else if (id == R.id.nav_call) {
             FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentVideoCallList).commit();
-        }
-        else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) {
 
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
 
         }
 

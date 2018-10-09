@@ -8,16 +8,19 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.utils.Preferences;
 
 public class SignUpActivity extends BaseActivity {
 
     Button btnSignUp;
     RippleView btnBack;
+    EditText edtUsername, edtPassword, edtConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +36,15 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void initViews() {
+        edtUsername = (EditText) findViewById(R.id.edtUsername);
+        edtPassword = (EditText) findViewById(R.id.edtPassword);
+        edtConfirmPassword = (EditText) findViewById(R.id.edtConfirmPassword);
+
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Preferences.setUsername(edtUsername.getText().toString());
                 startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                 finish();
             }
