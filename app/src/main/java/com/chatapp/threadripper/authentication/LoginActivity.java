@@ -66,4 +66,10 @@ public class LoginActivity extends BaseActivity {
             window.setStatusBarColor(Color.TRANSPARENT);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        // Double back to exit
+        this.setupDoubleBackToExit();
+    }
 }

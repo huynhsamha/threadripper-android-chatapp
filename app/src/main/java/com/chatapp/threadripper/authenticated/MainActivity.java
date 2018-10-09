@@ -75,7 +75,9 @@ public class MainActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //Double back to exit
+            this.setupDoubleBackToExit();
+            // super.onBackPressed();
         }
     }
 
