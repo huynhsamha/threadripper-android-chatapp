@@ -17,15 +17,15 @@ public class ApiService {
         ArrayList<Contact> data = new ArrayList<>();
         String name[] = {"Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris", "Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris"};
         String img[] = {
-                "http://2sao.vietnamnetjsc.vn/2016/07/01/23/15/xtm1a.jpg",
-                "https://znews-photo-td.zadn.vn/w660/Uploaded/bpivpjbp/2018_08_20/mpen180803MB002__1.jpg",
-                "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg",
-                "https://2sao.vietnamnetjsc.vn/images/2018/07/17/11/43/xa-thi-man-4.jpg",
-                "https://cdn.iconscout.com/icon/free/png-256/avatar-369-456321.png",
+                "https://kenh14cdn.com/2017/1-1506422137960.jpg",
+                "https://znews-photo-td.zadn.vn/w1024/Uploaded/mdf_drezdw/2018_02_22/2.jpg",
+                "https://znews-photo-td.zadn.vn/w1024/Uploaded/mdf_drezdw/2018_02_22/3.jpg",
+                "https://cdn.pose.com.vn/assets/2018/03/10-hotgirl-viet-thong-linh-luong-follow-khung-tren-instagram-24d8053b-1.jpg",
+                "https://dantricdn.com/thumb_w/640/2018/3/14/hot-girl-anh-the-huong-le-xe-buyt8-15210195344091865692058.jpg",
                 "https://cdn1.iconfinder.com/data/icons/business-charts/512/customer-512.png",
                 "http://abc.com/abc.jpg",
                 "http://abc.com/abc.jpg",
-                "http://abc.com/abc.jpg",
+                "http://2sao.vietnamnetjsc.vn/images/2017/07/31/06/54/hot-girl-xu-nghe-5.jpg",
                 "http://abc.com/abc.jpg"
         };
 

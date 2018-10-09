@@ -68,7 +68,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                 "https://cdn1.iconfinder.com/data/icons/business-charts/512/customer-512.png",
                 "http://abc.com/abc.jpg",
                 "http://abc.com/abc.jpg",
-                "http://abc.com/abc.jpg",
+                "http://www.asiaone.com/sites/default/files/original_images/Sep2014/170914_charmaine_lollipop.jpgg",
                 "http://abc.com/abc.jpg"
         };
 
