@@ -33,14 +33,16 @@ public class ConversationActivity extends BaseActivity {
     private CircleImageView cirImgUserAvatar;
     View onlineIndicator;
 
+    String username, userAvatarImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
         Intent intent = getIntent();
-        String username = intent.getStringExtra("Username");
-        String userAvatarImage = intent.getStringExtra("Image");
+        username = intent.getStringExtra("Username");
+        userAvatarImage = intent.getStringExtra("Image");
         boolean isOnline = intent.getBooleanExtra("IsOnline", false);
 
         setupToolbarWithBackButton(R.id.toolbar, username);
@@ -107,7 +109,15 @@ public class ConversationActivity extends BaseActivity {
         ApiService.getInstance().getMessages(new ApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
-                mAdapter.setItemsList(list);
+                ArrayList<Message> messages = new ArrayList<>();
+                for (Object i : list) {
+                    Message m = (Message) i;
+                    if (m.getType().equals("1")) { // YOU
+                        m.setAvatarUser(userAvatarImage);
+                    }
+                    messages.add(m);
+                }
+                mAdapter.setItemsList(messages);
             }
 
             @Override

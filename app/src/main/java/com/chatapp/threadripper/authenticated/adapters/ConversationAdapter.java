@@ -11,6 +11,7 @@ import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderDate;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderMe;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderYou;
+import com.chatapp.threadripper.utils.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,32 +96,30 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (viewHolder.getItemViewType()) {
             case DATE:
-                ViewHolderDate vh1 = (ViewHolderDate) viewHolder;
-                configureViewHolder1(vh1, position);
-                break;
+                configureViewHolderDate((ViewHolderDate) viewHolder, position);
+                return;
             case YOU:
-                ViewHolderYou vh2 = (ViewHolderYou) viewHolder;
-                configureViewHolder2(vh2, position);
-                break;
+                configureViewHolderYou((ViewHolderYou) viewHolder, position);
+                return;
             default:
-                ViewHolderMe vh = (ViewHolderMe) viewHolder;
-                configureViewHolder3(vh, position);
-                break;
+                configureViewHolderMe((ViewHolderMe) viewHolder, position);
+                return;
         }
     }
 
-    private void configureViewHolder3(ViewHolderMe vh1, int position) {
-        vh1.getTime().setText(items.get(position).getTime());
-        vh1.getChatText().setText(items.get(position).getText());
+    private void configureViewHolderMe(ViewHolderMe vh, int position) {
+        vh.getTime().setText(items.get(position).getTime());
+        vh.getChatText().setText(items.get(position).getText());
     }
 
-    private void configureViewHolder2(ViewHolderYou vh1, int position) {
-        vh1.getTime().setText(items.get(position).getTime());
-        vh1.getChatText().setText(items.get(position).getText());
+    private void configureViewHolderYou(ViewHolderYou vh, int position) {
+        vh.getTime().setText(items.get(position).getTime());
+        vh.getChatText().setText(items.get(position).getText());
+        ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), items.get(position).getAvatarUser());
     }
 
-    private void configureViewHolder1(ViewHolderDate vh1, int position) {
-        vh1.getDate().setText(items.get(position).getText());
+    private void configureViewHolderDate(ViewHolderDate vh, int position) {
+        vh.getDate().setText(items.get(position).getText());
     }
 
 }
