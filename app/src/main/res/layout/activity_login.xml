@@ -33,6 +33,8 @@
             android:layout_marginBottom="15dp"
             android:hint="Username"
             android:inputType="text"
+            android:drawableLeft="@drawable/ic_action_username_red"
+            android:drawablePadding="8dp"
             />
 
         <EditText
@@ -43,6 +45,8 @@
             android:layout_marginBottom="20dp"
             android:hint="Password"
             android:inputType="textPassword"
+            android:drawableLeft="@drawable/ic_action_password_red"
+            android:drawablePadding="8dp"
             />
 
         <RelativeLayout
