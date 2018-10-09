@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.models.Message;
-import com.chatapp.threadripper.authenticated.recyclerchat.HolderDate;
-import com.chatapp.threadripper.authenticated.recyclerchat.HolderMe;
-import com.chatapp.threadripper.authenticated.recyclerchat.HolderYou;
+import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderDate;
+import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderMe;
+import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderYou;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,15 +76,15 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         switch (viewType) {
             case DATE:
                 View v1 = inflater.inflate(R.layout.layout_holder_date, viewGroup, false);
-                viewHolder = new HolderDate(v1);
+                viewHolder = new ViewHolderDate(v1);
                 break;
             case YOU:
                 View v2 = inflater.inflate(R.layout.layout_holder_you, viewGroup, false);
-                viewHolder = new HolderYou(v2);
+                viewHolder = new ViewHolderYou(v2);
                 break;
             default:
                 View v = inflater.inflate(R.layout.layout_holder_me, viewGroup, false);
-                viewHolder = new HolderMe(v);
+                viewHolder = new ViewHolderMe(v);
                 break;
         }
         return viewHolder;
@@ -95,31 +95,31 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (viewHolder.getItemViewType()) {
             case DATE:
-                HolderDate vh1 = (HolderDate) viewHolder;
+                ViewHolderDate vh1 = (ViewHolderDate) viewHolder;
                 configureViewHolder1(vh1, position);
                 break;
             case YOU:
-                HolderYou vh2 = (HolderYou) viewHolder;
+                ViewHolderYou vh2 = (ViewHolderYou) viewHolder;
                 configureViewHolder2(vh2, position);
                 break;
             default:
-                HolderMe vh = (HolderMe) viewHolder;
+                ViewHolderMe vh = (ViewHolderMe) viewHolder;
                 configureViewHolder3(vh, position);
                 break;
         }
     }
 
-    private void configureViewHolder3(HolderMe vh1, int position) {
+    private void configureViewHolder3(ViewHolderMe vh1, int position) {
         vh1.getTime().setText(items.get(position).getTime());
         vh1.getChatText().setText(items.get(position).getText());
     }
 
-    private void configureViewHolder2(HolderYou vh1, int position) {
+    private void configureViewHolder2(ViewHolderYou vh1, int position) {
         vh1.getTime().setText(items.get(position).getTime());
         vh1.getChatText().setText(items.get(position).getText());
     }
 
-    private void configureViewHolder1(HolderDate vh1, int position) {
+    private void configureViewHolder1(ViewHolderDate vh1, int position) {
         vh1.getDate().setText(items.get(position).getText());
     }
 
