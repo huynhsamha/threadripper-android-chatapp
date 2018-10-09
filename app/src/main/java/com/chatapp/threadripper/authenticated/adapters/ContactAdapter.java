@@ -34,8 +34,7 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
 
     // Create new views
     @Override
-    public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                        int viewType) {
+    public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_item_contact, null);
@@ -49,6 +48,8 @@ public class ContactAdapter extends SelectableAdapter<ContactAdapter.ViewHolder>
     public void onBindViewHolder(ContactAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.tvName.setText(mArrayList.get(position).getName());
+
+        // load avatar
         ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getImage());
     }
 
