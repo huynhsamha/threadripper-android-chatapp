@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
@@ -48,45 +49,32 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new MessagesChatAdapter(getContext(), setData(), this);
+        mAdapter = new MessagesChatAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        ApiService.getInstance().getMessagesChatList(new ApiService.OnCompleteListener() {
+            @Override
+            public void onSuccess(ArrayList list) {
+                mAdapter.setArrayList(list);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+        });
 
         return view;
     }
 
-    public List<MessagesChat> setData() {
-        List<MessagesChat> data = new ArrayList<>();
-        String name[] = {"Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris", "Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris"};
-        String lastchat[] = {"Hi Laura Owens", "Hi there how are you", "Can we meet?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "How are you?"};
-        boolean online[] = {true, false, true, false, true, true, true, false, false, true};
-        String img[] = {
-                "http://2sao.vietnamnetjsc.vn/2016/07/01/23/15/xtm1a.jpg",
-                "https://znews-photo-td.zadn.vn/w660/Uploaded/bpivpjbp/2018_08_20/mpen180803MB002__1.jpg",
-                "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg",
-                "https://2sao.vietnamnetjsc.vn/images/2018/07/17/11/43/xa-thi-man-4.jpg",
-                "https://cdn.iconscout.com/icon/free/png-256/avatar-369-456321.png",
-                "https://cdn1.iconfinder.com/data/icons/business-charts/512/customer-512.png",
-                "http://abc.com/abc.jpg",
-                "http://abc.com/abc.jpg",
-                "http://www.asiaone.com/sites/default/files/original_images/Sep2014/170914_charmaine_lollipop.jpgg",
-                "http://abc.com/abc.jpg"
-        };
-
-        for (int i = 0; i < 10; i++) {
-            MessagesChat messagesChat = new MessagesChat();
-            messagesChat.setTime("5:04pm");
-            messagesChat.setName(name[i]);
-            messagesChat.setImage(img[i]);
-            messagesChat.setOnline(online[i]);
-            messagesChat.setLastChat(lastchat[i]);
-            data.add(messagesChat);
-        }
-        return data;
-    }
-
     @Override
     public void onItemClicked(int position) {
-        startActivity(new Intent(getActivity(), ConversationActivity.class));
+        MessagesChat item = mAdapter.getItem(position);
+        Intent intent = new Intent(getActivity(), ConversationActivity.class);
+        intent.putExtra("Username", item.getName());
+        intent.putExtra("Image", item.getImage());
+        intent.putExtra("IsOnline", item.getOnline());
+        startActivity(intent);
     }
 
     @Override

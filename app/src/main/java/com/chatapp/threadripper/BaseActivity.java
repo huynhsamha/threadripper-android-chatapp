@@ -19,26 +19,22 @@ public class BaseActivity extends AppCompatActivity {
     TextView title;
     ImageView btnImgBack;
 
+
+
     public final void changeTitle(int toolbarId, String titlePage) {
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
 
-        loadFonts();
-
         title = (TextView) toolbar.findViewById(R.id.tv_title);
         title.setText(titlePage);
+
         getSupportActionBar().setTitle("");
     }
 
     public final void setupToolbar(int toolbarId, String titlePage) {
-        toolbar = (Toolbar) findViewById(toolbarId);
-        setSupportActionBar(toolbar);
-
-        title = (TextView) toolbar.findViewById(R.id.tv_title);
-        title.setText(titlePage);
-
-        getSupportActionBar().setTitle("");
+        changeTitle(toolbarId, titlePage);
     }
+
 
     public void setupToolbarWithBackButton(int toolbarId, String titlePage) {
         setupToolbar(toolbarId, titlePage);
@@ -52,6 +48,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     protected void attachBaseContext(Context newBase) {

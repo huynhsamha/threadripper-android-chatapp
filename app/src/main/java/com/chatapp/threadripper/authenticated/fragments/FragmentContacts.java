@@ -51,12 +51,12 @@ public class FragmentContacts extends Fragment implements ContactAdapter.ViewHol
 
         ApiService.getInstance().getContactsList(new ApiService.OnCompleteListener() {
             @Override
-            public void onSuccess(ArrayList<Contact> contactsList) {
-                mAdapter.setArrayList(contactsList);
+            public void onSuccess(ArrayList list) {
+                mAdapter.setArrayList(list);
             }
 
             @Override
-            public void onFailure(String message) {
+            public void onFailure(String errorMessage) {
 
             }
         });

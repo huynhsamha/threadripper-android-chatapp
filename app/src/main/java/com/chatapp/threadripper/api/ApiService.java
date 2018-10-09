@@ -1,16 +1,20 @@
 package com.chatapp.threadripper.api;
 
 import com.chatapp.threadripper.authenticated.models.Contact;
+import com.chatapp.threadripper.authenticated.models.Message;
+import com.chatapp.threadripper.authenticated.models.MessagesChat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ApiService {
 
-    OnCompleteListener listener;
-
     public static ApiService getInstance() { return new ApiService(); }
 
-    public ApiService() { }
+    public interface OnCompleteListener {
+        void onSuccess(ArrayList list);
+        void onFailure(String errorMessage);
+    }
 
 
     public void getContactsList(OnCompleteListener listener) {
@@ -36,12 +40,56 @@ public class ApiService {
             data.add(contact);
         }
 
-        if (listener != null)
-            listener.onSuccess(data);
+        if (listener != null) listener.onSuccess(data);
     }
 
-    public interface OnCompleteListener {
-        public void onSuccess(ArrayList<Contact> contactsList);
-        public void onFailure(String message);
+    public void getMessagesChatList(OnCompleteListener listener) {
+        ArrayList<MessagesChat> data = new ArrayList<>();
+        String name[] = {"Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris", "Laura Owens", "Angela Price", "Donald Turner", "Kelly", "Julia Harris"};
+        String lastchat[] = {"Hi Laura Owens", "Hi there how are you", "Can we meet?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "Ow this awesome", "How are you?", "How are you?"};
+        boolean online[] = {true, false, true, false, true, true, true, false, false, true};
+        String img[] = {
+                "http://2sao.vietnamnetjsc.vn/2016/07/01/23/15/xtm1a.jpg",
+                "https://znews-photo-td.zadn.vn/w660/Uploaded/bpivpjbp/2018_08_20/mpen180803MB002__1.jpg",
+                "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg",
+                "https://2sao.vietnamnetjsc.vn/images/2018/07/17/11/43/xa-thi-man-4.jpg",
+                "https://cdn.iconscout.com/icon/free/png-256/avatar-369-456321.png",
+                "https://cdn1.iconfinder.com/data/icons/business-charts/512/customer-512.png",
+                "http://abc.com/abc.jpg",
+                "http://abc.com/abc.jpg",
+                "http://www.asiaone.com/sites/default/files/original_images/Sep2014/170914_charmaine_lollipop.jpgg",
+                "http://abc.com/abc.jpg"
+        };
+
+        for (int i = 0; i < 10; i++) {
+            MessagesChat messagesChat = new MessagesChat();
+            messagesChat.setTime("5:04pm");
+            messagesChat.setName(name[i]);
+            messagesChat.setImage(img[i]);
+            messagesChat.setOnline(online[i]);
+            messagesChat.setLastChat(lastchat[i]);
+            data.add(messagesChat);
+        }
+
+        if (listener != null) listener.onSuccess(data);
     }
+
+    public void getMessages(OnCompleteListener listener) {
+        ArrayList<Message> data = new ArrayList<>();
+
+        String text[] = {"15 September", "Hi, Julia! How are you?", "Hi, Joe, looks great! :) ", "I'm fine. Wanna go out somewhere?", "Yes! Coffe maybe?", "Great idea! You can come 9:00 pm? :)))", "Ok!", "Ow my good, this Kit is totally awesome", "Can you provide other kit?", "I don't have much time, :`("};
+        String time[] = {"", "5:30pm", "5:35pm", "5:36pm", "5:40pm", "5:41pm", "5:42pm", "5:40pm", "5:41pm", "5:42pm"};
+        String type[] = {"0", "2", "1", "1", "2", "1", "2", "2", "2", "1"};
+
+        for (int i = 0; i < text.length; i++) {
+            Message item = new Message();
+            item.setType(type[i]);
+            item.setText(text[i]);
+            item.setTime(time[i]);
+            data.add(item);
+        }
+
+        if (listener != null) listener.onSuccess(data);
+    }
+
 }

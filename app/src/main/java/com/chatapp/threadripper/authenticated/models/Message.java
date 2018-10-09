@@ -1,7 +1,7 @@
-package com.chatapp.threadripper.authenticated.recyclerchat;
+package com.chatapp.threadripper.authenticated.models;
 
 
-public class ChatData {
+public class Message {
     String type, text, time;
 
     public String getText() {

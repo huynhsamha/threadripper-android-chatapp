@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.authenticated.recyclerchat;
+package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,21 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.models.Message;
+import com.chatapp.threadripper.authenticated.recyclerchat.HolderDate;
+import com.chatapp.threadripper.authenticated.recyclerchat.HolderMe;
+import com.chatapp.threadripper.authenticated.recyclerchat.HolderYou;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // The items to display in your RecyclerView
-    private List<ChatData> items;
+    private List<Message> items;
     private Context mContext;
 
     private final int DATE = 0, YOU = 1, ME = 2;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ConversationRecyclerView(Context context, List<ChatData> items) {
+    public ConversationAdapter(Context context, List<Message> items) {
         this.mContext = context;
         this.items = items;
+
+        if (items != null) this.items = items;
+        else this.items = new ArrayList<>();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -29,6 +37,23 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
     public int getItemCount() {
         return this.items.size();
     }
+
+
+    public void addItemsList(ArrayList<Message> items) {
+        items.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(Message item) {
+        items.add(item);
+        notifyItemChanged(items.size()-1);
+    }
+
+    public void setItemsList(ArrayList<Message> items) {
+        this.items = items;
+        this.notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -65,10 +90,6 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
         return viewHolder;
     }
 
-    public void addItem(List<ChatData> item) {
-        items.addAll(item);
-        notifyDataSetChanged();
-    }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
