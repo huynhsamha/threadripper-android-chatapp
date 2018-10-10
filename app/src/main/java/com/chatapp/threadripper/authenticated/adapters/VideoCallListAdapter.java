@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.CallingActivity;
+import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.authenticated.models.Contact;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
@@ -86,7 +87,14 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
     }
 
     void handleStartCallingVideo(int position) {
-        ShowToast.lengthShort(this.mContext, "Calling Video...");
+        // ShowToast.lengthShort(this.mContext, "Calling Video...");
+
+        Intent intent = new Intent(this.mContext, VideoCallActivity.class);
+        intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
+        intent.putExtra(Constants.USERNAME, this.mArrayList.get(position).getName());
+        intent.putExtra(Constants.USER_AVATAR, this.mArrayList.get(position).getImage());
+
+        this.mContext.startActivity(intent);
     }
 
 

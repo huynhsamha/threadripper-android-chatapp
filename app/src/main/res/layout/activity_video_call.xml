@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_dark"
+    tools:context="com.chatapp.threadripper.authenticated.VideoCallActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cirImgUserAvatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/placeholder_user_avatar" />
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cirImgUserAvatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-45dp"
+        android:text="Username"
+        android:textColor="@color/colorTextWhite"
+        android:textAppearance="@style/Light"
+        android:textSize="@dimen/h1" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvUsername"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-45dp"
+        android:text="Calling..."
+        android:textColor="@color/colorTextWhite"
+        android:textAppearance="@style/Light"
+        android:textSize="@dimen/h2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.andexert.library.RippleView
+                android:id="@+id/rvCallEnd"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentLeft="true"
+                app:rv_centered="true"
+                app:rv_rippleDuration="100">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_shortcut_call_end" />
+
+            </com.andexert.library.RippleView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linLayoutCall"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.andexert.library.RippleView
+                android:id="@+id/rvCall"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_alignParentLeft="true"
+                app:rv_centered="true"
+                app:rv_rippleDuration="100">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_shortcut_call" />
+
+            </com.andexert.library.RippleView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

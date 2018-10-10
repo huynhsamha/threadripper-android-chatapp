@@ -44,6 +44,9 @@
         <activity
             android:name=".authenticated.CallingActivity"
             android:theme="@style/AppThemeFull"></activity>
+        <activity
+            android:name=".authenticated.VideoCallActivity"
+            android:theme="@style/AppThemeFull"></activity>
     </application>
 
 </manifest>
