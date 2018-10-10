@@ -1,19 +1,20 @@
 package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.CallingActivity;
 import com.chatapp.threadripper.authenticated.models.Contact;
+import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.ShowToast;
 
 import java.util.List;
 
@@ -31,6 +32,12 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         this.mContext = context;
     }
 
+    @Override
+    public int getItemCount() {
+        return mArrayList.size();
+    }
+
+
     // Create new views
     @Override
     public VideoCallListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,27 +50,52 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         return viewHolder;
     }
 
+
     @Override
-    public void onBindViewHolder(VideoCallListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(VideoCallListAdapter.ViewHolder viewHolder, final int position) {
 
         viewHolder.tvName.setText(mArrayList.get(position).getName());
 
         // load avatar
         ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getImage());
+
+        viewHolder.rvCall.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView rippleView) {
+                handleStartCalling(position);
+            }
+        });
+
+        viewHolder.rvCallVideo.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView rippleView) {
+                handleStartCallingVideo(position);
+            }
+        });
+    }
+
+    void handleStartCalling(int position) {
+        // ShowToast.lengthShort(this.mContext, "Calling...");
+
+        Intent intent = new Intent(this.mContext, CallingActivity.class);
+        intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
+        intent.putExtra(Constants.USERNAME, this.mArrayList.get(position).getName());
+        intent.putExtra(Constants.USER_AVATAR, this.mArrayList.get(position).getImage());
+
+        this.mContext.startActivity(intent);
+    }
+
+    void handleStartCallingVideo(int position) {
+        ShowToast.lengthShort(this.mContext, "Calling Video...");
     }
 
 
-    @Override
-    public int getItemCount() {
-        return mArrayList.size();
-    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvName;
         public CircleImageView cirImgUserAvatar;
         public RippleView rvCall, rvCallVideo;
-
 
         public ViewHolder(final View itemLayoutView) {
             super(itemLayoutView);
@@ -72,20 +104,6 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
             cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
             rvCall = (RippleView) itemLayoutView.findViewById(R.id.rvCall);
             rvCallVideo = (RippleView) itemLayoutView.findViewById(R.id.rvCallVideo);
-
-            rvCall.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-                @Override
-                public void onComplete(RippleView rippleView) {
-                    Toast.makeText(itemLayoutView.getContext(), "Calling...", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            rvCallVideo.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-                @Override
-                public void onComplete(RippleView rippleView) {
-                    Toast.makeText(itemLayoutView.getContext(), "Calling video...", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 }

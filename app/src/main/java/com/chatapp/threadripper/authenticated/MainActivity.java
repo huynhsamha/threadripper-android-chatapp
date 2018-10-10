@@ -61,15 +61,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     void configDrawerUserInfo() {
-        String username = Preferences.getUsername();
-        String userAvatar = Preferences.getUserAvatar();
-        if (username == null || username.length() == 0)
-            username = "Username";
-        if (userAvatar == null || userAvatar.length() == 0)
-            userAvatar = "https://abc.xyz/f.png";
-
-        changeDrawerUsername(username);
-        changeDrawerUserAvatar(userAvatar);
+        changeDrawerUsername(Preferences.getUsername());
+        changeDrawerUserAvatar(Preferences.getUserAvatar());
     }
 
     void changeDrawerUserAvatar(String url) {
