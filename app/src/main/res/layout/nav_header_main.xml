@@ -9,12 +9,12 @@
     android:paddingTop="@dimen/spaceLR"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgDrawerUserAvatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/space20"
-        android:src="@drawable/userpic" />
+        android:src="@drawable/placeholder_user_avatar" />
 
     <TextView
         android:id="@+id/tvDrawerUsername"

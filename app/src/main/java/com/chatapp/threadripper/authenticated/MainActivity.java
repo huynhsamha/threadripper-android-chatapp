@@ -25,6 +25,8 @@ import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     NavigationView navigationView, navigationViewBottom;
@@ -67,7 +69,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     void changeDrawerUserAvatar(String url) {
         View navHeaderView = navigationView.getHeaderView(0);
-        ImageView imgDrawerUserAvatar = (ImageView) navHeaderView.findViewById(R.id.imgDrawerUserAvatar);
+        CircleImageView imgDrawerUserAvatar = (CircleImageView) navHeaderView.findViewById(R.id.imgDrawerUserAvatar);
         ImageLoader.loadUserAvatar(imgDrawerUserAvatar, url);
     }
 
