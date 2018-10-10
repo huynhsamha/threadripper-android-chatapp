@@ -13,15 +13,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.andexert.library.RippleView;
+import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
+import com.chatapp.threadripper.utils.ShowToast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CallingActivity extends AppCompatActivity {
+public class CallingActivity extends BaseActivity {
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
@@ -106,6 +108,6 @@ public class CallingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-    //    do nothing
+        ShowToast.lengthShort(this, "Please click RED button to exit");
     }
 }

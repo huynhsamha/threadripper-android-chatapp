@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.utils.ShowToast;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -53,14 +52,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    private void loadFonts() {
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("font/Lato-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
     }
 
     public void setupDoubleBackToExit() {
