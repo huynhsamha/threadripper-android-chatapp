@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -14,14 +15,14 @@ public class ViewHolderYou extends RecyclerView.ViewHolder {
 
     private TextView time, chatText;
     private CircleImageView cirImgUserAvatar;
-    private ImageView imgChatImage;
+    private RoundedImageView imgChatImage;
 
     public ViewHolderYou(View v) {
         super(v);
         time = (TextView) v.findViewById(R.id.tv_time);
         chatText = (TextView) v.findViewById(R.id.tv_chat_text);
         cirImgUserAvatar = (CircleImageView) v.findViewById(R.id.cirImgUserAvatar);
-        imgChatImage = (ImageView) v.findViewById(R.id.imgChatImage);
+        imgChatImage = (RoundedImageView) v.findViewById(R.id.rivChatImage);
     }
 
     public TextView getTime() {
@@ -48,11 +49,11 @@ public class ViewHolderYou extends RecyclerView.ViewHolder {
         this.cirImgUserAvatar = cirImgUserAvatar;
     }
 
-    public ImageView getImgChatImage() {
+    public RoundedImageView getImgChatImage() {
         return imgChatImage;
     }
 
-    public void setImgChatImage(ImageView imgChatImage) {
+    public void setImgChatImage(RoundedImageView imgChatImage) {
         this.imgChatImage = imgChatImage;
     }
 }

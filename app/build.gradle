@@ -54,4 +54,7 @@ dependencies {
 
     // StompProtocolAndroid
     implementation 'com.github.forresthopkinsa:StompProtocolAndroid:17.11.0'
+
+    // RoundedImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }

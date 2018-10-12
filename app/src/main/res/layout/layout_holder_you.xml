@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginRight="@dimen/spaceLR"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -34,14 +35,16 @@
             android:textSize="@dimen/h3"
             />
 
-        <ImageView
-            android:id="@+id/imgChatImage"
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/rivChatImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_chat_you"
             android:src="@drawable/placeholder_image_chat"
             android:maxWidth="@dimen/maxwidth"
             android:maxHeight="150dp"
+            android:scaleType="fitCenter"
+            app:riv_corner_radius="20dp"
+            app:riv_border_width="0dp"
             android:visibility="gone"
             />
 
