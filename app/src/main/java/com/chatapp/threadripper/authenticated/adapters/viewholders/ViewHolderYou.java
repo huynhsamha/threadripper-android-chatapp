@@ -15,14 +15,14 @@ public class ViewHolderYou extends RecyclerView.ViewHolder {
 
     private TextView time, chatText;
     private CircleImageView cirImgUserAvatar;
-    private RoundedImageView imgChatImage;
+    private RoundedImageView rivChatImage;
 
     public ViewHolderYou(View v) {
         super(v);
         time = (TextView) v.findViewById(R.id.tv_time);
         chatText = (TextView) v.findViewById(R.id.tv_chat_text);
         cirImgUserAvatar = (CircleImageView) v.findViewById(R.id.cirImgUserAvatar);
-        imgChatImage = (RoundedImageView) v.findViewById(R.id.rivChatImage);
+        rivChatImage = (RoundedImageView) v.findViewById(R.id.rivChatImage);
     }
 
     public TextView getTime() {
@@ -49,11 +49,11 @@ public class ViewHolderYou extends RecyclerView.ViewHolder {
         this.cirImgUserAvatar = cirImgUserAvatar;
     }
 
-    public RoundedImageView getImgChatImage() {
-        return imgChatImage;
+    public RoundedImageView getRivChatImage() {
+        return rivChatImage;
     }
 
-    public void setImgChatImage(RoundedImageView imgChatImage) {
-        this.imgChatImage = imgChatImage;
+    public void setRivChatImage(RoundedImageView rivChatImage) {
+        this.rivChatImage = rivChatImage;
     }
 }

@@ -105,24 +105,41 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void configureViewHolderMe(ViewHolderMe vh, int position) {
-        vh.getTime().setText(items.get(position).getTime());
-        vh.getChatText().setText(items.get(position).getText());
+        Message msg = items.get(position);
+
+        vh.getTime().setText(msg.getTime());
+
+        if (msg.getText() != null) {
+            vh.getChatText().setText(msg.getText());
+            vh.getRivChatImage().setVisibility(View.GONE);
+            vh.getChatText().setVisibility(View.VISIBLE);
+        } else if (msg.getImgUrl() != null) {
+            ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
+            vh.getRivChatImage().setVisibility(View.VISIBLE);
+            vh.getChatText().setVisibility(View.GONE);
+        } else {
+            // oh, no man!, what the fucking message!!!
+            vh.getRivChatImage().setVisibility(View.GONE);
+            vh.getChatText().setVisibility(View.GONE);
+        }
     }
 
     private void configureViewHolderYou(ViewHolderYou vh, int position) {
         Message msg = items.get(position);
+
         vh.getTime().setText(msg.getTime());
+
         if (msg.getText() != null) {
             vh.getChatText().setText(msg.getText());
-            vh.getImgChatImage().setVisibility(View.GONE);
+            vh.getRivChatImage().setVisibility(View.GONE);
             vh.getChatText().setVisibility(View.VISIBLE);
         } else if (msg.getImgUrl() != null) {
-            ImageLoader.loadImageChatMessage(vh.getImgChatImage(), msg.getImgUrl());
-            vh.getImgChatImage().setVisibility(View.VISIBLE);
+            ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
+            vh.getRivChatImage().setVisibility(View.VISIBLE);
             vh.getChatText().setVisibility(View.GONE);
         } else {
             // oh, no man!, what the fucking message!!!
-            vh.getImgChatImage().setVisibility(View.GONE);
+            vh.getRivChatImage().setVisibility(View.GONE);
             vh.getChatText().setVisibility(View.GONE);
         }
 

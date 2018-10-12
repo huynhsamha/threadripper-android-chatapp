@@ -86,16 +86,19 @@ public class ApiService {
                 "16 September",
                 "https://instagram.com/p/BaaTyGhhzde/media/?size=m",
                 "https://i.ytimg.com/vi/MZJSTYXYctc/maxresdefault.jpg",
-                "https://znews-photo-td.zadn.vn/w1024/Uploaded/qfssu/2018_02_25/640_1.jpeg"
+                "https://znews-photo-td.zadn.vn/w1024/Uploaded/qfssu/2018_02_25/640_1.jpeg",
+                "https://znews-photo-td.zadn.vn/w1024/Uploaded/bpivpjbp/2018_08_10/1516915201_qx1280w.jpg",
+                "",
+                "http://img.docbao.vn/images/fullsize/2018/01/30/sao/duong-mich-bi-chi-trich.jpg"
         };
 
         String time[] = {
                 "", "5:30pm", "5:35pm", "5:36pm", "5:40pm", "5:41pm", "5:42pm", "5:40pm", "5:41pm", "5:42pm",
-                "", "5:43pm", "5:44pm", "5:45pm"};
+                "", "5:43pm", "5:44pm", "5:45pm", "5:46pm", "5:47pm", "5:48pm"};
 
         String type[] = {
                 "0", "2", "1", "1", "2", "1", "2", "2", "2", "1",
-                "0", "1", "1", "1"};
+                "0", "1", "1", "2", "1", "2", "2"};
 
         for (int i = 0; i < text.length; i++) {
             Message item = new Message();
