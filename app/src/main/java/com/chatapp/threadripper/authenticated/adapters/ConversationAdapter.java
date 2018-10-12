@@ -110,9 +110,23 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void configureViewHolderYou(ViewHolderYou vh, int position) {
-        vh.getTime().setText(items.get(position).getTime());
-        vh.getChatText().setText(items.get(position).getText());
-        ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), items.get(position).getAvatarUser());
+        Message msg = items.get(position);
+        vh.getTime().setText(msg.getTime());
+        if (msg.getText() != null) {
+            vh.getChatText().setText(msg.getText());
+            vh.getImgChatImage().setVisibility(View.GONE);
+            vh.getChatText().setVisibility(View.VISIBLE);
+        } else if (msg.getImgUrl() != null) {
+            ImageLoader.loadImageChatMessage(vh.getImgChatImage(), msg.getImgUrl());
+            vh.getImgChatImage().setVisibility(View.VISIBLE);
+            vh.getChatText().setVisibility(View.GONE);
+        } else {
+            // oh, no man!, what the fucking message!!!
+            vh.getImgChatImage().setVisibility(View.GONE);
+            vh.getChatText().setVisibility(View.GONE);
+        }
+
+        ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), msg.getAvatarUser());
     }
 
     private void configureViewHolderDate(ViewHolderDate vh, int position) {

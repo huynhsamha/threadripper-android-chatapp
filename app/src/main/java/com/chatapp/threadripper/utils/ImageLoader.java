@@ -16,4 +16,12 @@ public class ImageLoader {
                 .into((ImageView) view);
     }
 
+    public static void loadImageChatMessage(View view, String url) {
+        Picasso.get().load(url)
+                .placeholder(R.drawable.placeholder_image_chat)
+                .error(R.drawable.placeholder_image_chat)
+                .fit().centerCrop()
+                .into((ImageView) view);
+    }
+
 }

@@ -2,8 +2,17 @@ package com.chatapp.threadripper.authenticated.models;
 
 
 public class Message {
-    String type, text, time;
+    String type, text, time, imgUrl;
     String avatarUser;
+
+    /**
+     * type: "0", "1", "2"
+     * "0": Date
+     * "1": You
+     * "2": Me
+     *
+     * text == null || imgUrl == null
+     */
 
     public String getText() {
         return text;
@@ -35,5 +44,13 @@ public class Message {
 
     public void setAvatarUser(String avatarUser) {
         this.avatarUser = avatarUser;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

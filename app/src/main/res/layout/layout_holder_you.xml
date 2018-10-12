@@ -25,14 +25,25 @@
             android:id="@+id/tv_chat_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/tv_time"
             android:background="@drawable/bg_chat_you"
             android:maxWidth="@dimen/maxwidth"
             android:padding="@dimen/space10"
             android:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?"
             android:textAppearance="@style/Light"
             android:textColor="@color/colorTextBlack"
-            android:textSize="@dimen/h3" />
+            android:textSize="@dimen/h3"
+            />
+
+        <ImageView
+            android:id="@+id/imgChatImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chat_you"
+            android:src="@drawable/placeholder_image_chat"
+            android:maxWidth="@dimen/maxwidth"
+            android:maxHeight="150dp"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_time"
