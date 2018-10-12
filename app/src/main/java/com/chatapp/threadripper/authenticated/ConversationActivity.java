@@ -2,9 +2,9 @@ package com.chatapp.threadripper.authenticated;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,23 +13,20 @@ import android.widget.ImageButton;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.ChatSocketListener;
 import com.chatapp.threadripper.api.Config;
-import com.chatapp.threadripper.authenticated.models.Conversation;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
 import com.chatapp.threadripper.utils.ImageLoader;
-import com.chatapp.threadripper.utils.ShowToast;
+import com.chatapp.threadripper.utils.Preferences;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.client.StompClient;
 
 
 public class ConversationActivity extends BaseActivity {
@@ -43,10 +40,7 @@ public class ConversationActivity extends BaseActivity {
 
     String username, userAvatarImage;
 
-    OkHttpClient client;
-    Request request;
-    ChatSocketListener chatSocketListener;
-    WebSocket ws;
+    StompClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +57,6 @@ public class ConversationActivity extends BaseActivity {
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
 
-
         // Load User Avatar & Online ?
         cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
         onlineIndicator = findViewById(R.id.onlineIndicator);
@@ -72,7 +65,6 @@ public class ConversationActivity extends BaseActivity {
         ImageLoader.loadUserAvatar(cirImgUserAvatar, userAvatarImage);
         if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
         else onlineIndicator.setVisibility(View.GONE);
-
 
         // Messages
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -90,67 +82,37 @@ public class ConversationActivity extends BaseActivity {
     }
 
     void setupWebSocket() {
-        client = new OkHttpClient();
+        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
 
-        request = new Request.Builder().url(Config.WEB_SOCKET_URL).build();
-        // chatSocketListener = new ChatSocketListener(this);
-        ws = client.newWebSocket(request, new WebSocketListener() {
-            @Override
-            public void onMessage(WebSocket webSocket, final String text) {
-                super.onMessage(webSocket, text);
+        client.connect();
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        handleOnReceiveMessage(text);
+        client.topic("/topic/public").subscribe(message -> {
+            String str = message.getPayload();
+            Log.d("LogConversation:", "setupWebSocket: " + str);
+            JSONObject json = null;
+            try {
+                json = new JSONObject(str);
+                String type = json.getString("type");
+                if (type.equals("CHAT")) {
+                    // Chat message
+                    String sender = json.getString("sender");
+                    String content = json.getString("content");
+                    if (!sender.equals(Preferences.getUsername())) { // other user
+                        runOnUiThread(new Runnable() { // main thread
+                            @Override
+                            public void run() {
+                                handleOnReceiveMessage(content);
+                            }
+                        });
                     }
-                });
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, ByteString bytes) {
-                super.onMessage(webSocket, bytes);
-
-                // ShowToast.lengthShort(ConversationActivity.this, bytes.toString());
-            }
-
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                super.onClosing(webSocket, code, reason);
-
-                // ShowToast.lengthShort(ConversationActivity.this, "Code: " + code + " Reason: " + reason);
-            }
-
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                super.onClosed(webSocket, code, reason);
-
-                // ShowToast.lengthShort(ConversationActivity.this, "Code: " + code + " Reason: " + reason);
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
-                super.onFailure(webSocket, t, response);
-
-                // ShowToast.lengthShort(ConversationActivity.this, t.getMessage());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
-
-        client.dispatcher().executorService();
     }
 
     void setListeners() {
-        // edtMessage.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View view) {
-        //         mRecyclerView.postDelayed(new Runnable() {
-        //             @Override
-        //             public void run() {
-        //                 scrollToBottom();
-        //             }
-        //         }, 500);
-        //     }
-        // });
 
         edtMessage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -187,7 +149,20 @@ public class ConversationActivity extends BaseActivity {
         scrollToBottom();
         edtMessage.setText("");
 
-        ws.send(msg);
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("sender", Preferences.getUsername());
+            json.put("content", msg);
+            json.put("type", "CHAT");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        client.send("/app/chat.sendMessage", json.toString()).subscribe(
+                () -> Log.d("LogConversation", "Sent data!"),
+                error -> Log.e("LogConversation", "Encountered error while sending data!", error)
+        );
     }
 
     void handleOnReceiveMessage(String msg) {
@@ -228,12 +203,5 @@ public class ConversationActivity extends BaseActivity {
     void scrollToBottom() {
         mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
     }
-
-    // @Override
-    // public boolean onCreateOptionsMenu(Menu menu) {
-    //     MenuInflater inflater = getMenuInflater();
-    //     inflater.inflate(R.menu.menu_userphoto, menu);
-    //     return true;
-    // }
 
 }
