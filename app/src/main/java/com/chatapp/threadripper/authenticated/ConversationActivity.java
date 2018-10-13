@@ -34,7 +34,7 @@ public class ConversationActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
-    private ImageButton imgBtnSend;
+    private ImageButton imgBtnSend, btnAttacthChatImage;
     private CircleImageView cirImgUserAvatar;
     private View onlineIndicator;
 
@@ -56,6 +56,7 @@ public class ConversationActivity extends BaseActivity {
 
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
+        btnAttacthChatImage = (ImageButton) findViewById(R.id.btnAttacthChatImage);
 
         // Load User Avatar & Online ?
         cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
@@ -134,10 +135,21 @@ public class ConversationActivity extends BaseActivity {
                 handleSendMessage();
             }
         });
+
+        btnAttacthChatImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleAttachImage();
+            }
+        });
+    }
+
+    void handleAttachImage() {
+        btnAttacthChatImage.setImageResource(R.drawable.ic_action_image_accent);
     }
 
     void handleSendMessage() {
-        String msg = edtMessage.getText().toString();
+        String msg = edtMessage.getText().toString().trim();
         if (msg.isEmpty()) return;
 
         Message item = new Message();
@@ -191,6 +203,13 @@ public class ConversationActivity extends BaseActivity {
                     messages.add(m);
                 }
                 mAdapter.setItemsList(messages);
+
+                mRecyclerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollToBottom();
+                    }
+                }, 500);
             }
 
             @Override

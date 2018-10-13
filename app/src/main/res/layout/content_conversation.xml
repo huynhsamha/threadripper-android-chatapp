@@ -20,8 +20,8 @@
 
         <ImageButton
             android:id="@+id/imgBtnSend"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:background="@drawable/btn_grey_circle"
@@ -40,28 +40,33 @@
             android:background="@drawable/bg_white_rounded">
 
             <ImageButton
-                android:id="@+id/bt_attachment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/transparent"
-                android:padding="@dimen/space10"
-                app:srcCompat="@drawable/ic_attachment" />
+                android:id="@+id/btnAttacthChatImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_transparent_circle"
+                android:foregroundGravity="center"
+                android:src="@drawable/ic_action_image"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                />
 
             <EditText
                 android:id="@+id/edtMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/bt_attachment"
+                android:minHeight="40dp"
+                android:layout_toRightOf="@id/btnAttacthChatImage"
                 android:background="@android:color/transparent"
                 android:hint="Enter your message"
-                android:inputType="textCapSentences"
-                android:maxLines="3"
-                android:padding="@dimen/space15"
+                android:inputType="textMultiLine"
+                android:maxLines="6"
+                android:padding="@dimen/space5"
                 android:textAppearance="@style/Light"
                 android:textColor="@color/colorTextBlack"
                 android:textColorHint="@color/colorTextHint"
+                android:scrollbars="vertical"
                 android:textSize="@dimen/h3" />
         </RelativeLayout>
     </RelativeLayout>
