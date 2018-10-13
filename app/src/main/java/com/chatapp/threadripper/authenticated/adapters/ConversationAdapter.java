@@ -11,6 +11,7 @@ import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderDate;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderMe;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderYou;
+import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 
 import java.util.ArrayList;
@@ -109,18 +110,27 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         vh.getTime().setText(msg.getTime());
 
-        if (msg.getText() != null) {
-            vh.getChatText().setText(msg.getText());
-            vh.getRivChatImage().setVisibility(View.GONE);
-            vh.getChatText().setVisibility(View.VISIBLE);
-        } else if (msg.getImgUrl() != null) {
-            ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
-            vh.getRivChatImage().setVisibility(View.VISIBLE);
-            vh.getChatText().setVisibility(View.GONE);
-        } else {
-            // oh, no man!, what the fucking message!!!
-            vh.getRivChatImage().setVisibility(View.GONE);
-            vh.getChatText().setVisibility(View.GONE);
+        switch (msg.getContentType()) {
+            case Constants.CHAT_CONTENT_TYPE_TEXT:
+                vh.getChatText().setText(msg.getText());
+                vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getChatText().setVisibility(View.VISIBLE);
+                break;
+            case Constants.CHAT_CONTENT_TYPE_URI:
+                ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
+                vh.getRivChatImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
+            case Constants.CHAT_CONTENT_TYPE_BITMAP:
+                vh.getRivChatImage().setImageBitmap(msg.getBitmap());
+                vh.getRivChatImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
+            default:
+                // oh, no man!, what the fucking message!!!
+                vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -129,18 +139,27 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         vh.getTime().setText(msg.getTime());
 
-        if (msg.getText() != null) {
-            vh.getChatText().setText(msg.getText());
-            vh.getRivChatImage().setVisibility(View.GONE);
-            vh.getChatText().setVisibility(View.VISIBLE);
-        } else if (msg.getImgUrl() != null) {
-            ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
-            vh.getRivChatImage().setVisibility(View.VISIBLE);
-            vh.getChatText().setVisibility(View.GONE);
-        } else {
-            // oh, no man!, what the fucking message!!!
-            vh.getRivChatImage().setVisibility(View.GONE);
-            vh.getChatText().setVisibility(View.GONE);
+        switch (msg.getContentType()) {
+            case Constants.CHAT_CONTENT_TYPE_TEXT:
+                vh.getChatText().setText(msg.getText());
+                vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getChatText().setVisibility(View.VISIBLE);
+                break;
+            case Constants.CHAT_CONTENT_TYPE_URI:
+                ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
+                vh.getRivChatImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
+            case Constants.CHAT_CONTENT_TYPE_BITMAP:
+                vh.getRivChatImage().setImageBitmap(msg.getBitmap());
+                vh.getRivChatImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
+            default:
+                // oh, no man!, what the fucking message!!!
+                vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getChatText().setVisibility(View.GONE);
+                break;
         }
 
         ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), msg.getAvatarUser());

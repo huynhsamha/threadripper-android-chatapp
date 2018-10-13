@@ -1,12 +1,19 @@
 package com.chatapp.threadripper.utils;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.chatapp.threadripper.R;
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
 public class ImageLoader {
 
@@ -34,5 +41,4 @@ public class ImageLoader {
                 .centerCrop()
                 .into((ImageView) view);
     }
-
 }

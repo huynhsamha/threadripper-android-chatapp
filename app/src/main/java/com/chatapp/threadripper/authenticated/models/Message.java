@@ -1,17 +1,27 @@
 package com.chatapp.threadripper.authenticated.models;
 
 
+import android.graphics.Bitmap;
+
 public class Message {
     String type, text, time, imgUrl;
     String avatarUser;
+    String contentType;
+    Bitmap bitmap;
 
     /**
+     *
+     * contentType: // reference in Constants.java
+     * "text": for text
+     * "uri": for imgUrl
+     * "bitmap" for bitmap
+     *
+     *
      * type: "0", "1", "2"
      * "0": Date
      * "1": You
      * "2": Me
      *
-     * text == null || imgUrl == null
      */
 
     public String getText() {
@@ -52,5 +62,21 @@ public class Message {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 }

@@ -1,10 +1,14 @@
 package com.chatapp.threadripper.authenticated;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
@@ -41,13 +44,14 @@ public class ConversationActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
-    private ImageButton imgBtnSend, btnAttacthChatImage;
+    private ImageButton imgBtnSend, btnAttacthChatImage, btnCaptureImage;
     private CircleImageView cirImgUserAvatar;
     private View onlineIndicator;
-    private RoundedImageView rivPickedImageFromMedia;
+    private RoundedImageView rivImageIsPickedOrCaptured;
 
     String username, userAvatarImage;
     String uriAttachtImage;
+    Bitmap bitmapCaptureImage;
 
     StompClient client;
 
@@ -66,7 +70,8 @@ public class ConversationActivity extends BaseActivity {
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
         btnAttacthChatImage = (ImageButton) findViewById(R.id.btnAttacthChatImage);
-        rivPickedImageFromMedia = (RoundedImageView) findViewById(R.id.rivPickedImageFromMedia);
+        btnCaptureImage = (ImageButton) findViewById(R.id.btnCaptureImage);
+        rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
 
         // Load User Avatar & Online ?
         cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
@@ -90,6 +95,10 @@ public class ConversationActivity extends BaseActivity {
         fetchMessages();
 
         setupWebSocket();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            btnCaptureImage.setVisibility(View.GONE); // not support capture image with API < 23
+        }
     }
 
     void setupWebSocket() {
@@ -142,13 +151,7 @@ public class ConversationActivity extends BaseActivity {
         imgBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edtMessage.getVisibility() == View.VISIBLE) {
-                    // send a message text
-                    handleSendMessage();
-                } else if (rivPickedImageFromMedia.getVisibility() == View.VISIBLE) {
-                    // send a message image
-                    handleSendAttachImage();
-                }
+                handleClickButtonSend();
             }
         });
 
@@ -158,30 +161,76 @@ public class ConversationActivity extends BaseActivity {
                 handleAttachImage();
             }
         });
+
+        btnCaptureImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleCaptureCamera();
+            }
+        });
+    }
+
+    void handleClickButtonSend() {
+        if (edtMessage.getVisibility() == View.VISIBLE) { // send a message text
+            handleSendMessage();
+        } else if (rivImageIsPickedOrCaptured.getVisibility() == View.VISIBLE) { // send a message image
+            if (uriAttachtImage != null) { // image is picked - use uri
+                handleSendAttachImage();
+            } else if (bitmapCaptureImage != null) { // image is captured - use bitmap
+                handleSendCaptureImage();
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M) // >= 23
+    void handleCaptureCamera() {
+        btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera_accent);
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, Constants.REQUEST_CODE_PERMISSION_IMAGE_CAPTURE);
+        } else {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, Constants.REQUEST_CODE_CAPTURE_IMAGE);
+        }
     }
 
     void handleAttachImage() {
-        btnAttacthChatImage.setImageResource(R.drawable.ic_action_image_accent);
-        edtMessage.setVisibility(View.GONE);
+        btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
 
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.RESULT_CODE_PICK_IMAGE);
+        startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.REQUEST_CODE_PICK_IMAGE);
+    }
+
+    void handleSendCaptureImage() {
+        Message item = new Message();
+        item.setTime("6:00pm");
+        item.setType("2");
+        item.setContentType(Constants.CHAT_CONTENT_TYPE_BITMAP);
+        item.setBitmap(bitmapCaptureImage);
+
+        mAdapter.addItem(item);
+        scrollToBottom();
+
+        edtMessage.setVisibility(View.VISIBLE);
+        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
+        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
     }
 
     void handleSendAttachImage() {
         Message item = new Message();
         item.setTime("6:00pm");
         item.setType("2");
+        item.setContentType(Constants.CHAT_CONTENT_TYPE_URI);
         item.setImgUrl(uriAttachtImage);
 
         mAdapter.addItem(item);
         scrollToBottom();
 
         edtMessage.setVisibility(View.VISIBLE);
-        rivPickedImageFromMedia.setImageResource(R.drawable.placeholder_image_chat);
-        rivPickedImageFromMedia.setVisibility(View.GONE);
+        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
+        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
     }
 
     void handleSendMessage() {
@@ -191,6 +240,7 @@ public class ConversationActivity extends BaseActivity {
         Message item = new Message();
         item.setTime("6:00pm");
         item.setType("2");
+        item.setContentType(Constants.CHAT_CONTENT_TYPE_TEXT);
         item.setText(msg);
 
         mAdapter.addItem(item);
@@ -264,30 +314,70 @@ public class ConversationActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Constants.RESULT_CODE_PICK_IMAGE) {
+        if (requestCode == Constants.REQUEST_CODE_PICK_IMAGE) {
             if (resultCode == RESULT_OK && data != null) {
                 // ShowToast.lengthShort(this, "OK");
-
-                handlePickImageFromMedia(data);
-
+                handlePickImageSuccess(data);
             } else {
                 // Not do anything
                 // ShowToast.lengthShort(this, "An error occurred, please try again later.");
             }
 
             // reset button attach image
-            btnAttacthChatImage.setImageResource(R.drawable.ic_action_image);
+            btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate);
+        }
+        else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
+            if (resultCode == RESULT_OK && data != null) {
+                handleCaptureImageSuccess(data);
+            }
+
+            // reset button capture image
+            btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
         }
     }
 
-    void handlePickImageFromMedia(Intent data) {
-        rivPickedImageFromMedia.setVisibility(View.VISIBLE);
+    void handlePickImageSuccess(Intent data) {
+        edtMessage.setVisibility(View.GONE);
+        rivImageIsPickedOrCaptured.setVisibility(View.VISIBLE);
 
         Uri uri = data.getData();
         uriAttachtImage = uri.toString();
-        ImageLoader.loadImageChatMessage(rivPickedImageFromMedia, uriAttachtImage);
+        ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachtImage);
+        bitmapCaptureImage = null; // reset method capture image, current image is picked
 
         // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachtImage);
         // example: content://com.android.providers.media.documents/document/image%3A14109
+    }
+
+    void handleCaptureImageSuccess(Intent data) {
+        edtMessage.setVisibility(View.GONE);
+        rivImageIsPickedOrCaptured.setVisibility(View.VISIBLE);
+
+        bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
+        // ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, photo.toString());
+        rivImageIsPickedOrCaptured.setImageBitmap(bitmapCaptureImage);
+        uriAttachtImage = null; // reset method pick image, current image is captured
+
+        // Log.d("LogImage", "handleCaptureImageSuccess: " + photo.toString());
+        // example: android.graphics.Bitmap@312c4eb
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_IMAGE_CAPTURE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                handleCaptureCamera();
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Camera perrimssion denied");
+
+                // reset UI
+                // edtMessage.setVisibility(View.VISIBLE);
+                // rivImageIsPickedOrCaptured.setVisibility(View.GONE);
+                btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
+            }
+        }
     }
 }

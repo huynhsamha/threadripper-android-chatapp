@@ -3,6 +3,7 @@ package com.chatapp.threadripper.api;
 import com.chatapp.threadripper.authenticated.models.Contact;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
+import com.chatapp.threadripper.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +106,10 @@ public class ApiService {
             item.setType(type[i]);
             item.setTime(time[i]);
             if (i < 10) {
+                item.setContentType(Constants.CHAT_CONTENT_TYPE_TEXT);
                 item.setText(text[i]);
             } else {
+                item.setContentType(Constants.CHAT_CONTENT_TYPE_URI);
                 item.setImgUrl(text[i]);
             }
             data.add(item);

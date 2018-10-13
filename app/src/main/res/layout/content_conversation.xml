@@ -47,8 +47,23 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/btn_transparent_circle"
                 android:foregroundGravity="center"
-                android:src="@drawable/ic_action_image"
+                android:src="@drawable/ic_action_add_photo_alternate"
                 android:layout_margin="5dp"
+                android:padding="10dp"
+                />
+
+            <ImageButton
+                android:id="@+id/btnCaptureImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_toRightOf="@id/btnAttacthChatImage"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_transparent_circle"
+                android:foregroundGravity="center"
+                android:src="@drawable/ic_action_linked_camera"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:padding="10dp"
                 />
 
@@ -57,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="40dp"
-                android:layout_toRightOf="@id/btnAttacthChatImage"
+                android:layout_toRightOf="@id/btnCaptureImage"
                 android:background="@android:color/transparent"
                 android:hint="Enter your message"
                 android:inputType="textMultiLine"
@@ -70,10 +85,10 @@
                 android:textSize="@dimen/h3" />
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/rivPickedImageFromMedia"
+                android:id="@+id/rivImageIsPickedOrCaptured"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/btnAttacthChatImage"
+                android:layout_toRightOf="@id/btnCaptureImage"
                 android:maxHeight="150dp"
                 android:maxWidth="@dimen/maxwidth"
                 android:scaleType="fitCenter"
