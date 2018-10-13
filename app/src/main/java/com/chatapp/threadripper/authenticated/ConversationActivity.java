@@ -50,7 +50,7 @@ public class ConversationActivity extends BaseActivity {
     private RoundedImageView rivImageIsPickedOrCaptured;
 
     String username, userAvatarImage;
-    String uriAttachtImage;
+    String uriAttachImage;
     Bitmap bitmapCaptureImage;
 
     StompClient client;
@@ -174,7 +174,7 @@ public class ConversationActivity extends BaseActivity {
         if (edtMessage.getVisibility() == View.VISIBLE) { // send a message text
             handleSendMessage();
         } else if (rivImageIsPickedOrCaptured.getVisibility() == View.VISIBLE) { // send a message image
-            if (uriAttachtImage != null) { // image is picked - use uri
+            if (uriAttachImage != null) { // image is picked - use uri
                 handleSendAttachImage();
             } else if (bitmapCaptureImage != null) { // image is captured - use bitmap
                 handleSendCaptureImage();
@@ -223,7 +223,7 @@ public class ConversationActivity extends BaseActivity {
         item.setTime("6:00pm");
         item.setType("2");
         item.setContentType(Constants.CHAT_CONTENT_TYPE_URI);
-        item.setImgUrl(uriAttachtImage);
+        item.setImgUrl(uriAttachImage);
 
         mAdapter.addItem(item);
         scrollToBottom();
@@ -341,11 +341,11 @@ public class ConversationActivity extends BaseActivity {
         rivImageIsPickedOrCaptured.setVisibility(View.VISIBLE);
 
         Uri uri = data.getData();
-        uriAttachtImage = uri.toString();
-        ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachtImage);
+        uriAttachImage = uri.toString();
+        ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachImage);
         bitmapCaptureImage = null; // reset method capture image, current image is picked
 
-        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachtImage);
+        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachImage);
         // example: content://com.android.providers.media.documents/document/image%3A14109
     }
 
@@ -356,7 +356,7 @@ public class ConversationActivity extends BaseActivity {
         bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
         // ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, photo.toString());
         rivImageIsPickedOrCaptured.setImageBitmap(bitmapCaptureImage);
-        uriAttachtImage = null; // reset method pick image, current image is captured
+        uriAttachImage = null; // reset method pick image, current image is captured
 
         // Log.d("LogImage", "handleCaptureImageSuccess: " + photo.toString());
         // example: android.graphics.Bitmap@312c4eb

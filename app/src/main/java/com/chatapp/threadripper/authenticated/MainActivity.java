@@ -1,11 +1,8 @@
 package com.chatapp.threadripper.authenticated;
 
-import android.graphics.Typeface;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
-import android.view.Gravity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.BaseActivity;
@@ -131,7 +127,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.frameLayout, fragmentVideoCallList).commit();
         } else if (id == R.id.nav_settings) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_logout) {
 
         }

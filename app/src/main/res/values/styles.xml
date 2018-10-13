@@ -33,8 +33,20 @@
         <item name="android:textSize">@dimen/h3</item>
         <item name="android:textColor">@color/colorTextBlack</item>
         <item name="android:textColorHint">@color/colorTextHint</item>
-        <item name="android:padding">@dimen/space15</item>
+        <item name="android:paddingTop">@dimen/space15</item>
+        <item name="android:paddingBottom">@dimen/space15</item>
+        <item name="android:paddingLeft">@dimen/space20</item>
+        <item name="android:paddingRight">@dimen/space20</item>
         <item name="android:background">@drawable/bg_top_grey</item>
+        <item name="android:textAppearance">@style/Light</item>
+    </style>
+
+    <style name="EditTextBgLight">
+        <item name="android:textSize">@dimen/h3</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:textColorHint">@color/colorTextHint</item>
+        <item name="android:padding">@dimen/space10</item>
+        <item name="android:background">#ececec</item>
         <item name="android:textAppearance">@style/Light</item>
     </style>
 
