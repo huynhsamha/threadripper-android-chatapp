@@ -68,6 +68,22 @@
                 android:textColorHint="@color/colorTextHint"
                 android:scrollbars="vertical"
                 android:textSize="@dimen/h3" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/rivPickedImageFromMedia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/btnAttacthChatImage"
+                android:maxHeight="150dp"
+                android:maxWidth="@dimen/maxwidth"
+                android:scaleType="fitCenter"
+                android:src="@drawable/placeholder_image_chat"
+                app:riv_border_width="1dp"
+                app:riv_border_color="#E9ECEC"
+                app:riv_corner_radius="20dp"
+                android:layout_margin="@dimen/space5"
+                android:visibility="gone"
+                />
         </RelativeLayout>
     </RelativeLayout>
 

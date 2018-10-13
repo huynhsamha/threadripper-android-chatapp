@@ -1,7 +1,10 @@
 package com.chatapp.threadripper.authenticated;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
@@ -16,8 +20,11 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
+import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
+import com.chatapp.threadripper.utils.ShowToast;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,8 +44,10 @@ public class ConversationActivity extends BaseActivity {
     private ImageButton imgBtnSend, btnAttacthChatImage;
     private CircleImageView cirImgUserAvatar;
     private View onlineIndicator;
+    private RoundedImageView rivPickedImageFromMedia;
 
     String username, userAvatarImage;
+    String uriAttachtImage;
 
     StompClient client;
 
@@ -57,6 +66,7 @@ public class ConversationActivity extends BaseActivity {
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
         btnAttacthChatImage = (ImageButton) findViewById(R.id.btnAttacthChatImage);
+        rivPickedImageFromMedia = (RoundedImageView) findViewById(R.id.rivPickedImageFromMedia);
 
         // Load User Avatar & Online ?
         cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
@@ -132,7 +142,13 @@ public class ConversationActivity extends BaseActivity {
         imgBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleSendMessage();
+                if (edtMessage.getVisibility() == View.VISIBLE) {
+                    // send a message text
+                    handleSendMessage();
+                } else if (rivPickedImageFromMedia.getVisibility() == View.VISIBLE) {
+                    // send a message image
+                    handleSendAttachImage();
+                }
             }
         });
 
@@ -146,6 +162,26 @@ public class ConversationActivity extends BaseActivity {
 
     void handleAttachImage() {
         btnAttacthChatImage.setImageResource(R.drawable.ic_action_image_accent);
+        edtMessage.setVisibility(View.GONE);
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.RESULT_CODE_PICK_IMAGE);
+    }
+
+    void handleSendAttachImage() {
+        Message item = new Message();
+        item.setTime("6:00pm");
+        item.setType("2");
+        item.setImgUrl(uriAttachtImage);
+
+        mAdapter.addItem(item);
+        scrollToBottom();
+
+        edtMessage.setVisibility(View.VISIBLE);
+        rivPickedImageFromMedia.setImageResource(R.drawable.placeholder_image_chat);
+        rivPickedImageFromMedia.setVisibility(View.GONE);
     }
 
     void handleSendMessage() {
@@ -223,4 +259,35 @@ public class ConversationActivity extends BaseActivity {
         mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.RESULT_CODE_PICK_IMAGE) {
+            if (resultCode == RESULT_OK && data != null) {
+                // ShowToast.lengthShort(this, "OK");
+
+                handlePickImageFromMedia(data);
+
+            } else {
+                // Not do anything
+                // ShowToast.lengthShort(this, "An error occurred, please try again later.");
+            }
+
+            // reset button attach image
+            btnAttacthChatImage.setImageResource(R.drawable.ic_action_image);
+        }
+    }
+
+    void handlePickImageFromMedia(Intent data) {
+        rivPickedImageFromMedia.setVisibility(View.VISIBLE);
+
+        Uri uri = data.getData();
+        uriAttachtImage = uri.toString();
+        ImageLoader.loadImageChatMessage(rivPickedImageFromMedia, uriAttachtImage);
+
+        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachtImage);
+        // example: content://com.android.providers.media.documents/document/image%3A14109
+    }
 }

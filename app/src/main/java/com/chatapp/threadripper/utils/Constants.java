@@ -6,4 +6,6 @@ public class Constants {
     public static final String IS_CALLER_SIDE = "IS_CALLER_SIDE";
 
     public static final String PLACEHOLDER_IMAGE_URL = "http://abc.com/xyz.png";
+
+    public static final int RESULT_CODE_PICK_IMAGE = 40001;
 }
