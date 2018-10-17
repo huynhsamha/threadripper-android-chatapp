@@ -14,14 +14,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
@@ -52,7 +51,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mAdapter = new MessagesChatAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        ApiService.getInstance().getMessagesChatList(new ApiService.OnCompleteListener() {
+        TestApiService.getInstance().getMessagesChatList(new TestApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
                 mAdapter.setArrayList(list);

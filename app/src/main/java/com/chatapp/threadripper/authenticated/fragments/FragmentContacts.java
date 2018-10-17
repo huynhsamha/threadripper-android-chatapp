@@ -1,12 +1,10 @@
 package com.chatapp.threadripper.authenticated.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,13 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.MainActivity;
-import com.chatapp.threadripper.authenticated.models.Contact;
 import com.chatapp.threadripper.authenticated.adapters.ContactAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FragmentContacts extends Fragment implements ContactAdapter.ViewHolder.ClickListener {
@@ -49,7 +45,7 @@ public class FragmentContacts extends Fragment implements ContactAdapter.ViewHol
         mAdapter = new ContactAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        ApiService.getInstance().getContactsList(new ApiService.OnCompleteListener() {
+        TestApiService.getInstance().getContactsList(new TestApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
                 mAdapter.setArrayList(list);
