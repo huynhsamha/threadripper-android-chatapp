@@ -23,7 +23,7 @@ import com.chatapp.threadripper.utils.Preferences;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class LayoutFragmentActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_layout_fragment);
 
         FragmentTransaction ft;
 

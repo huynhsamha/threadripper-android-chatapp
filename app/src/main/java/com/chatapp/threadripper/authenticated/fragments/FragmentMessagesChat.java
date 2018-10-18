@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 
@@ -42,7 +42,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         View view = inflater.inflate(R.layout.fragment_messages_chat, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
+        ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
 
         tv_selection = (TextView) view.findViewById(R.id.tv_selection);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);

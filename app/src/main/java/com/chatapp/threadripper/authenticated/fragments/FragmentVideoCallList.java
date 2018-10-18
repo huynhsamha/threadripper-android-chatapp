@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.adapters.VideoCallListAdapter;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class FragmentVideoCallList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_call_list, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Video Call");
+        ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Video Call");
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);

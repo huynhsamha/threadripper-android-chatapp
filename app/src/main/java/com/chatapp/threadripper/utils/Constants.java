@@ -4,6 +4,7 @@ public class Constants {
     public static final String USER_USERNAME = "USER_USERNAME";
     public static final String USER_PHOTO_URL = "USER_PHOTO_URL";
     public static final String USER_DISPLAY_NAME = "USER_DISPLAY_NAME";
+    public static final String USER_QB_USERID = "USER_QB_USERID";
 
     public static final String IS_CALLER_SIDE = "IS_CALLER_SIDE";
 

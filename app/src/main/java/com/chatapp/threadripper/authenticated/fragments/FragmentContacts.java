@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.adapters.ContactAdapter;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class FragmentContacts extends Fragment implements ContactAdapter.ViewHol
         View view = inflater.inflate(R.layout.fragment_contacts, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Contacts");
+        ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Contacts");
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);

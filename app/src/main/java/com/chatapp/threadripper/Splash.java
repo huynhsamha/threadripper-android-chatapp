@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.chatapp.threadripper.api.QBConfig;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Preferences;
 import com.quickblox.auth.session.QBSettings;
@@ -39,7 +38,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 if (Preferences.isIsConnected()) {
-                    startActivity(new Intent(Splash.this, MainActivity.class));
+                    startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
                 } else {
                     startActivity(new Intent(Splash.this, LoginActivity.class));
                 }

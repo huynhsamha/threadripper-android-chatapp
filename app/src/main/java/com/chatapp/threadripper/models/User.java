@@ -10,6 +10,7 @@ public class User {
     String displayName;
     String photoUrl;
     Boolean online;
+    Integer qbUserId;
 
     public User(String username, String email, String password, String displayName) {
         this.username = username;
@@ -76,5 +77,13 @@ public class User {
 
     public void setOnline(Boolean online) {
         this.online = online;
+    }
+
+    public Integer getQbUserId() {
+        return qbUserId;
+    }
+
+    public void setQbUserId(Integer qbUserId) {
+        this.qbUserId = qbUserId;
     }
 }

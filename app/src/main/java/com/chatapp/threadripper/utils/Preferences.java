@@ -6,7 +6,7 @@ public class Preferences {
     private static String email = "default-email@gmail.com";
     private static String username = "Default Username";
     private static String displayName = "Default Name";
-    private static String userAvatar = "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg";
+    private static String userAvatar = "http://abc.com/xyz.jpg";
     private static boolean isConnected = false;
 
     private static QBUser currentQBUser;

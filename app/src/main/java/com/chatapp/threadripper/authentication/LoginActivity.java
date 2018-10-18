@@ -1,11 +1,9 @@
 package com.chatapp.threadripper.authentication;
 
-import android.app.Presentation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,13 +13,8 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiResponseData;
-import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
-import com.chatapp.threadripper.api.TestApiService;
-import com.chatapp.threadripper.authenticated.MainActivity;
-import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.ParseError;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
@@ -32,8 +25,6 @@ import com.quickblox.users.model.QBUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
@@ -73,7 +64,7 @@ public class LoginActivity extends BaseActivity {
                 String type = json.getString("type");
                 if (type.equals("JOIN")) {
                     client.disconnect();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
                     finish();
                 }
             } catch (JSONException e) {
@@ -112,7 +103,7 @@ public class LoginActivity extends BaseActivity {
 
                 Preferences.setUsername(username);
                 Preferences.setCurrentQBUser(qbUser);
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
                 finish();
             }
 
@@ -133,7 +124,8 @@ public class LoginActivity extends BaseActivity {
         //             SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
         //         } else {
         //             Preferences.setUsername(username);
-        //             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        //             // TODO: set current User from server
+        //             startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
         //             finish();
         //         }
         //     }

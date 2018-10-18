@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 //import com.chatapp.threadripper.authenticated.adapters.ContactAdapter;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 
 
 public class FragmentGroups extends Fragment {
@@ -35,7 +35,7 @@ public class FragmentGroups extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Groups");
+        ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Groups");
 
         return view;
     }

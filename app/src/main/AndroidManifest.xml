@@ -33,7 +33,7 @@
             android:name=".authenticated.SettingsActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".authenticated.MainActivity"
+            android:name=".authenticated.LayoutFragmentActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.Trans" />
         <activity
