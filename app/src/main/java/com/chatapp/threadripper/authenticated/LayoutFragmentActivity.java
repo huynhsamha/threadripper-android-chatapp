@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
@@ -59,7 +58,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     }
 
     void configDrawerUserInfo() {
-        changeDrawerUsername(Preferences.getUsername());
+        changeDrawerUserDisplayName(Preferences.getDisplayName());
         changeDrawerUserAvatar(Preferences.getUserAvatar());
     }
 
@@ -69,10 +68,10 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         ImageLoader.loadUserAvatar(imgDrawerUserAvatar, url);
     }
 
-    void changeDrawerUsername(String username) {
+    void changeDrawerUserDisplayName(String displayName) {
         View navHeaderView = navigationView.getHeaderView(0);
         TextView tvDrawerUsername = (TextView) navHeaderView.findViewById(R.id.tvDrawerUsername);
-        tvDrawerUsername.setText(username);
+        tvDrawerUsername.setText(displayName);
     }
 
     @Override

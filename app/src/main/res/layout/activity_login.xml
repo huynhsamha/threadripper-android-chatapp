@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/ic_action_username_red"
+            android:drawableLeft="@drawable/ic_action_account_box_accent"
             android:drawablePadding="8dp"
             android:hint="Username"
             android:inputType="text" />

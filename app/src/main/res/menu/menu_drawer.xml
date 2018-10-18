@@ -22,6 +22,6 @@
             android:id="@+id/nav_call"
             app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_action_missed_video_call"
-            android:title="Video Call" />
+            android:title="Audio/Video Call" />
     </group>
 </menu>
