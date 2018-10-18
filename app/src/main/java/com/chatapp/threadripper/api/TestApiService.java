@@ -134,12 +134,6 @@ public class TestApiService {
 
         ArrayList<User> data = new ArrayList<>();
 
-        Integer qbUserIds[] = {
-                63936812, 63936814, 63936809, 63936813,
-                63936810, 63936817, 63936816, 63936820,
-                63936811, 63936821, 63936818, 63936824,
-                63936823
-        };
         String usernames[] = {
                 "neil",
                 "kristen",
@@ -204,7 +198,6 @@ public class TestApiService {
 
         for (int i = 0; i < usernames.length; i++) {
             User user = new User(usernames[i], emails[i], null, displayNames[i], photoUrls[i]);
-            user.setQbUserId(qbUserIds[i]);
             data.add(user);
         }
 

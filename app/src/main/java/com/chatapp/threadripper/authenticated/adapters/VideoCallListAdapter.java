@@ -90,7 +90,6 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
         intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
         intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
-        intent.putExtra(Constants.USER_QB_USERID, this.mArrayList.get(position).getQbUserId());
 
         this.mContext.startActivity(intent);
     }
@@ -103,7 +102,6 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
         intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
         intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
-        intent.putExtra(Constants.USER_QB_USERID, this.mArrayList.get(position).getQbUserId());
 
         this.mContext.startActivity(intent);
     }

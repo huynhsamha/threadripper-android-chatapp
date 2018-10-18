@@ -50,7 +50,6 @@ dependencies {
     // RoundedImageView
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
-    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:3.7.0"
     // GSON and Retrofit
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'

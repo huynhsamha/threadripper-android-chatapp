@@ -1,6 +1,5 @@
 package com.chatapp.threadripper.utils;
 
-import com.quickblox.users.model.QBUser;
 
 public class Preferences {
     private static String email = "default-email@gmail.com";
@@ -8,8 +7,6 @@ public class Preferences {
     private static String displayName = "Default Name";
     private static String userAvatar = "http://abc.com/xyz.jpg";
     private static boolean isConnected = false;
-
-    private static QBUser currentQBUser;
 
     public static String getUsername() {
         return username;
@@ -53,11 +50,4 @@ public class Preferences {
         Preferences.displayName = displayName;
     }
 
-    public static QBUser getCurrentQBUser() {
-        return currentQBUser;
-    }
-
-    public static void setCurrentQBUser(QBUser currentQBUser) {
-        Preferences.currentQBUser = currentQBUser;
-    }
 }
