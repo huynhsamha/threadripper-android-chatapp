@@ -1,12 +1,34 @@
 package com.chatapp.threadripper.utils;
 
 
+import com.chatapp.threadripper.models.User;
+
 public class Preferences {
     private static String email = "default-email@gmail.com";
     private static String username = "Default Username";
     private static String displayName = "Default Name";
     private static String userAvatar = "http://abc.com/xyz.jpg";
     private static boolean isConnected = false;
+
+    private static User currentUser;
+
+    private static String chatAuthToken = "";
+
+    public static String getChatAuthToken() {
+        return chatAuthToken;
+    }
+
+    public static void setChatAuthToken(String chatAuthToken) {
+        Preferences.chatAuthToken = chatAuthToken;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        Preferences.currentUser = currentUser;
+    }
 
     public static String getUsername() {
         return username;

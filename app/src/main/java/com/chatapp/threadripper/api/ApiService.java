@@ -1,8 +1,10 @@
 package com.chatapp.threadripper.api;
 
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.SharedPreferences;
 
 import com.chatapp.threadripper.models.ErrorResponse;
+import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -37,6 +39,13 @@ public class ApiService implements Callback<ApiResponseData> {
     public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
         if (response.isSuccessful()) {
             ApiResponseData data = response.body();
+            String chatAuthToken = response.headers().get("Authorization");
+
+            // store token when login to app
+            if (chatAuthToken != null && chatAuthToken.contains("CHAT")) {
+                Preferences.setChatAuthToken(chatAuthToken);
+            }
+
             listener.onSuccess(data);
             return;
         }
