@@ -14,6 +14,7 @@ import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Preferences;
 import com.quickblox.auth.session.QBSettings;
+import com.quickblox.chat.QBChatService;
 
 import static com.chatapp.threadripper.api.QBConfig.ACCOUNT_KEY;
 import static com.chatapp.threadripper.api.QBConfig.APP_ID;
@@ -32,7 +33,7 @@ public class Splash extends AppCompatActivity {
         }
         changeStatusBarColor();
 
-        configQBAuthentication();
+        configQuickBloxFirst();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -47,9 +48,16 @@ public class Splash extends AppCompatActivity {
         }, 1 * 1000);
     }
 
-    void configQBAuthentication() {
+    void configQuickBloxFirst() {
         QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
+        QBSettings.getInstance().setAutoCreateSession(true);
+
+        // QBChatService.setDebugEnabled(true); // enable chat logging
+
+        // QBChatService.setDefaultPacketReplyTimeout(10000);
+        //set reply timeout in milliseconds for connection's packet.
+        // Can be used for events like login, join to dialog to increase waiting response time from server if network is slow.
     }
 
     private void changeStatusBarColor() {

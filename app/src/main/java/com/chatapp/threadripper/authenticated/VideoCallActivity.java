@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ShowToast;
@@ -36,8 +37,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class VideoCallActivity extends BaseMainActivity implements
-        QBRTCClientSessionCallbacks {
+public class VideoCallActivity extends BaseMainActivity {
 
     String TAG = "VIDEO_CALL_LOGCAT";
 
@@ -50,12 +50,6 @@ public class VideoCallActivity extends BaseMainActivity implements
     boolean callerSide; // me, caller or callee
     int qbUserId;
     String username, userAvatar, displayName; // not me, the caller or callee
-
-    /**
-     * QB
-     */
-    QBRTCClient rtcClient;
-    QBRTCTypes.QBConferenceType qbConferenceType;
 
 
     @Override
@@ -72,68 +66,14 @@ public class VideoCallActivity extends BaseMainActivity implements
 
         setListener();
 
-        // QB_config();
-    }
 
-    void QB_config() {
-        QB_addSignalManager();
-        QB_initQBRTCClient();
-
-        QB_startSession();
-    }
-
-    void QB_addSignalManager() {
-        QBChatService.getInstance().getVideoChatWebRTCSignalingManager()
-                .addSignalingManagerListener((qbSignaling, createdLocally) -> {
-                    if (!createdLocally) {
-                        QBRTCClient.getInstance(this).addSignaling(qbSignaling);
-                    }
-                });
-    }
-
-    void QB_initQBRTCClient() {
-        // Init RTC Client for this context
-        rtcClient = QBRTCClient.getInstance(this);
-
-        // Prepare your activity class to audio/video calls
-        rtcClient.addSessionCallbacksListener(this);
-
-        // Notify RTCClient that you are ready to receive calls
-        // As soon as your app is ready for calls processing and activity exists
-        // Pay attention if you forgot to add signalling manager you will not be able to process calls.
-        rtcClient.prepareToProcessCalls();
-    }
-
-    void QB_setupViews() {
-        QBRTCSurfaceView surfaceView = new QBRTCSurfaceView(this);
-        EglBase eglContext = QBRTCClient.getInstance(this).getEglContext();
-        surfaceView.init(eglContext.getEglBaseContext(), null);
-    }
-
-    void QB_startSession() {
-        // Set conference type
-        // There are two types of calls:
-        // - QB_CONFERENCE_TYPE_VIDEO - for video call;
-        // - QB_CONFERENCE_TYPE_AUDIO - for audio call;
-        qbConferenceType = QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO;
-
-        //Initiate opponents list
-        List<Integer> opponents = new ArrayList<Integer>();
-        opponents.add(qbUserId);
-
-        // Set user information
-        // User can set any string key and value in user info
-        // Then retrieve this data from sessions which is returned in callbacks
-        // and parse them as he wish
-        Map<String, String> userInfo = new HashMap<>();
-        userInfo.put("key", "value");
-
-        // Init session
-        QBRTCSession session =
-                QBRTCClient.getInstance(this).createNewSessionWithOpponents(opponents, qbConferenceType);
-
-        // Start call
-        session.startCall(userInfo);
+        // if this is caller, activity start call using QB
+        // Call the method start calling from the BaseMainActivity which it extend
+        if (callerSide) {
+            ArrayList<User> opponents = new ArrayList<>();
+            opponents.add(new User(username, displayName, userAvatar, qbUserId));
+            this.QB_startCalling(opponents);
+        }
     }
 
     void initViews() {
@@ -162,28 +102,23 @@ public class VideoCallActivity extends BaseMainActivity implements
     }
 
     void setListener() {
-        rvCallEnd.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            @Override
-            public void onComplete(RippleView rippleView) {
-                handleEndCalling();
-            }
-        });
-
-        rvCall.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            @Override
-            public void onComplete(RippleView rippleView) {
-                handleAcceptCalling();
-            }
-        });
+        rvCallEnd.setOnRippleCompleteListener(rippleView -> handleEndCalling());
+        rvCall.setOnRippleCompleteListener(rippleView -> handleAcceptCalling());
     }
 
     void handleEndCalling() {
         // TODO
-
-        finish();
+        if (callerSide) {
+            // TODO
+            finish();
+        } else {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
     }
 
     void handleAcceptCalling() {
+        setResult(RESULT_OK);
         // TODO
     }
 
@@ -201,55 +136,38 @@ public class VideoCallActivity extends BaseMainActivity implements
     }
 
 
+
     /**
      * -------------------------     QBRTCClientSessionCallbacks     ----------------------------
      */
+
     @Override
-    public void onReceiveNewSession(QBRTCSession qbrtcSession) {
-        // obtain received user info
-        Map<String,String> callingUserInfo = qbrtcSession.getUserInfo();
+    public void onUserNotAnswer(QBRTCSession qbrtcSession, Integer noAnserUserId) {
+        Log.d(TAG, "onUserNotAnswer: ");
 
-        // Set userInfo
-        // User can set any string key and value in user info
-        Map<String,String> userInfo = new HashMap<String,String>();
-        userInfo.put("Key", "Value");
-
-        // Accept incoming call
-        qbrtcSession.acceptCall(userInfo);
+        finish();
     }
 
     @Override
-    public void onUserNoActions(QBRTCSession qbrtcSession, Integer integer) {
+    public void onCallRejectByUser(QBRTCSession qbrtcSession, Integer rejectUserId, Map<String, String> rejectUserInfo) {
+        Log.d(TAG, "onCallRejectByUser: ");
 
-    }
+        String rejectUsername = rejectUserInfo.get(Constants.USER_USERNAME);
+        String rejectDisplayName = rejectUserInfo.get(Constants.USER_DISPLAY_NAME);
+        String rejectPhotoUrl = rejectUserInfo.get(Constants.USER_PHOTO_URL);
 
-    @Override
-    public void onSessionStartClose(QBRTCSession qbrtcSession) {
-
-    }
-
-    @Override
-    public void onUserNotAnswer(QBRTCSession qbrtcSession, Integer integer) {
-
-    }
-
-    @Override
-    public void onCallRejectByUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
-
+        ShowToast.lengthShort(this, rejectDisplayName + " rejected");
+        finish();
     }
 
     @Override
     public void onCallAcceptByUser(QBRTCSession qbrtcSession, Integer acceptUserId, Map<String, String> acceptUserInfo) {
         Log.d(TAG, "onCallAcceptByUser: " + acceptUserId);
-    }
 
-    @Override
-    public void onReceiveHangUpFromUser(QBRTCSession qbrtcSession, Integer integer, Map<String, String> map) {
+        String acceptUsername = acceptUserInfo.get(Constants.USER_USERNAME);
+        String acceptDisplayName = acceptUserInfo.get(Constants.USER_DISPLAY_NAME);
+        String acceptPhotoUrl = acceptUserInfo.get(Constants.USER_PHOTO_URL);
 
-    }
-
-    @Override
-    public void onSessionClosed(QBRTCSession qbrtcSession) {
-
+        ShowToast.lengthShort(this, acceptDisplayName + " accepted");
     }
 }

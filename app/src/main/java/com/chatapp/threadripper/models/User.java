@@ -31,6 +31,13 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
+    public User(String username, String displayName, String photoUrl, int qbUserId) {
+        this.username = username;
+        this.displayName = displayName;
+        this.photoUrl = photoUrl;
+        this.qbUserId = qbUserId;
+    }
+
     public String getUsername() {
         return username;
     }

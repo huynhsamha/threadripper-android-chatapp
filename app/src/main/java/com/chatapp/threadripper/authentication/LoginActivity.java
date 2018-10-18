@@ -18,6 +18,9 @@ import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.session.QBSession;
+import com.quickblox.chat.QBChatService;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
@@ -96,23 +99,72 @@ public class LoginActivity extends BaseActivity {
         SweetDialog.showLoading(this);
 
         QBUser qbUser = new QBUser(username, password);
-        QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
+        QBAuth.createSession(qbUser).performAsync(new QBEntityCallback<QBSession>() {
             @Override
-            public void onSuccess(QBUser qbUser, Bundle bundle) {
-                SweetDialog.hideLoading();
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                qbUser.setId(qbSession.getUserId());
 
                 Preferences.setUsername(username);
                 Preferences.setCurrentQBUser(qbUser);
+
+                SweetDialog.hideLoading();
+
+                // QBChatService qbChatService = QBChatService.getInstance();
+                // qbChatService.login(qbUser, new QBEntityCallback() {
+                //     @Override
+                //     public void onSuccess(Object o, Bundle bundle) {
+                //
+                //         startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+                //         finish();
+                //     }
+                //
+                //     @Override
+                //     public void onError(QBResponseException e) {
+                //
+                //     }
+                // });
+
                 startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
                 finish();
             }
 
             @Override
             public void onError(QBResponseException e) {
-                SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(LoginActivity.this, "Error", e.getMessage());
+
             }
         });
+
+        // QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
+        //     @Override
+        //     public void onSuccess(QBUser qbUser, Bundle bundle) {
+        //         SweetDialog.hideLoading();
+        //
+        //         Preferences.setUsername(username);
+        //         Preferences.setCurrentQBUser(qbUser);
+        //
+        //         QBChatService qbChatService = QBChatService.getInstance();
+        //         qbChatService.login(qbUser, new QBEntityCallback() {
+        //             @Override
+        //             public void onSuccess(Object o, Bundle bundle) {
+        //
+        //                 startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+        //                 finish();
+        //             }
+        //
+        //             @Override
+        //             public void onError(QBResponseException e) {
+        //
+        //             }
+        //         });
+        //     }
+        //
+        //     @Override
+        //     public void onError(QBResponseException e) {
+        //         SweetDialog.hideLoading();
+        //         SweetDialog.showErrorMessage(LoginActivity.this, "Error", e.getMessage());
+        //     }
+        // });
 
         // ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
         //     @Override

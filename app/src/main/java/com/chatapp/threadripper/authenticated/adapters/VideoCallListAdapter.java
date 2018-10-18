@@ -77,19 +77,9 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         // load avatar
         ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getPhotoUrl());
 
-        viewHolder.rvCall.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            @Override
-            public void onComplete(RippleView rippleView) {
-                handleStartCalling(position);
-            }
-        });
+        viewHolder.rvCall.setOnRippleCompleteListener(rippleView -> handleStartCalling(position));
 
-        viewHolder.rvCallVideo.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            @Override
-            public void onComplete(RippleView rippleView) {
-                handleStartCallingVideo(position);
-            }
-        });
+        viewHolder.rvCallVideo.setOnRippleCompleteListener(rippleView -> handleStartCallingVideo(position));
     }
 
     void handleStartCalling(int position) {
