@@ -17,7 +17,6 @@ import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
-import com.chatapp.threadripper.utils.KeyboardUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
@@ -140,7 +139,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initViews() {
-        edtUsername = (EditText) findViewById(R.id.edtUsername);
+        edtUsername = (EditText) findViewById(R.id.edtDisplayName);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
 
         btnLogin = (Button) findViewById(R.id.btnLogin);

@@ -14,9 +14,6 @@ import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.TestApiService;
-import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.ParseError;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
 
@@ -42,7 +39,7 @@ public class SignUpActivity extends BaseActivity {
     }
 
     private void initViews() {
-        edtUsername = (EditText) findViewById(R.id.edtUsername);
+        edtUsername = (EditText) findViewById(R.id.edtDisplayName);
         edtEmail = (EditText) findViewById(R.id.edtEmail);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtConfirmPassword = (EditText) findViewById(R.id.edtConfirmPassword);

@@ -47,6 +47,14 @@ public class SweetDialog {
                 .show();
     }
 
+    public static void showSuccessMessage(Context context, String title, String content) {
+        new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText(title)
+                .setContentText(content)
+                .setConfirmText("OK")
+                .show();
+    }
+
     public static void showSuccessMessage(Context context, String title, String content, OnCallbackListener listener) {
         new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText(title)

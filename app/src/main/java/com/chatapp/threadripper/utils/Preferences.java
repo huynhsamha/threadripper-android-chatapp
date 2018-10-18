@@ -10,7 +10,7 @@ public class Preferences {
     private static String userAvatar = "http://abc.com/xyz.jpg";
     private static boolean isConnected = false;
 
-    private static User currentUser;
+    private static User currentUser = new User();
 
     private static String chatAuthToken = "";
 
@@ -26,8 +26,8 @@ public class Preferences {
         return currentUser;
     }
 
-    public static void setCurrentUser(User currentUser) {
-        Preferences.currentUser = currentUser;
+    public static void setCurrentUser(User user) {
+        if (user != null) Preferences.currentUser = user;
     }
 
     public static String getUsername() {

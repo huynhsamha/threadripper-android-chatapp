@@ -89,4 +89,11 @@ public class ApiService implements Callback<ApiResponseData> {
         api.login(username, password).enqueue(this);
         return this;
     }
+
+    public ApiService changePassword(String oldPassword, String newPassword) {
+        ApiRoutes api = getRetrofitInstance().create(ApiRoutes.class);
+
+        api.changePassword(Preferences.getChatAuthToken(), oldPassword, newPassword).enqueue(this);
+        return this;
+    }
 }
