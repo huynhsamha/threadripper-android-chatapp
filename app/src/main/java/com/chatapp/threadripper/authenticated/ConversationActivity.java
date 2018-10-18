@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
@@ -277,7 +277,7 @@ public class ConversationActivity extends BaseActivity {
     }
 
     void fetchMessages() {
-        ApiService.getInstance().getMessages(new ApiService.OnCompleteListener() {
+        TestApiService.getInstance().getMessages(new TestApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
                 ArrayList<Message> messages = new ArrayList<>();

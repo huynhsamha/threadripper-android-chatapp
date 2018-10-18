@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.authentication;
 
+import android.app.Presentation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -14,9 +15,14 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiResponseData;
+import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.utils.ParseError;
 import com.chatapp.threadripper.utils.Preferences;
+import com.chatapp.threadripper.utils.ShowToast;
+import com.chatapp.threadripper.utils.SweetDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,11 +77,45 @@ public class LoginActivity extends BaseActivity {
         client.connect();
     }
 
+    void validateForm(String username, String password) throws Exception {
+        if (username.isEmpty()) throw new Exception("Username can't be empty");
+        if (password.isEmpty()) throw new Exception("Password can't be empty");
+    }
+
     void handleLogin() {
         String username = edtUsername.getText().toString();
-        // if (username.isEmpty()) return;
+        String password = edtPassword.getText().toString();
 
-        Preferences.setUsername(username);
+        try {
+            validateForm(username,  password);
+        } catch (Exception e) {
+            ShowToast.lengthShort(this, e.getMessage());
+            return;
+        }
+
+        SweetDialog.showLoading(this);
+
+        ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
+            @Override
+            public void onSuccess(ApiResponseData data) {
+                SweetDialog.hideLoading();
+
+                if (data.getErrorMessage().length() > 0) {
+                    String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
+                    SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
+                } else {
+                    Preferences.setUsername(username);
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                SweetDialog.hideLoading();
+                SweetDialog.showErrorMessage(LoginActivity.this, "Error", t.getMessage());
+            }
+        });
 
         // JSONObject json = new JSONObject();
         //
@@ -92,10 +132,6 @@ public class LoginActivity extends BaseActivity {
         // );
         //
         // btnLogin.setEnabled(false);
-
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        finish();
-
     }
 
     private void initViews() {
@@ -103,12 +139,7 @@ public class LoginActivity extends BaseActivity {
         edtPassword = (EditText) findViewById(R.id.edtPassword);
 
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleLogin();
-            }
-        });
+        btnLogin.setOnClickListener(view -> handleLogin());
 
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
         tvSignUp.setOnClickListener(new View.OnClickListener() {

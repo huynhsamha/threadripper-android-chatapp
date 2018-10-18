@@ -1,7 +1,9 @@
 package com.chatapp.threadripper.utils;
 
 public class Preferences {
+    private static String email = "default-email@gmail.com";
     private static String username = "Default Username";
+    private static String displayName = "Default Name";
     private static String userAvatar = "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg";
     private static boolean isConnected = false;
 
@@ -29,5 +31,21 @@ public class Preferences {
 
     public static void setIsConnected(boolean isConnected) {
         Preferences.isConnected = isConnected;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        Preferences.email = email;
+    }
+
+    public static String getDisplayName() {
+        return displayName;
+    }
+
+    public static void setDisplayName(String displayName) {
+        Preferences.displayName = displayName;
     }
 }
