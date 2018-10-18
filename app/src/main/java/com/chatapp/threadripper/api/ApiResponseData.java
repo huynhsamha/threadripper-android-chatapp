@@ -1,25 +1,27 @@
 package com.chatapp.threadripper.api;
 
+import com.chatapp.threadripper.models.ErrorResponse;
+
 public class ApiResponseData {
 
     /**
      * Contain anything which server response
      */
 
-    String errorMessage = "";
+    ErrorResponse error;
 
-    int status;
     boolean success = false;
-    String error = "";
+    boolean active = false;
     String message = "";
+    String result = "";
 
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public ErrorResponse getError() {
+        return error;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setError(ErrorResponse error) {
+        this.error = error;
     }
 
     public String getMessage() {
@@ -30,12 +32,20 @@ public class ApiResponseData {
         this.message = message;
     }
 
-    public int getStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public boolean isSuccess() {

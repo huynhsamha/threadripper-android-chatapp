@@ -2,6 +2,9 @@ package com.chatapp.threadripper.api;
 
 import android.appwidget.AppWidgetProviderInfo;
 
+import com.chatapp.threadripper.models.ErrorResponse;
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +42,12 @@ public class ApiService implements Callback<ApiResponseData> {
         }
 
         ApiResponseData data = new ApiResponseData();
+        Gson gson = new Gson();
         try {
-            data.setErrorMessage(response.errorBody().string());
-        } catch (IOException e) {
+            ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+            data.setError(err);
+        } catch (Exception e) {
             e.printStackTrace();
-            data.setErrorMessage(e.getMessage());
         } finally {
             listener.onSuccess(data);
         }
@@ -63,7 +67,7 @@ public class ApiService implements Callback<ApiResponseData> {
         return retrofit;
     }
 
-    public ApiService signUp(String email, String username, String password, String displayName) {
+    public ApiService signUp(String username, String email, String displayName, String password) {
         ApiRoutes api = getRetrofitInstance().create(ApiRoutes.class);
 
         api.signUp(username, email, displayName, password).enqueue(this);

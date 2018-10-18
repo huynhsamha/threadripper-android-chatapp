@@ -16,6 +16,7 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.ParseError;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
 
@@ -79,37 +80,37 @@ public class SignUpActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
-        // ApiService.getInstance().signUp(email, username, password, displayName).addCallbackListener(new ApiService.CallbackApiListener() {
-        //     @Override
-        //     public void onSuccess(ApiResponseData data) {
-        //         SweetDialog.hideLoading();
-        //
-        //         if (data.getErrorMessage().length() > 0) {
-        //             String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
-        //             SweetDialog.showErrorMessage(SignUpActivity.this, "Error", errorMessage);
-        //         } else {
-        //             SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
-        //                     "Please check your email to verify and active account",
-        //                     new SweetDialog.OnCallbackListener() {
-        //                         @Override
-        //                         public void onConfirm() {
-        //                             finish();
-        //                         }
-        //
-        //                         @Override
-        //                         public void onCancel() {
-        //
-        //                         }
-        //                     });
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void onFailure(Throwable t) {
-        //         SweetDialog.hideLoading();
-        //         SweetDialog.showErrorMessage(SignUpActivity.this, "Error", t.getMessage());
-        //     }
-        // });
+        ApiService.getInstance().signUp(username, email, displayName, password).addCallbackListener(new ApiService.CallbackApiListener() {
+            @Override
+            public void onSuccess(ApiResponseData data) {
+                SweetDialog.hideLoading();
+
+                if (data.getError() != null) {
+                    String errorMessage = data.getError().getMessage();
+                    SweetDialog.showErrorMessage(SignUpActivity.this, "Error", errorMessage);
+                } else {
+                    SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
+                            "Please check your email to verify and active account",
+                            new SweetDialog.OnCallbackListener() {
+                                @Override
+                                public void onConfirm() {
+                                    finish();
+                                }
+
+                                @Override
+                                public void onCancel() {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                SweetDialog.hideLoading();
+                SweetDialog.showErrorMessage(SignUpActivity.this, "Error", t.getMessage());
+            }
+        });
     }
 
     private void changeStatusBarColor() {
