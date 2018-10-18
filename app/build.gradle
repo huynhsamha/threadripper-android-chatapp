@@ -57,4 +57,6 @@ dependencies {
 
     // RoundedImageView
     implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    implementation "com.quickblox:quickblox-android-sdk-videochat-webrtc:3.7.0"
 }
