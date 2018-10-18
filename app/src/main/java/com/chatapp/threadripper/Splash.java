@@ -10,9 +10,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.chatapp.threadripper.api.QBConfig;
 import com.chatapp.threadripper.authenticated.MainActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Preferences;
+import com.quickblox.auth.session.QBSettings;
+
+import static com.chatapp.threadripper.api.QBConfig.ACCOUNT_KEY;
+import static com.chatapp.threadripper.api.QBConfig.APP_ID;
+import static com.chatapp.threadripper.api.QBConfig.AUTH_KEY;
+import static com.chatapp.threadripper.api.QBConfig.AUTH_SECRET;
 
 public class Splash extends AppCompatActivity {
 
@@ -26,6 +33,8 @@ public class Splash extends AppCompatActivity {
         }
         changeStatusBarColor();
 
+        configQBAuthentication();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -37,6 +46,11 @@ public class Splash extends AppCompatActivity {
                 finish();
             }
         }, 1 * 1000);
+    }
+
+    void configQBAuthentication() {
+        QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
     }
 
     private void changeStatusBarColor() {

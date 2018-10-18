@@ -55,8 +55,8 @@ public class VideoCallActivity extends BaseActivity {
 
         Intent intent = getIntent();
         callerSide = intent.getBooleanExtra(Constants.IS_CALLER_SIDE, false);
-        username = intent.getStringExtra(Constants.USERNAME);
-        userAvatar = intent.getStringExtra(Constants.USER_AVATAR);
+        username = intent.getStringExtra(Constants.USER_USERNAME);
+        userAvatar = intent.getStringExtra(Constants.USER_PHOTO_URL);
 
         // Hide icon call (green) when is caller
         if (callerSide) {

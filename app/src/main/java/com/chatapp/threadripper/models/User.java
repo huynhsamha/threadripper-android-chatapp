@@ -22,6 +22,14 @@ public class User {
 
     }
 
+    public User(String username, String email, String password, String displayName, String photoUrl) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.photoUrl = photoUrl;
+    }
+
     public String getUsername() {
         return username;
     }

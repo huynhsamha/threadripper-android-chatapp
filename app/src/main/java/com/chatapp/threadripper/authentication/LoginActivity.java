@@ -18,14 +18,22 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.ParseError;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
@@ -52,6 +60,7 @@ public class LoginActivity extends BaseActivity {
 
         // setupWebSocket();
     }
+
 
     void setupWebSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
@@ -95,27 +104,46 @@ public class LoginActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
-        ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
+        QBUser qbUser = new QBUser(username, password);
+        QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
-            public void onSuccess(ApiResponseData data) {
+            public void onSuccess(QBUser qbUser, Bundle bundle) {
                 SweetDialog.hideLoading();
 
-                if (data.getErrorMessage().length() > 0) {
-                    String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
-                    SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
-                } else {
-                    Preferences.setUsername(username);
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
-                }
+                Preferences.setUsername(username);
+                Preferences.setCurrentQBUser(qbUser);
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onError(QBResponseException e) {
                 SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(LoginActivity.this, "Error", t.getMessage());
+                SweetDialog.showErrorMessage(LoginActivity.this, "Error", e.getMessage());
             }
         });
+
+        // ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
+        //     @Override
+        //     public void onSuccess(ApiResponseData data) {
+        //         SweetDialog.hideLoading();
+        //
+        //         if (data.getErrorMessage().length() > 0) {
+        //             String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
+        //             SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
+        //         } else {
+        //             Preferences.setUsername(username);
+        //             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        //             finish();
+        //         }
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(Throwable t) {
+        //         SweetDialog.hideLoading();
+        //         SweetDialog.showErrorMessage(LoginActivity.this, "Error", t.getMessage());
+        //     }
+        // });
 
         // JSONObject json = new JSONObject();
         //

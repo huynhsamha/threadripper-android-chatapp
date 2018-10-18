@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,10 +13,8 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
-import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,8 +55,8 @@ public class CallingActivity extends BaseActivity {
 
         Intent intent = getIntent();
         callerSide = intent.getBooleanExtra(Constants.IS_CALLER_SIDE, false);
-        username = intent.getStringExtra(Constants.USERNAME);
-        userAvatar = intent.getStringExtra(Constants.USER_AVATAR);
+        username = intent.getStringExtra(Constants.USER_USERNAME);
+        userAvatar = intent.getStringExtra(Constants.USER_PHOTO_URL);
 
         // Hide icon call (green) when is caller
         if (callerSide) {

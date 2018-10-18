@@ -14,9 +14,17 @@ import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.TestApiService;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.ParseError;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
+
+import java.util.ArrayList;
 
 public class SignUpActivity extends BaseActivity {
 
@@ -52,12 +60,61 @@ public class SignUpActivity extends BaseActivity {
     }
 
 
+    /**
+     * DANGEROUSLY !!!
+     * Scripts to create user on QB
+     * Don't run it whatever
+     */
+    void scripts() {
+        SweetDialog.showLoading(this);
+        TestApiService.getInstance().getUsersList(new TestApiService.OnCompleteListener() {
+            @Override
+            public void onSuccess(ArrayList list) {
+                for (Object obj: list) {
+                    User user = (User) obj;
+                    QBUser qbUser = new QBUser(user.getUsername(), "abc123abc");
+                    qbUser.setEmail(user.getEmail());
+
+                    QBUsers.signUp(qbUser).performAsync(new QBEntityCallback<QBUser>() {
+                        @Override
+                        public void onSuccess(QBUser qbUser, Bundle bundle) {
+                            SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
+                                    qbUser.getLogin(),
+                                    new SweetDialog.OnCallbackListener() {
+                                        @Override
+                                        public void onConfirm() {
+                                        }
+
+                                        @Override
+                                        public void onCancel() {
+
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onError(QBResponseException e) {
+                            SweetDialog.showErrorMessage(SignUpActivity.this, "Error", e.getMessage());
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+        });
+    }
+
     void validateForm(String username, String email, String displayName, String password, String confirmPassword) throws Exception {
         if (username.isEmpty()) throw new Exception("Username can't be empty");
         if (email.isEmpty()) throw new Exception("Email can't be empty");
         if (displayName.isEmpty()) throw new Exception("Display name can't be empty");
         if (password.isEmpty()) throw new Exception("Password can't be empty");
-        if (confirmPassword.equals(password) == false) throw new Exception("Confirm password isn't match");
+        if (confirmPassword.equals(password) == false)
+            throw new Exception("Confirm password isn't match");
     }
 
     void handleSignUp() {
@@ -76,37 +133,66 @@ public class SignUpActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
-        ApiService.getInstance().signUp(email, username, password, displayName).addCallbackListener(new ApiService.CallbackApiListener() {
+        QBUser qbUser = new QBUser(username, password);
+        qbUser.setEmail(email);
+
+        QBUsers.signUp(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
-            public void onSuccess(ApiResponseData data) {
+            public void onSuccess(QBUser qbUser, Bundle bundle) {
                 SweetDialog.hideLoading();
+                SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
+                        "Please check your email to verify and active account",
+                        new SweetDialog.OnCallbackListener() {
+                            @Override
+                            public void onConfirm() {
+                                finish();
+                            }
 
-                if (data.getErrorMessage().length() > 0) {
-                    String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
-                    SweetDialog.showErrorMessage(SignUpActivity.this, "Error", errorMessage);
-                } else {
-                    SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
-                            "Please check your email to verify and active account",
-                            new SweetDialog.OnCallbackListener() {
-                                @Override
-                                public void onConfirm() {
-                                    finish();
-                                }
+                            @Override
+                            public void onCancel() {
 
-                                @Override
-                                public void onCancel() {
-
-                                }
-                            });
-                }
+                            }
+                        });
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onError(QBResponseException e) {
                 SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(SignUpActivity.this, "Error", t.getMessage());
+                SweetDialog.showErrorMessage(SignUpActivity.this, "Error", e.getMessage());
             }
         });
+
+        // ApiService.getInstance().signUp(email, username, password, displayName).addCallbackListener(new ApiService.CallbackApiListener() {
+        //     @Override
+        //     public void onSuccess(ApiResponseData data) {
+        //         SweetDialog.hideLoading();
+        //
+        //         if (data.getErrorMessage().length() > 0) {
+        //             String errorMessage = ParseError.getErrorMessage(data.getErrorMessage());
+        //             SweetDialog.showErrorMessage(SignUpActivity.this, "Error", errorMessage);
+        //         } else {
+        //             SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
+        //                     "Please check your email to verify and active account",
+        //                     new SweetDialog.OnCallbackListener() {
+        //                         @Override
+        //                         public void onConfirm() {
+        //                             finish();
+        //                         }
+        //
+        //                         @Override
+        //                         public void onCancel() {
+        //
+        //                         }
+        //                     });
+        //         }
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(Throwable t) {
+        //         SweetDialog.hideLoading();
+        //         SweetDialog.showErrorMessage(SignUpActivity.this, "Error", t.getMessage());
+        //     }
+        // });
     }
 
     private void changeStatusBarColor() {
