@@ -19,7 +19,7 @@ import com.chatapp.threadripper.utils.ShowToast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CallingActivity extends BaseActivity {
+public class CallingActivity extends BaseMainActivity {
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;

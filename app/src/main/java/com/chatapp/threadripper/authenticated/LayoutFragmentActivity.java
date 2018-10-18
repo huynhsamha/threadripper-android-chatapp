@@ -23,7 +23,7 @@ import com.chatapp.threadripper.utils.Preferences;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class LayoutFragmentActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class LayoutFragmentActivity extends BaseMainActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;

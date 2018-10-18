@@ -36,7 +36,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class VideoCallActivity extends BaseActivity implements
+public class VideoCallActivity extends BaseMainActivity implements
         QBRTCClientSessionCallbacks {
 
     String TAG = "VIDEO_CALL_LOGCAT";

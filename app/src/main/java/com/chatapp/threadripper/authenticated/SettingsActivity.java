@@ -9,7 +9,7 @@ import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends BaseMainActivity {
 
     RippleView rvToggleEditUsername, rvChangeUserAvatar, rvAcceptChangedUsername, rvCancelChangedUsername, rvBtnBack;
     EditText edtUsername, edtOldPassword, edtPassword, edtConfirmPassword;

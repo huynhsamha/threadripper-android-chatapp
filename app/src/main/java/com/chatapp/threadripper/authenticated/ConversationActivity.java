@@ -39,7 +39,7 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
 
-public class ConversationActivity extends BaseActivity {
+public class ConversationActivity extends BaseMainActivity {
 
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
