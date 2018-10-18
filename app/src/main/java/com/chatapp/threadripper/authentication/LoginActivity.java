@@ -15,6 +15,7 @@ import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.utils.KeyboardUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
@@ -44,6 +45,8 @@ public class LoginActivity extends BaseActivity {
         changeStatusBarColor();
 
         initViews();
+
+        configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         // setupWebSocket();
     }
@@ -142,20 +145,10 @@ public class LoginActivity extends BaseActivity {
         btnLogin.setOnClickListener(view -> handleLogin());
 
         tvSignUp = (TextView) findViewById(R.id.tvSignUp);
-        tvSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
-            }
-        });
+        tvSignUp.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
 
         tvForgot = (TextView) findViewById(R.id.tvForgot);
-        tvForgot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
-            }
-        });
+        tvForgot.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class)));
     }
 
     private void changeStatusBarColor() {

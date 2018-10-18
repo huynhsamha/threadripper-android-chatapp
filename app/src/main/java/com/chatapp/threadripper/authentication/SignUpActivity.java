@@ -36,6 +36,8 @@ public class SignUpActivity extends BaseActivity {
         changeStatusBarColor();
 
         initViews();
+
+        configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
     }
 
     private void initViews() {
