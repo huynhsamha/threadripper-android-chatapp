@@ -89,6 +89,24 @@ public class SweetDialog {
                 .show();
     }
 
+    public static void showWarningMessageWithCancel(Context context, String title, String content, OnCallbackListener listener) {
+        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(title)
+                .setContentText(content)
+                .setConfirmText("OK")
+                .setCancelText("CANCEL")
+                .setConfirmClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                    listener.onConfirm();
+                })
+                .setCancelClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                    listener.onCancel();
+                })
+                .show();
+    }
+
+
     public static void showOption(Context context, String title, String content,
                                   String option1, String option2, OnCallbackOptionsListener listener) {
         new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
