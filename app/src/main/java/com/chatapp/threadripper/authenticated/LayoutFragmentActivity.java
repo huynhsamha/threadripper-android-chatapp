@@ -58,8 +58,8 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     }
 
     void configDrawerUserInfo() {
-        changeDrawerUserDisplayName(Preferences.getDisplayName());
-        changeDrawerUserAvatar(Preferences.getUserAvatar());
+        changeDrawerUserDisplayName(Preferences.getCurrentUser().getDisplayName());
+        changeDrawerUserAvatar(Preferences.getCurrentUser().getPhotoUrl());
     }
 
     void changeDrawerUserAvatar(String url) {

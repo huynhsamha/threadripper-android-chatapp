@@ -12,6 +12,11 @@ public class SweetDialog {
         void onCancel();
     }
 
+    public interface OnCallbackOptionsListener {
+        void onSelectOption1();
+        void onSelectOption2();
+    }
+
     public static SweetAlertDialog globalLoadingDialog;
 
     public static void showLoading(Context context) {
@@ -80,6 +85,24 @@ public class SweetDialog {
                 .setCancelClickListener(sweetAlertDialog -> {
                     sweetAlertDialog.dismissWithAnimation();
                     listener.onCancel();
+                })
+                .show();
+    }
+
+    public static void showOption(Context context, String title, String content,
+                                  String option1, String option2, OnCallbackOptionsListener listener) {
+        new SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+                .setTitleText(title)
+                .setContentText(content)
+                .setConfirmText(option1)
+                .setCancelText(option2)
+                .setConfirmClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                    listener.onSelectOption1();
+                })
+                .setCancelClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                    listener.onSelectOption2();
                 })
                 .show();
     }

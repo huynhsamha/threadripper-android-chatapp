@@ -117,7 +117,7 @@ public class ConversationActivity extends BaseMainActivity {
                     // Chat message
                     String sender = json.getString("sender");
                     String content = json.getString("content");
-                    if (!sender.equals(Preferences.getUsername())) { // other user
+                    if (!sender.equals(Preferences.getCurrentUser().getUsername())) { // other user
                         runOnUiThread(new Runnable() { // main thread
                             @Override
                             public void run() {
@@ -250,7 +250,7 @@ public class ConversationActivity extends BaseMainActivity {
         JSONObject json = new JSONObject();
 
         try {
-            json.put("sender", Preferences.getUsername());
+            json.put("sender", Preferences.getCurrentUser().getUsername());
             json.put("content", msg);
             json.put("type", "CHAT");
         } catch (JSONException e) {
@@ -371,7 +371,7 @@ public class ConversationActivity extends BaseMainActivity {
                 handleCaptureCamera();
             } else {
                 // the fucking user!!!
-                ShowToast.lengthLong(this, "Camera perrimssion denied");
+                ShowToast.lengthLong(this, "Camera permission is denied");
 
                 // reset UI
                 // edtMessage.setVisibility(View.VISIBLE);

@@ -1,6 +1,14 @@
 package com.chatapp.threadripper.authenticated;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -12,9 +20,13 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.authentication.SignUpActivity;
+import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends BaseMainActivity {
 
@@ -22,6 +34,7 @@ public class SettingsActivity extends BaseMainActivity {
     EditText edtDisplayName, edtOldPassword, edtPassword, edtConfirmPassword;
     TextView tvUsername, tvEmail;
     Button btnChangePassword;
+    CircleImageView cirImgUserAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +43,8 @@ public class SettingsActivity extends BaseMainActivity {
 
         initViews();
         setListeners();
+
+        configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
     }
 
     void initViews() {
@@ -43,16 +58,20 @@ public class SettingsActivity extends BaseMainActivity {
         edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtConfirmPassword = (EditText) findViewById(R.id.edtConfirmPassword);
         btnChangePassword = (Button) findViewById(R.id.btnChangePassword);
+        cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
+        tvEmail = (TextView) findViewById(R.id.tvEmail);
+        tvUsername = (TextView) findViewById(R.id.tvUsername);
+
 
         edtDisplayName.setInputType(InputType.TYPE_NULL);
+        edtDisplayName.setCursorVisible(false);
 
-        try {
-            tvUsername.setText(Preferences.getCurrentUser().getUsername());
-            tvEmail.setText(Preferences.getCurrentUser().getEmail());
-            edtDisplayName.setText(Preferences.getCurrentUser().getDisplayName());
+        tvUsername.setText(Preferences.getCurrentUser().getUsername());
+        tvEmail.setText(Preferences.getCurrentUser().getEmail());
+        edtDisplayName.setText(Preferences.getCurrentUser().getDisplayName());
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            rvChangeUserAvatar.setVisibility(View.GONE); // not support capture image with API < 23
         }
     }
 
@@ -61,6 +80,7 @@ public class SettingsActivity extends BaseMainActivity {
 
         rvToggleEditUsername.setOnRippleCompleteListener(rippleView -> {
             edtDisplayName.setInputType(InputType.TYPE_CLASS_TEXT);
+            edtDisplayName.setCursorVisible(true);
             rvAcceptChangedUsername.setVisibility(View.VISIBLE);
             rvCancelChangedUsername.setVisibility(View.VISIBLE);
             rvToggleEditUsername.setVisibility(View.GONE);
@@ -70,17 +90,25 @@ public class SettingsActivity extends BaseMainActivity {
 
         rvAcceptChangedUsername.setOnRippleCompleteListener(rippleView -> {
             edtDisplayName.setInputType(InputType.TYPE_NULL);
+            edtDisplayName.setCursorVisible(false);
             rvAcceptChangedUsername.setVisibility(View.GONE);
             rvCancelChangedUsername.setVisibility(View.GONE);
             rvToggleEditUsername.setVisibility(View.VISIBLE);
+
+            handleAcceptChangeDisplayName();
         });
 
         rvCancelChangedUsername.setOnRippleCompleteListener(rippleView -> {
             edtDisplayName.setInputType(InputType.TYPE_NULL);
+            edtDisplayName.setCursorVisible(false);
             rvAcceptChangedUsername.setVisibility(View.GONE);
             rvCancelChangedUsername.setVisibility(View.GONE);
             rvToggleEditUsername.setVisibility(View.VISIBLE);
+
+            handleCancelChangeDisplayName();
         });
+
+        rvChangeUserAvatar.setOnRippleCompleteListener(view -> handleChangeAvatar());
 
         btnChangePassword.setOnClickListener(view -> handleChangePassword());
     }
@@ -92,6 +120,20 @@ public class SettingsActivity extends BaseMainActivity {
             throw new Exception("Confirm password isn't match");
     }
 
+    void handleAcceptChangeDisplayName() {
+        String displayName = edtDisplayName.getText().toString();
+        if (displayName.isEmpty()) return;
+        Preferences.getCurrentUser().setDisplayName(displayName);
+        // TODO: Call API to update user profile
+    }
+
+    void handleCancelChangeDisplayName() {
+        try {
+            edtDisplayName.setText(Preferences.getCurrentUser().getDisplayName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     void handleChangePassword() {
         String oldPassword = edtOldPassword.getText().toString();
@@ -127,5 +169,84 @@ public class SettingsActivity extends BaseMainActivity {
                 SweetDialog.showErrorMessage(SettingsActivity.this, "Error", t.getMessage());
             }
         });
+    }
+
+    @TargetApi(Build.VERSION_CODES.M) // >= 23
+    void handleCaptureCamera() {
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, Constants.REQUEST_CODE_PERMISSION_IMAGE_CAPTURE);
+        } else {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, Constants.REQUEST_CODE_CAPTURE_IMAGE);
+        }
+    }
+
+    void handleSelectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.REQUEST_CODE_PICK_IMAGE);
+    }
+
+    void handleChangeAvatar() {
+        SweetDialog.showOption(this, "Choose avatar",
+                "Would you like to get a photo from camera or gallery?", "Camera", "Gallery",
+                new SweetDialog.OnCallbackOptionsListener() {
+                    @Override
+                    public void onSelectOption1() {
+                        handleCaptureCamera();
+                    }
+
+                    @Override
+                    public void onSelectOption2() {
+                        handleSelectImage();
+                    }
+                });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_IMAGE_CAPTURE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                handleCaptureCamera();
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Camera permission is denied");
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.REQUEST_CODE_PICK_IMAGE) {
+            if (resultCode == RESULT_OK && data != null) {
+                // ShowToast.lengthShort(this, "OK");
+                handlePickImageSuccess(data);
+            }
+        }
+        else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
+            if (resultCode == RESULT_OK && data != null) {
+                handleCaptureImageSuccess(data);
+            }
+        }
+    }
+
+    void handlePickImageSuccess(Intent data) {
+        Uri uri = data.getData();
+        ImageLoader.loadImageChatMessage(cirImgUserAvatar, uri.toString());
+
+        // TODO: Call API to update avatar
+    }
+
+    void handleCaptureImageSuccess(Intent data) {
+        Bitmap bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
+        // ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, photo.toString());
+        cirImgUserAvatar.setImageBitmap(bitmapCaptureImage);
+
+        // TODO: Call API to update avatar
     }
 }

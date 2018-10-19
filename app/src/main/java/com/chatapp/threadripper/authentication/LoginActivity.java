@@ -17,6 +17,7 @@ import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
@@ -93,9 +94,6 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
-        finish();
-
         SweetDialog.showLoading(this);
 
         ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
@@ -108,6 +106,7 @@ public class LoginActivity extends BaseActivity {
                     SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
                 } else {
                     Preferences.setCurrentUser(data.getUser());
+                    safetyUserInformation();
 
                     startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
                     finish();
@@ -136,6 +135,23 @@ public class LoginActivity extends BaseActivity {
         // );
         //
         // btnLogin.setEnabled(false);
+    }
+
+    void safetyUserInformation() {
+        User user = Preferences.getCurrentUser();
+
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            user.setUsername("default"); // Fucking error !!!
+        }
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            user.setEmail("default@threadripper.com"); // Fucking error !!!
+        }
+        if (user.getDisplayName() == null || user.getDisplayName().isEmpty()) {
+            user.setDisplayName("Default Display Name");
+        }
+        if (user.getPhotoUrl() == null || user.getPhotoUrl().isEmpty()) {
+            user.setPhotoUrl("http://abc.com/xyz.png");
+        }
     }
 
     private void initViews() {

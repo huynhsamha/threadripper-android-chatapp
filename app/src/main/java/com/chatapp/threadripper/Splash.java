@@ -29,11 +29,11 @@ public class Splash extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (Preferences.isIsConnected()) {
-                    startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
-                } else {
+                // if (Preferences.isIsConnected()) {
+                //     startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
+                // } else {
                     startActivity(new Intent(Splash.this, LoginActivity.class));
-                }
+                // }
                 finish();
             }
         }, 1 * 1000);
