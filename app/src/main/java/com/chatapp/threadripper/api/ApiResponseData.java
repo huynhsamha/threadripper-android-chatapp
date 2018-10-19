@@ -12,21 +12,23 @@ public class ApiResponseData {
      */
 
     ErrorResponse error;
-    User user;
-    ArrayList<User> usersList;
+
+    User user = new User();
 
     boolean success = false;
     boolean active = false;
     String message = "";
     String result = "";
 
-    public ArrayList<User> getUsersList() {
-        return usersList;
+
+    @Override
+    public String toString() {
+        return "Api Response Data";
     }
 
-    public void setUsersList(ArrayList<User> usersList) {
-        this.usersList = usersList;
-    }
+    /**
+     * Getter & Setter
+     */
 
     public User getUser() {
         return user;

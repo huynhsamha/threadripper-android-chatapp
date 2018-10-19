@@ -12,8 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chatapp.threadripper.authentication.SignUpActivity;
 import com.chatapp.threadripper.utils.KeyboardUtils;
 import com.chatapp.threadripper.utils.ShowToast;
+import com.chatapp.threadripper.utils.SweetDialog;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -103,6 +105,10 @@ public class BaseActivity extends AppCompatActivity {
                 configHideKeyboardOnTouchOutsideEditText(innerView);
             }
         }
+    }
+
+    public void ShowErrorDialog(String message) {
+        SweetDialog.showErrorMessage(this, "Error", message);
     }
 
 }

@@ -14,8 +14,14 @@ import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpActivity extends BaseActivity {
 
@@ -77,15 +83,13 @@ public class SignUpActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
-        ApiService.getInstance().signUp(username, email, displayName, password).addCallbackListener(new ApiService.CallbackApiListener() {
+        ApiService.getInstance().signUp(username, email, displayName, password).enqueue(new Callback<ApiResponseData>() {
             @Override
-            public void onSuccess(ApiResponseData data) {
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
                 SweetDialog.hideLoading();
 
-                if (data.getError() != null) {
-                    String errorMessage = data.getError().getMessage();
-                    SweetDialog.showErrorMessage(SignUpActivity.this, "Error", errorMessage);
-                } else {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
                     SweetDialog.showSuccessMessage(SignUpActivity.this, "Successful",
                             "Please check your email to verify and active account",
                             new SweetDialog.OnCallbackListener() {
@@ -99,13 +103,22 @@ public class SignUpActivity extends BaseActivity {
 
                                 }
                             });
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        SignUpActivity.this.ShowErrorDialog(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        SignUpActivity.this.ShowErrorDialog(e.getMessage());
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(SignUpActivity.this, "Error", t.getMessage());
+                SignUpActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
     }

@@ -19,14 +19,20 @@ import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.authentication.SignUpActivity;
+import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.google.gson.Gson;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsActivity extends BaseMainActivity {
 
@@ -149,24 +155,32 @@ public class SettingsActivity extends BaseMainActivity {
 
         SweetDialog.showLoading(this);
 
-        ApiService.getInstance().changePassword(oldPassword, password).addCallbackListener(new ApiService.CallbackApiListener() {
+        ApiService.getInstance().changePassword(oldPassword, password).enqueue(new Callback<ApiResponseData>() {
             @Override
-            public void onSuccess(ApiResponseData data) {
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
                 SweetDialog.hideLoading();
 
-                if (data.getError() != null) {
-                    String errorMessage = data.getError().getMessage();
-                    SweetDialog.showErrorMessage(SettingsActivity.this, "Error", errorMessage);
-                } else {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
                     SweetDialog.showSuccessMessage(SettingsActivity.this, "Successful",
                             "Password has been changed successfully.");
+
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        SettingsActivity.this.ShowErrorDialog(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        SettingsActivity.this.ShowErrorDialog(e.getMessage());
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(SettingsActivity.this, "Error", t.getMessage());
+                SettingsActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
     }

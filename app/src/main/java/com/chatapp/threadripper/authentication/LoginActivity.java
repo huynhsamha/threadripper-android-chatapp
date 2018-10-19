@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,17 +15,25 @@ import android.widget.TextView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
+import com.chatapp.threadripper.api.ApiRoutes;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -96,29 +105,45 @@ public class LoginActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
-        ApiService.getInstance().login(username, password).addCallbackListener(new ApiService.CallbackApiListener() {
+        ApiService.getInstance().login(username, password).enqueue(new Callback<ApiResponseData>() {
             @Override
-            public void onSuccess(ApiResponseData data) {
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
                 SweetDialog.hideLoading();
 
-                if (data.getError() != null) {
-                    String errorMessage = data.getError().getMessage();
-                    SweetDialog.showErrorMessage(LoginActivity.this, "Error", errorMessage);
-                } else {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
                     Preferences.setCurrentUser(data.getUser());
                     safetyUserInformation();
 
+                    // Store Authorization Token
+                    String chatAuthToken = response.headers().get("Authorization");
+                    if (chatAuthToken != null && chatAuthToken.contains("CHAT")) {
+                        Preferences.setChatAuthToken(chatAuthToken);
+                    }
+
                     startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
                     finish();
+
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        LoginActivity.this.ShowErrorDialog(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        LoginActivity.this.ShowErrorDialog(e.getMessage());
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                SweetDialog.showErrorMessage(LoginActivity.this, "Error", t.getMessage());
+                LoginActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
+
+
 
         // JSONObject json = new JSONObject();
         //
