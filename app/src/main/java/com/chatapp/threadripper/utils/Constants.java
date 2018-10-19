@@ -18,4 +18,8 @@ public class Constants {
     public static final String CHAT_CONTENT_TYPE_TEXT = "text";
     public static final String CHAT_CONTENT_TYPE_URI = "uri";
     public static final String CHAT_CONTENT_TYPE_BITMAP = "bitmap";
+
+    public static final String RELATIONSHIP_FRIEND = "FRIEND";
+    public static final String RELATIONSHIP_SENT = "SENT";
+    public static final String RELATIONSHIP_NONE = "NONE";
 }

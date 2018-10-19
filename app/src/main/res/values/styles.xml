@@ -97,6 +97,46 @@
         <item name="android:padding">@dimen/space15</item>
     </style>
 
+    <style name="ButtonOutlineAccentCorner">
+        <item name="android:textSize">@dimen/h5</item>
+        <item name="android:textColor">@color/colorYellow</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/btn_accent_outline</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:paddingTop">@dimen/space5</item>
+        <item name="android:paddingBottom">@dimen/space5</item>
+        <item name="android:paddingLeft">@dimen/space20</item>
+        <item name="android:paddingRight">@dimen/space20</item>
+    </style>
+
+    <style name="ButtonOutlineGreyCorner">
+        <item name="android:textSize">@dimen/h5</item>
+        <item name="android:textColor">@color/colorTextHint</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/btn_grey_outline</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:paddingTop">@dimen/space5</item>
+        <item name="android:paddingBottom">@dimen/space5</item>
+        <item name="android:paddingLeft">@dimen/space20</item>
+        <item name="android:paddingRight">@dimen/space20</item>
+    </style>
+
+
+    <style name="ButtonFillAccentCorner">
+        <item name="android:textSize">@dimen/h5</item>
+        <item name="android:textColor">@color/colorTextWhite</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@drawable/btn_yellow</item>
+        <item name="android:gravity">center</item>
+        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
+        <item name="android:paddingTop">@dimen/space5</item>
+        <item name="android:paddingBottom">@dimen/space5</item>
+        <item name="android:paddingLeft">@dimen/space20</item>
+        <item name="android:paddingRight">@dimen/space20</item>
+    </style>
+
     <style name="ButtonTransparent">
         <item name="android:textSize">@dimen/h3</item>
         <item name="android:textColor">@android:color/white</item>

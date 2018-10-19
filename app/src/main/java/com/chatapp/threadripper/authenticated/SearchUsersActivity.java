@@ -1,33 +1,23 @@
 package com.chatapp.threadripper.authenticated;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.text.InputType;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.models.ErrorResponse;
-import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.ImageLoader;
-import com.chatapp.threadripper.utils.Preferences;
-import com.chatapp.threadripper.utils.ShowToast;
+import com.chatapp.threadripper.api.TestApiService;
+import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.SweetDialog;
-import com.google.gson.Gson;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,6 +26,9 @@ public class SearchUsersActivity extends BaseMainActivity {
 
     RippleView rvSearch, rvBtnBack;
     EditText edtSearch;
+    RecyclerView mRecyclerView;
+    SearchUsersAdapter mAdapter;
+    TextView tvNoAnyone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +39,74 @@ public class SearchUsersActivity extends BaseMainActivity {
         setListeners();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
+
+        requestSearchUsers();
+    }
+
+    void isLoading() {
+        rvBtnBack.setEnabled(false);
+        rvSearch.setEnabled(false);
+        edtSearch.setEnabled(false);
+    }
+
+    void endLoading() {
+        rvBtnBack.setEnabled(true);
+        rvSearch.setEnabled(true);
+        edtSearch.setEnabled(true);
+    }
+
+    void requestSearchUsers() {
+        String keywords = edtSearch.getText().toString();
+
+        // SweetDialog.showLoading(this);
+        isLoading();
+
+        ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                // SweetDialog.hideLoading();
+                endLoading();
+                if (response.isSuccessful()) {
+                    List<User> users = response.body();
+
+                    if (users.isEmpty()) {
+                        tvNoAnyone.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoAnyone.setVisibility(View.GONE);
+                        mAdapter.setArrayList((ArrayList<User>) users);
+                    }
+
+                } else {
+                    // SweetDialog.hideLoading();
+                    endLoading();
+                    tvNoAnyone.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                // SweetDialog.hideLoading();
+                endLoading();
+            }
+        });
     }
 
     void initViews() {
+        tvNoAnyone = (TextView) findViewById(R.id.tvNoAnyone);
         rvSearch = (RippleView) findViewById(R.id.rvSearch);
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new SearchUsersAdapter(this, null);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     void setListeners() {
         rvBtnBack.setOnRippleCompleteListener(rippleView -> onBackPressed());
+
+        rvSearch.setOnRippleCompleteListener(view -> requestSearchUsers());
     }
 }

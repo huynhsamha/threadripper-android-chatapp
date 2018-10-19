@@ -66,4 +66,21 @@
 
     </LinearLayout>
 
+
+    <TextView
+        android:id="@+id/tvNoAnyone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Can not find anyone. Please try other keywords"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
 </LinearLayout>

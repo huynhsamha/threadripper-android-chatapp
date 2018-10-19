@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
@@ -8,8 +9,21 @@ public class User {
     String email;
     String password;
     String displayName;
+
+    @SerializedName("avatarUrl") // server use avatarUrl
     String photoUrl;
+
     Boolean online;
+
+    String relationship = Constants.RELATIONSHIP_NONE;
+    // relationship with current user
+    // 3 type: friend | sent request | none
+    // default is none
+
+
+    /**
+     * Constructors
+     */
 
     public User(String username, String email, String password, String displayName) {
         this.username = username;
@@ -29,6 +43,11 @@ public class User {
         this.displayName = displayName;
         this.photoUrl = photoUrl;
     }
+
+
+    /**
+     * Getters and Setters
+     */
 
     public String getUsername() {
         return username;
@@ -78,4 +97,11 @@ public class User {
         this.online = online;
     }
 
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
 }
