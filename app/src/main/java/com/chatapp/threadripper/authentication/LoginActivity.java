@@ -61,6 +61,7 @@ public class LoginActivity extends BaseActivity {
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         // setupWebSocket();
+
     }
 
 

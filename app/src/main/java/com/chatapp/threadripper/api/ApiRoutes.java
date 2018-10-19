@@ -45,7 +45,6 @@ public interface ApiRoutes {
     );
 
 
-
     @GET("user")
     Call<List<User>> searchUsers(
             @Query("search") String keywords
@@ -55,5 +54,12 @@ public interface ApiRoutes {
     @GET("conversation")
     Call<List<Conversation>> getConversations(
             @Header("Authorization") String authToken
+    );
+
+
+    @POST("conversation")
+    Call<ApiResponseData> createConversation(
+            @Header("Authorization") String authToken,
+            @Body String body
     );
 }

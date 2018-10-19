@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
@@ -66,6 +67,23 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mRecyclerView.setAdapter(mAdapter);
 
         fetchConversations();
+
+        // List<String> usernames = new ArrayList<>();
+        // usernames.add("hope68");
+        // usernames.add("george.fay2760");
+        // ApiService.getInstance().createConversation(usernames).enqueue(new Callback<ApiResponseData>() {
+        //     @Override
+        //     public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
+        //         if (response.isSuccessful()) {
+        //             ApiResponseData data = response.body();
+        //         }
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(Call<ApiResponseData> call, Throwable t) {
+        //         t.printStackTrace();
+        //     }
+        // });
 
         return view;
     }

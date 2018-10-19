@@ -19,6 +19,7 @@ public class ApiResponseData {
     boolean active = false;
     String message = "";
     String result = "";
+    String conversationId = "";
 
 
     @Override
@@ -76,5 +77,13 @@ public class ApiResponseData {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
     }
 }
