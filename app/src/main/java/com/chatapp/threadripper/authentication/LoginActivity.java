@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,6 +61,22 @@ public class LoginActivity extends BaseActivity {
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         // setupWebSocket();
+
+        // ApiService.getInstance().searchUsers("a").enqueue(new Callback<List<User>>() {
+        //     @Override
+        //     public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+        //         if (response.isSuccessful()) {
+        //             List<User> users = response.body();
+        //         } else {
+        //
+        //         }
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(Call<List<User>> call, Throwable t) {
+        //
+        //     }
+        // });
     }
 
 

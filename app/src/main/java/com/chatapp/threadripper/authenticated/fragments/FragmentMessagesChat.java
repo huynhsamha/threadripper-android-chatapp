@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
+import com.chatapp.threadripper.utils.ShowToast;
 
 import java.util.ArrayList;
 
@@ -105,6 +107,16 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_edit, menu);
+        inflater.inflate(R.menu.menu_search, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menuIconSeach) {
+            ShowToast.lengthShort(getContext(), "OK");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

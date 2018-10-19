@@ -59,4 +59,8 @@ public class ApiService {
     public Call<List<User>> getUsers() {
         return getApiInstance().getUsers();
     }
+
+    public Call<List<User>> searchUsers(String keywords) {
+        return getApiInstance().searchUsers(keywords);
+    }
 }

@@ -15,6 +15,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 public interface ApiRoutes {
 
@@ -44,4 +45,8 @@ public interface ApiRoutes {
 
     @GET("user")
     Call<List<User>> getUsers();
+
+
+    @GET("user")
+    Call<List<User>> searchUsers(@Query("search") String keywords);
 }
