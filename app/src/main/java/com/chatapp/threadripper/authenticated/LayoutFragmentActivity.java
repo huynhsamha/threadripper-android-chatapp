@@ -12,18 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
+import com.chatapp.threadripper.authentication.LoginActivity;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
+import com.chatapp.threadripper.utils.SweetDialog;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class LayoutFragmentActivity extends BaseMainActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
@@ -31,7 +33,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_layout_fragment);
 
         FragmentTransaction ft;
 
@@ -59,8 +61,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     void configDrawerUserInfo() {
-        changeDrawerUsername(Preferences.getUsername());
-        changeDrawerUserAvatar(Preferences.getUserAvatar());
+        changeDrawerUserDisplayName(Preferences.getCurrentUser().getDisplayName());
+        changeDrawerUserAvatar(Preferences.getCurrentUser().getPhotoUrl());
     }
 
     void changeDrawerUserAvatar(String url) {
@@ -69,10 +71,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         ImageLoader.loadUserAvatar(imgDrawerUserAvatar, url);
     }
 
-    void changeDrawerUsername(String username) {
+    void changeDrawerUserDisplayName(String displayName) {
         View navHeaderView = navigationView.getHeaderView(0);
         TextView tvDrawerUsername = (TextView) navHeaderView.findViewById(R.id.tvDrawerUsername);
-        tvDrawerUsername.setText(username);
+        tvDrawerUsername.setText(displayName);
     }
 
     @Override
@@ -108,32 +110,56 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         FragmentTransaction ft;
-        int id = item.getItemId();
 
-        if (id == R.id.nav_contacts) {
-            FragmentContacts fragmentContacts = new FragmentContacts();
-            ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
-        } else if (id == R.id.nav_chats) {
-            FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
-            ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
-        } else if (id == R.id.nav_groups) {
-            FragmentGroups fragmentGroups = new FragmentGroups();
-            ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayout, fragmentGroups).commit();
-        } else if (id == R.id.nav_call) {
-            FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
-            ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.frameLayout, fragmentVideoCallList).commit();
-        } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-        } else if (id == R.id.nav_logout) {
+        switch (item.getItemId()) {
+            case R.id.nav_contacts:
+                FragmentContacts fragmentContacts = new FragmentContacts();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
+                break;
+            case R.id.nav_chats:
+                FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
+                break;
+            case R.id.nav_groups:
+                FragmentGroups fragmentGroups = new FragmentGroups();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frameLayout, fragmentGroups).commit();
+                break;
+            case R.id.nav_call:
+                FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frameLayout, fragmentVideoCallList).commit();
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.nav_logout:
+                SweetDialog.showWarningMessageWithCancel(this, "Alert",
+                        "Are you sure to logout your current account?",
+                        new SweetDialog.OnCallbackListener() {
+                            @Override
+                            public void onConfirm() {
+                                handleLogout();
+                            }
 
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+                break;
         }
-
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    void handleLogout() {
+        Preferences.setChatAuthToken("");
+        Preferences.setCurrentUser(new User());
+
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     @Override

@@ -1,33 +1,27 @@
 package com.chatapp.threadripper.utils;
 
+
+import com.chatapp.threadripper.models.User;
+
 public class Preferences {
-    private static String username = "Default Username";
-    private static String userAvatar = "http://nguoi-noi-tieng.com/photo/tieu-su-dien-vien-xa-thi-man-6850.jpg";
-    private static boolean isConnected = false;
 
-    public static String getUsername() {
-        return username;
+    private static User currentUser = new User();
+    private static String chatAuthToken = "";
+
+    public static String getChatAuthToken() {
+        return chatAuthToken;
     }
 
-    public static void setUsername(String username) {
-        if (username == null || username.length() == 0) return;
-        Preferences.username = username;
+    public static void setChatAuthToken(String chatAuthToken) {
+        Preferences.chatAuthToken = chatAuthToken;
     }
 
-    public static String getUserAvatar() {
-        return userAvatar;
+    public static User getCurrentUser() {
+        return currentUser;
     }
 
-    public static void setUserAvatar(String userAvatar) {
-        if (userAvatar == null || userAvatar.length() == 0) return;
-        Preferences.userAvatar = userAvatar;
+    public static void setCurrentUser(User user) {
+        if (user != null) Preferences.currentUser = user;
     }
 
-    public static boolean isIsConnected() {
-        return isConnected;
-    }
-
-    public static void setIsConnected(boolean isConnected) {
-        Preferences.isConnected = isConnected;
-    }
 }

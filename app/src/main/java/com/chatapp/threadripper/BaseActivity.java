@@ -1,14 +1,21 @@
 package com.chatapp.threadripper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chatapp.threadripper.authentication.SignUpActivity;
+import com.chatapp.threadripper.utils.KeyboardUtils;
 import com.chatapp.threadripper.utils.ShowToast;
+import com.chatapp.threadripper.utils.SweetDialog;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -72,4 +79,36 @@ public class BaseActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+
+
+
+    public void hideSoftKeyboard() {
+        KeyboardUtils.hideSoftKeyboard(this);
+    }
+
+    public void configHideKeyboardOnTouchOutsideEditText(View wrapperView) {
+
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(wrapperView instanceof EditText)) {
+            wrapperView.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard();
+                    return false;
+                }
+            });
+        }
+
+        // If a layout container, iterate over children and seed recursion.
+        if (wrapperView instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) wrapperView).getChildCount(); i++) {
+                View innerView = ((ViewGroup) wrapperView).getChildAt(i);
+                configHideKeyboardOnTouchOutsideEditText(innerView);
+            }
+        }
+    }
+
+    public void ShowErrorDialog(String message) {
+        SweetDialog.showErrorMessage(this, "Error", message);
+    }
+
 }

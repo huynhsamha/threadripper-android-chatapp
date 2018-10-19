@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.chatapp.threadripper">
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -8,12 +9,16 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        tools:replace="android:icon"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Splash"
@@ -28,7 +33,10 @@
             android:name=".authenticated.SettingsActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".authenticated.MainActivity"
+            android:name=".authenticated.SearchUsersActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".authenticated.LayoutFragmentActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.Trans" />
         <activity

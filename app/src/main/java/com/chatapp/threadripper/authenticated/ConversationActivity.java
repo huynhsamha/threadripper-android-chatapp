@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
@@ -39,7 +39,7 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
 
-public class ConversationActivity extends BaseActivity {
+public class ConversationActivity extends BaseMainActivity {
 
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
@@ -117,7 +117,7 @@ public class ConversationActivity extends BaseActivity {
                     // Chat message
                     String sender = json.getString("sender");
                     String content = json.getString("content");
-                    if (!sender.equals(Preferences.getUsername())) { // other user
+                    if (!sender.equals(Preferences.getCurrentUser().getUsername())) { // other user
                         runOnUiThread(new Runnable() { // main thread
                             @Override
                             public void run() {
@@ -250,7 +250,7 @@ public class ConversationActivity extends BaseActivity {
         JSONObject json = new JSONObject();
 
         try {
-            json.put("sender", Preferences.getUsername());
+            json.put("sender", Preferences.getCurrentUser().getUsername());
             json.put("content", msg);
             json.put("type", "CHAT");
         } catch (JSONException e) {
@@ -277,7 +277,7 @@ public class ConversationActivity extends BaseActivity {
     }
 
     void fetchMessages() {
-        ApiService.getInstance().getMessages(new ApiService.OnCompleteListener() {
+        TestApiService.getInstance().getMessages(new TestApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
                 ArrayList<Message> messages = new ArrayList<>();
@@ -371,7 +371,7 @@ public class ConversationActivity extends BaseActivity {
                 handleCaptureCamera();
             } else {
                 // the fucking user!!!
-                ShowToast.lengthLong(this, "Camera perrimssion denied");
+                ShowToast.lengthLong(this, "Camera permission is denied");
 
                 // reset UI
                 // edtMessage.setVisibility(View.VISIBLE);

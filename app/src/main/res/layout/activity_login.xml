@@ -7,6 +7,7 @@
     android:background="@drawable/bg_gradient_red"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:id="@+id/wrapperView"
     tools:context="com.chatapp.threadripper.authentication.LoginActivity">
 
     <ImageView
@@ -25,12 +26,12 @@
         android:padding="25dp">
 
         <EditText
-            android:id="@+id/edtUsername"
+            android:id="@+id/edtDisplayName"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/ic_action_username_red"
+            android:drawableLeft="@drawable/ic_action_account_box_accent"
             android:drawablePadding="8dp"
             android:hint="Username"
             android:inputType="text" />

@@ -12,4 +12,27 @@
     <color name="colorYellow">#ff9a5f</color>
     <color name="colorWhiteDark">#fdfdfd</color>
     <color name="colorRippleView">#ff7f09</color>
+
+
+
+    <!--Override Sweet Alert Confirm -->
+    <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="error_stroke_color">#ff4141</color>
+    <color name="float_transparent">#00000000</color>
+    <color name="gray_btn_bg_color">#bfbfbf</color>
+    <color name="gray_btn_bg_pressed_color">#969696</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#ff80cbc4</color>
+    <color name="material_deep_teal_50">#ff009688</color>
+    <color name="red_btn_bg_color">#ff3c16</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="success_stroke_color">#5fc724</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="text_color">#1b1b1b</color>
+    <color name="trans_success_stroke_color">#8991f25a</color>
+    <color name="warning_stroke_color">#ff9d48</color>
 </resources>

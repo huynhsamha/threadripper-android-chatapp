@@ -9,19 +9,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
+import com.chatapp.threadripper.utils.ShowToast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
@@ -43,7 +45,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         View view = inflater.inflate(R.layout.fragment_messages_chat, null, false);
 
         getActivity().supportInvalidateOptionsMenu();
-        ((MainActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
+        ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
 
         tv_selection = (TextView) view.findViewById(R.id.tv_selection);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -52,7 +54,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mAdapter = new MessagesChatAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        ApiService.getInstance().getMessagesChatList(new ApiService.OnCompleteListener() {
+        TestApiService.getInstance().getMessagesChatList(new TestApiService.OnCompleteListener() {
             @Override
             public void onSuccess(ArrayList list) {
                 mAdapter.setArrayList(list);
@@ -106,6 +108,16 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_edit, menu);
+        inflater.inflate(R.menu.menu_search, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menuIconSeach) {
+            startActivity(new Intent(getContext(), SearchUsersActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

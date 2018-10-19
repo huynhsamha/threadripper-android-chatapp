@@ -7,12 +7,13 @@
     android:background="@drawable/bg_gradient_red"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:id="@+id/wrapperView"
     tools:context="com.chatapp.threadripper.authentication.SignUpActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        >
+        android:layout_height="120dp">
+
         <com.andexert.library.RippleView
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
@@ -26,8 +27,8 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:padding="12dp"
                 android:layout_centerInParent="true"
+                android:padding="12dp"
                 android:src="@drawable/ic_action_back" />
         </com.andexert.library.RippleView>
 
@@ -35,8 +36,8 @@
             android:id="@+id/imageView"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_launcher" />
     </RelativeLayout>
 
 
@@ -47,28 +48,50 @@
         android:padding="25dp">
 
         <EditText
-            android:id="@+id/edtUsername"
+            android:id="@+id/edtDisplayName"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:hint="Username"
-            android:inputType="text"
-            android:drawableLeft="@drawable/ic_action_username_red"
+            android:layout_marginBottom="12dp"
+            android:drawableLeft="@drawable/ic_action_account_box_accent"
             android:drawablePadding="8dp"
-            />
+            android:hint="Username"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/edtEmail"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:drawableLeft="@drawable/ic_action_emaill_accent"
+            android:drawablePadding="8dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+
+
+        <EditText
+            android:id="@+id/edtDisplayName"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:drawableLeft="@drawable/ic_action_display_name_accent"
+            android:drawablePadding="8dp"
+            android:hint="Display Name"
+            android:inputType="text" />
+
 
         <EditText
             android:id="@+id/edtPassword"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:hint="Password"
-            android:inputType="textPassword"
+            android:layout_marginBottom="12dp"
             android:drawableLeft="@drawable/ic_action_password_red"
             android:drawablePadding="8dp"
-            />
+            android:hint="Password"
+            android:inputType="textPassword" />
 
         <EditText
             android:id="@+id/edtConfirmPassword"
@@ -76,22 +99,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:hint="Confirm password"
-            android:inputType="textPassword"
-            android:drawableLeft="@drawable/ic_action_password_red"
+            android:drawableLeft="@drawable/ic_action_key_accent"
             android:drawablePadding="8dp"
-            />
+            android:hint="Confirm Password"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnSignUp"
             style="@style/ButtonYellow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="Create account"
             android:textAllCaps="true"
-            android:layout_marginTop="15dp"
-            android:textAppearance="@style/QuicksandBold"
-            />
+            android:textAppearance="@style/QuicksandBold" />
 
     </LinearLayout>
 </LinearLayout>

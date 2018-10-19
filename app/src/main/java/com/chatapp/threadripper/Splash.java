@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.chatapp.threadripper.authenticated.MainActivity;
+import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.utils.Preferences;
 
@@ -29,11 +29,11 @@ public class Splash extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (Preferences.isIsConnected()) {
-                    startActivity(new Intent(Splash.this, MainActivity.class));
-                } else {
+                // if (Preferences.isIsConnected()) {
+                //     startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
+                // } else {
                     startActivity(new Intent(Splash.this, LoginActivity.class));
-                }
+                // }
                 finish();
             }
         }, 1 * 1000);
@@ -49,6 +49,6 @@ public class Splash extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-    //    do nothing
+
     }
 }

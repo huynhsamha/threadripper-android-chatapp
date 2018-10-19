@@ -30,6 +30,8 @@ public class ForgotPasswordActivity extends BaseActivity {
         changeStatusBarColor();
 
         initViews();
+
+        configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
     }
 
     private void initViews() {
