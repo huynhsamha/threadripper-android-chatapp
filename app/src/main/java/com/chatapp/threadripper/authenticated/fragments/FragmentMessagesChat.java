@@ -18,6 +18,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.utils.ShowToast;
@@ -113,7 +114,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menuIconSeach) {
-            ShowToast.lengthShort(getContext(), "OK");
+            startActivity(new Intent(getContext(), SearchUsersActivity.class));
             return true;
         }
 

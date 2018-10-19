@@ -33,6 +33,9 @@
             android:name=".authenticated.SettingsActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".authenticated.SearchUsersActivity"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".authenticated.LayoutFragmentActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.Trans" />
