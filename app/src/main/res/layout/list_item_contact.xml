@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/space10"
         android:layout_marginRight="@dimen/space10"
-        android:layout_toRightOf="@id/chk_list"
+        android:layout_alignParentLeft="true"
         android:src="@drawable/placeholder_user_avatar" />
 
     <LinearLayout

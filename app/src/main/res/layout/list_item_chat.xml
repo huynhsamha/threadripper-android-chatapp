@@ -5,29 +5,20 @@
     android:background="@drawable/bg_item_list"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/chk_list"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/space10"
-        android:button="@drawable/checkbox"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:id="@+id/rl_photo"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/space10"
-        android:layout_marginRight="@dimen/space10"
-        android:layout_toRightOf="@id/chk_list">
+        android:layout_marginRight="@dimen/space10">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cirImgUserAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/placeholder_user_avatar"/>
+            android:src="@drawable/placeholder_user_avatar" />
 
         <View
             android:id="@+id/online_indicator"
@@ -35,8 +26,8 @@
             android:layout_height="16dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="1dp"
             android:layout_marginBottom="1dp"
+            android:layout_marginRight="1dp"
             android:background="@drawable/bg_online" />
 
     </RelativeLayout>
@@ -59,7 +50,10 @@
                 style="@style/h2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Laura Owens"
+                android:text="Laura Owens, Laura Owens, Laura Owens, Laura Owens, Laura Owens"
+                android:ellipsize="end"
+                android:lines="1"
+                android:layout_marginRight="70dp"
                 android:textAppearance="@style/Light" />
 
             <TextView
@@ -68,9 +62,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_user_name"
                 android:layout_marginTop="3dp"
-                android:text="Hi, Joe, looks great! :)"
+                android:text="Hi, Joe, looks great! :) Hi, Joe, looks great! :) Hi, Joe, looks great! :) Hi, Joe, looks great! :)"
                 android:textAppearance="@style/ExtraLight"
                 android:textColor="@color/colorTextInfo"
+                android:ellipsize="end"
+                android:lines="1"
                 android:textSize="@dimen/h3" />
 
             <TextView

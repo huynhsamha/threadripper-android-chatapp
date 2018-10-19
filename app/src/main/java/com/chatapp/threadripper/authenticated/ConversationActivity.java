@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.api.Config;
@@ -49,7 +48,8 @@ public class ConversationActivity extends BaseMainActivity {
     private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
 
-    String username, userAvatarImage;
+    boolean isOnline;
+    String displayName, avatar;
     String uriAttachImage;
     Bitmap bitmapCaptureImage;
 
@@ -61,11 +61,13 @@ public class ConversationActivity extends BaseMainActivity {
         setContentView(R.layout.activity_conversation);
 
         Intent intent = getIntent();
-        username = intent.getStringExtra("Username");
-        userAvatarImage = intent.getStringExtra("Image");
-        boolean isOnline = intent.getBooleanExtra("IsOnline", false);
+        displayName = intent.getStringExtra(Constants.CONVERSATION_NAME);
+        avatar = intent.getStringExtra(Constants.CONVERSATION_PHOTO);
+        isOnline = intent.getBooleanExtra(Constants.CONVERSATION_IS_ONLINE, false);
 
-        setupToolbarWithBackButton(R.id.toolbar, username);
+
+        setupToolbarWithBackButton(R.id.toolbar, displayName);
+
 
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
@@ -78,7 +80,7 @@ public class ConversationActivity extends BaseMainActivity {
         onlineIndicator = findViewById(R.id.onlineIndicator);
 
         findViewById(R.id.rlImgUserAvatar).setVisibility(View.VISIBLE);
-        ImageLoader.loadUserAvatar(cirImgUserAvatar, userAvatarImage);
+        ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
         if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
         else onlineIndicator.setVisibility(View.GONE);
 
@@ -270,7 +272,7 @@ public class ConversationActivity extends BaseMainActivity {
         item.setTime("6:00pm");
         item.setType("1");
         item.setText(msg);
-        item.setAvatarUser(userAvatarImage);
+        item.setAvatarUser(avatar);
 
         mAdapter.addItem(item);
         scrollToBottom();
@@ -284,7 +286,7 @@ public class ConversationActivity extends BaseMainActivity {
                 for (Object i : list) {
                     Message m = (Message) i;
                     if (m.getType().equals("1")) { // YOU
-                        m.setAvatarUser(userAvatarImage);
+                        m.setAvatarUser(avatar);
                     }
                     messages.add(m);
                 }

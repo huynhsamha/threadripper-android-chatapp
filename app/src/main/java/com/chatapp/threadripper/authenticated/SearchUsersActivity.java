@@ -28,7 +28,7 @@ public class SearchUsersActivity extends BaseMainActivity {
     EditText edtSearch;
     RecyclerView mRecyclerView;
     SearchUsersAdapter mAdapter;
-    TextView tvNoAnyone;
+    TextView tvNoAnyone, tvLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +47,24 @@ public class SearchUsersActivity extends BaseMainActivity {
         rvBtnBack.setEnabled(false);
         rvSearch.setEnabled(false);
         edtSearch.setEnabled(false);
+        tvLoading.setVisibility(View.VISIBLE);
     }
 
     void endLoading() {
         rvBtnBack.setEnabled(true);
         rvSearch.setEnabled(true);
         edtSearch.setEnabled(true);
+        tvLoading.setVisibility(View.GONE);
     }
 
     void requestSearchUsers() {
         String keywords = edtSearch.getText().toString();
 
-        // SweetDialog.showLoading(this);
         isLoading();
 
         ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                // SweetDialog.hideLoading();
                 endLoading();
                 if (response.isSuccessful()) {
                     List<User> users = response.body();
@@ -77,7 +77,6 @@ public class SearchUsersActivity extends BaseMainActivity {
                     }
 
                 } else {
-                    // SweetDialog.hideLoading();
                     endLoading();
                     tvNoAnyone.setVisibility(View.VISIBLE);
                 }
@@ -85,7 +84,6 @@ public class SearchUsersActivity extends BaseMainActivity {
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                // SweetDialog.hideLoading();
                 endLoading();
             }
         });
@@ -93,6 +91,7 @@ public class SearchUsersActivity extends BaseMainActivity {
 
     void initViews() {
         tvNoAnyone = (TextView) findViewById(R.id.tvNoAnyone);
+        tvLoading = (TextView) findViewById(R.id.tvLoading);
         rvSearch = (RippleView) findViewById(R.id.rvSearch);
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);

@@ -15,21 +15,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
+import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.ShowToast;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
     private RecyclerView mRecyclerView;
     private MessagesChatAdapter mAdapter;
-    private TextView tv_selection;
+    private TextView tv_selection, tvNoAny, tvLoading;
 
     public FragmentMessagesChat() {
         setHasOptionsMenu(true);
@@ -48,62 +57,65 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Messages");
 
         tv_selection = (TextView) view.findViewById(R.id.tv_selection);
+        tvNoAny = (TextView) view.findViewById(R.id.tvNoAny);
+        tvLoading = (TextView) view.findViewById(R.id.tvLoading);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new MessagesChatAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        TestApiService.getInstance().getMessagesChatList(new TestApiService.OnCompleteListener() {
-            @Override
-            public void onSuccess(ArrayList list) {
-                mAdapter.setArrayList(list);
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-
-            }
-        });
+        fetchConversations();
 
         return view;
     }
 
-    @Override
-    public void onItemClicked(int position) {
-        MessagesChat item = mAdapter.getItem(position);
-        Intent intent = new Intent(getActivity(), ConversationActivity.class);
-        intent.putExtra("Username", item.getName());
-        intent.putExtra("Image", item.getImage());
-        intent.putExtra("IsOnline", item.getOnline());
-        startActivity(intent);
+    void isLoading() {
+        tvNoAny.setVisibility(View.GONE);
+        tvLoading.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public boolean onItemLongClicked(int position) {
-        toggleSelection(position);
-        return true;
+    void endFailLoading() {
+        tvLoading.setVisibility(View.GONE);
+        tvNoAny.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+    void endSuccessLoading() {
+        tvLoading.setVisibility(View.GONE);
+        tvNoAny.setVisibility(View.GONE);
     }
 
-    private void toggleSelection(int position) {
-        mAdapter.toggleSelection(position);
-        if (mAdapter.getSelectedItemCount() > 0) {
-            tv_selection.setVisibility(View.VISIBLE);
-        } else
-            tv_selection.setVisibility(View.GONE);
+    void fetchConversations() {
+        isLoading();
 
+        ApiService.getInstance().getConversations().enqueue(new Callback<List<Conversation>>() {
+            @Override
+            public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
+                if (response.isSuccessful()) {
+                    endSuccessLoading();
+                    List<Conversation> conversations = response.body();
+                    mAdapter.setArrayList((ArrayList<Conversation>) conversations);
+                } else {
+                    endFailLoading();
+                }
+            }
 
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                tv_selection.setText("Delete (" + mAdapter.getSelectedItemCount() + ")");
+            @Override
+            public void onFailure(Call<List<Conversation>> call, Throwable t) {
+                endFailLoading();
             }
         });
+    }
 
+    @Override
+    public void onItemClicked(int position) {
+        Conversation item = mAdapter.getItem(position);
+        Intent intent = new Intent(getActivity(), ConversationActivity.class);
+        intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
+        intent.putExtra(Constants.CONVERSATION_NAME, ModelUtils.getConversationName(item));
+        // intent.putExtra(Constants.CONVERSATION_PHOTO, );
+        intent.putExtra(Constants.CONVERSATION_IS_ONLINE, ModelUtils.isOnlineGroup(item));
+        startActivity(intent);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

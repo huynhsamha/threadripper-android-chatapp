@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.api;
 
+import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Preferences;
 
@@ -43,10 +44,16 @@ public interface ApiRoutes {
             @Field("newPassword") String newPassword
     );
 
-    @GET("user")
-    Call<List<User>> getUsers();
 
 
     @GET("user")
-    Call<List<User>> searchUsers(@Query("search") String keywords);
+    Call<List<User>> searchUsers(
+            @Query("search") String keywords
+    );
+
+
+    @GET("conversation")
+    Call<List<Conversation>> getConversations(
+            @Header("Authorization") String authToken
+    );
 }

@@ -3,6 +3,7 @@ package com.chatapp.threadripper.api;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.SharedPreferences;
 
+import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Preferences;
@@ -56,11 +57,11 @@ public class ApiService {
         return getApiInstance().changePassword(Preferences.getChatAuthToken(), oldPassword, newPassword);
     }
 
-    public Call<List<User>> getUsers() {
-        return getApiInstance().getUsers();
-    }
-
     public Call<List<User>> searchUsers(String keywords) {
         return getApiInstance().searchUsers(keywords);
+    }
+
+    public Call<List<Conversation>> getConversations() {
+        return getApiInstance().getConversations(Preferences.getChatAuthToken());
     }
 }

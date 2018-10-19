@@ -22,6 +22,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // The items to display in your RecyclerView
     private ArrayList<Message> items;
     private Context mContext;
+    private ContactAdapter.ViewHolder.ClickListener clickListener;
 
     private final int DATE = 0, YOU = 1, ME = 2;
 
