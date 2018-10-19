@@ -7,28 +7,18 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.chatapp.threadripper.authenticated.SettingsActivity">
+    tools:context="com.chatapp.threadripper.authenticated.SearchUsersActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/bg_gradient_red">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:background="#ffffff" />
-
+        android:layout_height="60dp"
+        android:background="@color/colorRedLight"
+        android:orientation="horizontal">
 
         <com.andexert.library.RippleView
             android:id="@+id/rvBtnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             app:rv_centered="true"
@@ -43,184 +33,37 @@
                 android:src="@drawable/ic_action_back" />
         </com.andexert.library.RippleView>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cirImgUserAvatar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/placeholder_user_avatar"
-            app:civ_border_color="@color/colorAccent"
-            app:civ_border_width="4dp" />
-
-        <com.andexert.library.RippleView
-            android:id="@+id/rvChangeUserAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@id/cirImgUserAvatar"
-            android:layout_alignRight="@id/cirImgUserAvatar"
-            app:rv_centered="true"
-            app:rv_color="@color/colorRippleView"
-            app:rv_rippleDuration="100">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_transparent_circle"
-                android:src="@drawable/ic_action_plus_bg_accent" />
-
-        </com.andexert.library.RippleView>
-
         <EditText
-            android:id="@+id/edtDisplayName"
+            android:id="@+id/edtSearch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:inputType=""
-            android:maxLength="50"
-            android:maxWidth="170dp"
-            android:paddingRight="10dp"
-            android:text="Default Name"
-            android:textAppearance="@style/QuicksandMedium"
+            android:layout_height="40dp"
+            android:inputType="text"
+            android:layout_marginTop="10dp"
+            android:hint="Search ..."
+            android:layout_weight="1"
+            style="@style/EditTextCorner"
             android:textSize="18dp" />
 
         <com.andexert.library.RippleView
-            android:id="@+id/rvToggleEditUsername"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/edtDisplayName"
+            android:id="@+id/rvSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:rv_centered="true"
-            app:rv_color="@color/colorRippleView"
-            app:rv_rippleDuration="100">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_transparent_circle"
-                android:src="@drawable/ic_action_edit_accent" />
-
-        </com.andexert.library.RippleView>
-
-        <com.andexert.library.RippleView
-            android:id="@+id/rvCancelChangedUsername"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/edtDisplayName"
-            android:visibility="gone"
-            app:rv_centered="true"
-            app:rv_color="@color/colorRippleView"
-            app:rv_rippleDuration="100">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_transparent_circle"
-                android:src="@drawable/ic_action_cancel_accent" />
-
-        </com.andexert.library.RippleView>
-
-
-        <com.andexert.library.RippleView
-            android:id="@+id/rvAcceptChangedUsername"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/rvCancelChangedUsername"
-            android:visibility="gone"
-            app:rv_centered="true"
-            app:rv_color="@color/colorRippleView"
-            app:rv_rippleDuration="100">
+            android:padding="10dp"
+            app:rv_color="#979292"
+            app:rv_rippleDuration="200">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_transparent_circle"
-                android:src="@drawable/ic_action_save_accent" />
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_search_white" />
 
         </com.andexert.library.RippleView>
-    </RelativeLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="35dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:drawableLeft="@drawable/ic_action_account_box_accent"
-                android:drawablePadding="5dp"
-                android:text="username"
-                android:textAppearance="@style/QuicksandMedium" />
-
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:drawableLeft="@drawable/ic_action_emaill_accent"
-                android:drawablePadding="5dp"
-                android:text="email@example.com"
-                android:textAppearance="@style/QuicksandMedium" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/edtOldPassword"
-            style="@style/EditTextBgLight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/ic_action_key_accent"
-            android:drawablePadding="8dp"
-            android:hint="Old Password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/edtPassword"
-            style="@style/EditTextBgLight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:drawableLeft="@drawable/ic_action_password_red"
-            android:drawablePadding="8dp"
-            android:hint="New Password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/edtConfirmPassword"
-            style="@style/EditTextBgLight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:drawableLeft="@drawable/ic_action_password_red"
-            android:drawablePadding="8dp"
-            android:hint="Confirm Password"
-            android:inputType="textPassword" />
-
-        <Button
-            android:id="@+id/btnChangePassword"
-            style="@style/ButtonYellow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Change Password"
-            android:textAllCaps="true"
-            android:textAppearance="@style/QuicksandBold" />
 
     </LinearLayout>
+
 </LinearLayout>
