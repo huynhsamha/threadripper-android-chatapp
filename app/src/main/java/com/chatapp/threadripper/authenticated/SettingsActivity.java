@@ -23,6 +23,7 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
@@ -31,6 +32,7 @@ import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -292,37 +294,12 @@ public class SettingsActivity extends BaseMainActivity {
         Uri uri = data.getData();
         ImageLoader.loadImageChatMessage(cirImgUserAvatar, uri.toString());
 
-        // TODO: Call API to update avatar
+        // Call API to update avatar
         String realFilePath = ImageFilePath.getPath(SettingsActivity.this, data.getData());
 
         try {
             File file = new File(realFilePath);
-
-            ApiService.getInstance().changeUserAvatar(file).enqueue(new Callback<ApiResponseData>() {
-                @Override
-                public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
-                    if (response.isSuccessful()) {
-                        ApiResponseData data = response.body();
-                        String newAvatarUrl = data.getAvatarUrl();
-                        Preferences.getCurrentUser().setPhotoUrl(newAvatarUrl);
-                        CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser());
-                    } else {
-                        Gson gson = new Gson();
-                        try {
-                            ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                            SettingsActivity.this.ShowErrorDialog(err.getMessage());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            SettingsActivity.this.ShowErrorDialog(e.getMessage());
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ApiResponseData> call, Throwable t) {
-                    SettingsActivity.this.ShowErrorDialog(t.getMessage());
-                }
-            });
+            postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
             SettingsActivity.this.ShowErrorDialog(err.getMessage());
@@ -332,9 +309,45 @@ public class SettingsActivity extends BaseMainActivity {
 
     void handleCaptureImageSuccess(Intent data) {
         Bitmap bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
-        // ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, photo.toString());
         cirImgUserAvatar.setImageBitmap(bitmapCaptureImage);
 
-        // TODO: Call API to update avatar
+        // Call API to update avatar
+        try {
+           File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
+           postAvatarToServerWithFile(file);
+
+        } catch (Exception err) {
+            SettingsActivity.this.ShowErrorDialog(err.getMessage());
+        }
+    }
+
+
+
+    void postAvatarToServerWithFile(File file) {
+        ApiService.getInstance().changeUserAvatar(file).enqueue(new Callback<ApiResponseData>() {
+            @Override
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
+                    String newAvatarUrl = data.getAvatarUrl();
+                    Preferences.getCurrentUser().setPhotoUrl(newAvatarUrl);
+                    CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser());
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        SettingsActivity.this.ShowErrorDialog(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        SettingsActivity.this.ShowErrorDialog(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
+                SettingsActivity.this.ShowErrorDialog(t.getMessage());
+            }
+        });
     }
 }
