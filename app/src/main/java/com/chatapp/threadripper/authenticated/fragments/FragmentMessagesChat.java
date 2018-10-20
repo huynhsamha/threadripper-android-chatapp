@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
     private RecyclerView mRcvGroups, mRcvPeople;
-    private MessagesChatAdapter mAdapter;
+    private MessagesChatAdapter mAdapterGroups;
     private SearchUsersAdapter mAdapterPeople;
     private TextView tv_selection, tvNoAnyFriends, tvLoading;
     private SwipeRefreshLayout swipeContainer;
@@ -68,19 +68,30 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
 
         isLoading();
-        useCache();
+        useCacheUser();
+        userCacheConversation();
         fetchConversations();
         fetchPeople();
 
         return view;
     }
 
-    void useCache() {
+    void useCacheUser() {
         ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheNotFriends();
         if (cacheUsers.isEmpty()) {
 
         } else {
             mAdapterPeople.setArrayList(cacheUsers);
+        }
+    }
+
+    void userCacheConversation() {
+        ArrayList<Conversation> cache = CacheService.getInstance().retrieveCacheConversations();
+        if (cache.isEmpty()) {
+            tvNoAnyFriends.setVisibility(View.VISIBLE);
+        } else {
+            tvNoAnyFriends.setVisibility(View.GONE);
+            mAdapterGroups.setArrayList(cache);
         }
     }
 
@@ -93,8 +104,8 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mRcvGroups = (RecyclerView) view.findViewById(R.id.rcvGroups);
         mRcvGroups.setHasFixedSize(true);
         mRcvGroups.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new MessagesChatAdapter(getContext(), null, this);
-        mRcvGroups.setAdapter(mAdapter);
+        mAdapterGroups = new MessagesChatAdapter(getContext(), null, this);
+        mRcvGroups.setAdapter(mAdapterGroups);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
         // People
@@ -156,12 +167,13 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
             @Override
             public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
                 if (response.isSuccessful()) {
-                    List<Conversation> conversations = response.body();
+                    ArrayList<Conversation> conversations = (ArrayList<Conversation>) response.body();
                     if (conversations.isEmpty()) {
                         endFailLoading(1);
                     } else {
                         endSuccessLoading(1);
-                        mAdapter.setArrayList((ArrayList<Conversation>) conversations);
+                        mAdapterGroups.setArrayList(conversations);
+                        updateCacheConversation(conversations);
                     }
                 } else {
                     endFailLoading(1);
@@ -194,7 +206,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                         // Show not friends
                         mAdapterPeople.setArrayList(notFriends);
                         // update new data
-                        updateCache(users);
+                        updateCacheUser(users);
                     }
                 } else {
                     endFailLoading(2);
@@ -208,8 +220,15 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         });
     }
 
+    void updateCacheConversation(ArrayList<Conversation> conversations) {
+        new Thread(() -> {
+            for (Conversation c: conversations) {
+                CacheService.getInstance().addOrUpdateCacheConversation(c);
+            }
+        }).start();
+    }
 
-    void updateCache(ArrayList<User> users) {
+    void updateCacheUser(ArrayList<User> users) {
         new Thread(() -> {
             for (User user: users) {
                 if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
@@ -226,7 +245,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
     @Override
     public void onItemClicked(int position) {
-        Conversation item = mAdapter.getItem(position);
+        Conversation item = mAdapterGroups.getItem(position);
         Intent intent = new Intent(getActivity(), ConversationActivity.class);
         intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
         intent.putExtra(Constants.CONVERSATION_NAME, ModelUtils.getConversationName(item));

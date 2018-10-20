@@ -1,7 +1,11 @@
 package com.chatapp.threadripper.api;
 
+import com.chatapp.threadripper.cacheRealm.ConversationRealm;
+import com.chatapp.threadripper.cacheRealm.MessageRealm;
 import com.chatapp.threadripper.cacheRealm.PreferencesRealm;
 import com.chatapp.threadripper.cacheRealm.UserRealm;
+import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.Preferences;
@@ -66,6 +70,18 @@ public class CacheService {
         });
     }
 
+    public void addOrUpdateCacheConversation(Conversation conversation) {
+        realm.executeTransaction(realm -> {
+            realm.copyToRealmOrUpdate(new ConversationRealm(conversation));
+        });
+    }
+
+    public void addOrUpdateCacheMessage(Message message) {
+        realm.executeTransaction(realm -> {
+            realm.copyToRealmOrUpdate(new MessageRealm(message));
+        });
+    }
+
 
     public ArrayList<User> retrieveCacheUsers() {
         RealmResults<UserRealm> list = realm.where(UserRealm.class).findAll();
@@ -100,6 +116,17 @@ public class CacheService {
             }
         }
         return cacheUsers;
+    }
+
+    public ArrayList<Conversation> retrieveCacheConversations() {
+        RealmResults<ConversationRealm> list = realm.where(ConversationRealm.class).findAll();
+        ArrayList<Conversation> cache = new ArrayList<>();
+        if (list != null) {
+            for (ConversationRealm o : list) {
+                cache.add(new Conversation(o));
+            }
+        }
+        return cache;
     }
 
     public boolean checkRelationFriend(User user) {

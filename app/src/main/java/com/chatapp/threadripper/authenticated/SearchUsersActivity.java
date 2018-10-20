@@ -92,6 +92,7 @@ public class SearchUsersActivity extends BaseMainActivity {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 endLoading();
+
                 if (response.isSuccessful()) {
                     ArrayList<User> users = (ArrayList<User>) response.body();
 
@@ -105,7 +106,6 @@ public class SearchUsersActivity extends BaseMainActivity {
                     }
 
                 } else {
-                    endLoading();
                     tvNoAnyone.setVisibility(View.VISIBLE);
                 }
             }

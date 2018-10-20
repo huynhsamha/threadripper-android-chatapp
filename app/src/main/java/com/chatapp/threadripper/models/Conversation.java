@@ -1,5 +1,10 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.cacheRealm.ConversationRealm;
+import com.chatapp.threadripper.cacheRealm.MessageRealm;
+import com.chatapp.threadripper.cacheRealm.UserRealm;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Conversation {
@@ -7,8 +12,22 @@ public class Conversation {
     String conversationId;
     String conversationName;
     Message lastMessage;
-    List<User> listUser;
+    List<User> listUser = new ArrayList<>();
 
+    public Conversation() {
+
+    }
+
+    public Conversation(ConversationRealm o) {
+        conversationId = o.getConversationId();
+        conversationName = o.getConversationName();
+        if (o.getLastMessage() != null)
+            lastMessage = new Message(o.getLastMessage());
+        for (UserRealm u : o.getListUser()) {
+            if (u != null)
+                listUser.add(new User(u));
+        }
+    }
 
     /**
      * Getters and Setters

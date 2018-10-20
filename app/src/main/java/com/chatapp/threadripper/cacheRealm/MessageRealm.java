@@ -1,11 +1,15 @@
-package com.chatapp.threadripper.models;
+package com.chatapp.threadripper.cacheRealm;
 
-import com.chatapp.threadripper.cacheRealm.MessageRealm;
+import com.chatapp.threadripper.models.Message;
 
 import java.util.Date;
 
-public class Message {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class MessageRealm extends RealmObject {
+
+    @PrimaryKey
     String messageId;
     String type;
     String content;
@@ -14,16 +18,12 @@ public class Message {
     String username;
     Boolean read;
 
-    public static class MessageType {
-        public static final String JOIN = "JOIN";
-        public static final String LEAVE = "LEAVE";
-        public static final String TEXT = "TEXT";
-        public static final String IMAGE = "IMAGE";
-        public static final String FILE = "FILE";
-        public static final String CALL = "CALL";
+
+    public MessageRealm() {
+
     }
 
-    public Message(MessageRealm o) {
+    public MessageRealm(Message o) {
         messageId = o.getMessageId();
         type = o.getType();
         content = o.getContent();
@@ -33,14 +33,6 @@ public class Message {
         read = o.getRead();
     }
 
-    public Message() {
-
-    }
-
-
-    /**
-     * Getters and Setters
-     */
 
     public String getMessageId() {
         return messageId;
