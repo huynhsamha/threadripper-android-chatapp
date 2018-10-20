@@ -10,8 +10,10 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class SearchUsersActivity extends BaseMainActivity {
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
+        useCache();
         requestSearchUsers();
     }
 
@@ -45,14 +48,37 @@ public class SearchUsersActivity extends BaseMainActivity {
         rvBtnBack.setEnabled(false);
         rvSearch.setEnabled(false);
         edtSearch.setEnabled(false);
-        tvLoading.setVisibility(View.VISIBLE);
     }
 
     void endLoading() {
         rvBtnBack.setEnabled(true);
         rvSearch.setEnabled(true);
         edtSearch.setEnabled(true);
-        tvLoading.setVisibility(View.GONE);
+    }
+
+    void useCache() {
+        ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheUsers();
+        if (cacheUsers.isEmpty()) {
+            tvLoading.setVisibility(View.VISIBLE);
+        } else {
+            tvLoading.setVisibility(View.GONE);
+            tvNoAnyone.setVisibility(View.GONE);
+            mAdapter.setArrayList(cacheUsers);
+        }
+    }
+
+    void updateCache(ArrayList<User> users) {
+        new Thread(() -> {
+            for (User user: users) {
+                CacheService.getInstance().addOrUpdateCacheUser(user);
+            }
+        }).start();
+    }
+
+    void handleUserResponse(User user) {
+        if (CacheService.getInstance().checkRelationFriend(user)) {
+            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        };
     }
 
     void requestSearchUsers() {
@@ -65,13 +91,15 @@ public class SearchUsersActivity extends BaseMainActivity {
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 endLoading();
                 if (response.isSuccessful()) {
-                    List<User> users = response.body();
+                    ArrayList<User> users = (ArrayList<User>) response.body();
 
                     if (users.isEmpty()) {
                         tvNoAnyone.setVisibility(View.VISIBLE);
                     } else {
                         tvNoAnyone.setVisibility(View.GONE);
-                        mAdapter.setArrayList((ArrayList<User>) users);
+                        for (User user: users) handleUserResponse(user);
+                        mAdapter.setArrayList(users);
+                        updateCache(users);
                     }
 
                 } else {

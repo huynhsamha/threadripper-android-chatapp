@@ -17,6 +17,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiRoutes;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.models.ErrorResponse;
@@ -121,6 +122,9 @@ public class LoginActivity extends BaseActivity {
                     String chatAuthToken = response.headers().get("Authorization");
                     if (chatAuthToken != null && chatAuthToken.contains("CHAT")) {
                         Preferences.setChatAuthToken(chatAuthToken);
+
+                        // Update cache
+                        CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser(), chatAuthToken);
                     }
 
                     startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));

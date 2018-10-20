@@ -1,51 +1,30 @@
-package com.chatapp.threadripper.models;
+package com.chatapp.threadripper.cacheRealm;
 
-import com.chatapp.threadripper.cacheRealm.UserRealm;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
+import com.google.gson.Gson;
+import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class UserRealm extends RealmObject {
+
+    @PrimaryKey
     String username;
     String email;
     String password;
     String displayName;
-
-    @SerializedName("avatarUrl") // server use avatarUrl
     String photoUrl;
-
     Boolean online;
-
     String relationship = Constants.RELATIONSHIP_NONE;
-    // relationship with current user
-    // 3 type: friend | sent request | none
-    // default is none
 
-
-    /**
-     * Constructors
-     */
-
-    public User(String username, String email, String password, String displayName) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.displayName = displayName;
-    }
-
-    public User() {
+    public UserRealm() {
 
     }
 
-    public User(String username, String email, String password, String displayName, String photoUrl) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.displayName = displayName;
-        this.photoUrl = photoUrl;
-    }
-
-    public User(UserRealm user) {
+    public UserRealm(User user) {
         username = user.getUsername();
         email = user.getEmail();
         password = user.getPassword();
@@ -55,10 +34,6 @@ public class User {
         relationship = user.getRelationship();
     }
 
-
-    /**
-     * Getters and Setters
-     */
 
     public String getUsername() {
         return username;

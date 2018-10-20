@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
@@ -66,6 +67,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
 
         isLoading();
+        useCache();
         fetchConversations();
         fetchPeople();
 
@@ -87,6 +89,15 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         // });
 
         return view;
+    }
+
+    void useCache() {
+        ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheNotFriends();
+        if (cacheUsers.isEmpty()) {
+
+        } else {
+            mAdapterPeople.setArrayList(cacheUsers);
+        }
     }
 
     void initViews(View view) {
@@ -129,6 +140,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
             fetchPeople();
         });
     }
+
 
     void isLoading() {
         // tvNoAnyFriends.setVisibility(View.GONE);
@@ -184,12 +196,21 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful()) {
-                    List<User> users = response.body();
+                    ArrayList<User> users = (ArrayList<User>) response.body();
                     if (users.isEmpty()) {
                         endFailLoading(2);
                     } else {
                         endSuccessLoading(2);
-                        mAdapterPeople.setArrayList((ArrayList<User>) users);
+                        ArrayList<User> notFriends = new ArrayList<>();
+                        for (User user: users) {
+                            handleUserResponse(user);
+                            if (user.getRelationship().equals(Constants.RELATIONSHIP_FRIEND)) continue;
+                            notFriends.add(user);
+                        }
+                        // Show not friends
+                        mAdapterPeople.setArrayList(notFriends);
+                        // update new data
+                        updateCache(users);
                     }
                 } else {
                     endFailLoading(2);
@@ -201,6 +222,21 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                 endFailLoading(2);
             }
         });
+    }
+
+
+    void updateCache(ArrayList<User> users) {
+        new Thread(() -> {
+            for (User user: users) {
+                CacheService.getInstance().addOrUpdateCacheUser(user);
+            }
+        }).start();
+    }
+
+    void handleUserResponse(User user) {
+        if (CacheService.getInstance().checkRelationFriend(user)) {
+            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        };
     }
 
     @Override

@@ -11,16 +11,23 @@ import android.widget.TextView;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiResponseData;
+import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.CallingActivity;
 import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.ViewHolder> {
@@ -106,7 +113,34 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
     void handleAddFriend(int position) {
         User user = getItem(position);
         user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        updateServer(user);
+        updateCache(user);
         notifyItemChanged(position);
+    }
+
+    void updateCache(User user) {
+        CacheService.getInstance().addOrUpdateCacheUser(user);
+    }
+
+    void updateServer(User user) {
+        List<String> listUsername = new ArrayList<>();
+        listUsername.add(Preferences.getCurrentUser().getUsername());
+        listUsername.add(user.getUsername());
+        ApiService.getInstance().createConversation(listUsername).enqueue(new Callback<ApiResponseData>() {
+            @Override
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
+
+            }
+        });
     }
 
     void handleChat(int position) {

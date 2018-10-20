@@ -14,90 +14,56 @@
         android:text="Loading ..."
         android:visibility="gone" />
 
-    <!--<LinearLayout-->
-    <!--android:id="@+id/lnNoAny"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical">-->
-    <!---->
-    <!--<TextView-->
-    <!--android:id="@+id/tvNoAny"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center"-->
-    <!--android:layout_marginBottom="@dimen/space15"-->
-    <!--android:text="You have no any conversation now. \nPlease add friends for chatting and group chats."-->
-    <!--/>-->
-
-    <!--<Button-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--style="@style/ButtonFillAccentCorner"-->
-    <!--android:text="Search now!"-->
-    <!--android:gravity="center"-->
-    <!--/>-->
-    <!--</LinearLayout>-->
-
-
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-        <TextView
-            style="@style/TextViewHeaderList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Friends and Groups" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvNoAnyFriends"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:gravity="center"
-            android:text="You have no any conversation now. \nPlease add friends for chatting and group chats." />
+                <TextView
+                    style="@style/TextViewHeaderList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:text="Friends and Groups" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcvGroups"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never" />
+                <TextView
+                    android:id="@+id/tvNoAnyFriends"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center"
+                    android:text="You have no any conversation now. \nPlease add friends for chatting and group chats." />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvGroups"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never" />
 
 
-        <TextView
-            style="@style/TextViewHeaderList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="People" />
+                <TextView
+                    style="@style/TextViewHeaderList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:text="People" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcvPeople"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never" />
-        </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvPeople"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <!--<TextView-->
-    <!--android:id="@+id/tv_selection"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@android:color/white"-->
-    <!--android:drawableLeft="@drawable/ic_trash"-->
-    <!--android:drawablePadding="@dimen/space15"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:padding="@dimen/space10"-->
-    <!--android:text="Delete (3)"-->
-    <!--android:textAppearance="@style/ExtraLight"-->
-    <!--android:textColor="@color/colorAccent"-->
-    <!--android:textSize="@dimen/h3"-->
-    <!--android:visibility="gone" />-->
 </RelativeLayout>
