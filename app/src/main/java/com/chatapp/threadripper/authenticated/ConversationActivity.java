@@ -85,7 +85,7 @@ public class ConversationActivity extends BaseMainActivity {
         else onlineIndicator.setVisibility(View.GONE);
 
         // Messages
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

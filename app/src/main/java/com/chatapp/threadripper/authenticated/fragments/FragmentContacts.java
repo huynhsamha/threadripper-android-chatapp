@@ -39,7 +39,7 @@ public class FragmentContacts extends Fragment implements ContactAdapter.ViewHol
         getActivity().supportInvalidateOptionsMenu();
         ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Contacts");
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rcvGroups);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new ContactAdapter(getContext(), null, this);

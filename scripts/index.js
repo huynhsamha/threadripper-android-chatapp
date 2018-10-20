@@ -10,14 +10,14 @@ const fakeUser = () => {
     const email = fake.internet.email(first_name, last_name);
     const photo_url = fake.internet.avatar();
     const displayName = first_name + ' ' + last_name;
-    const password = '1';
+    const password = String(username).substr(0,1) + '1';
 
     return { username, email, displayName, password }
 }
 
 const users = [];
 
-for (let i=0;i<20;i++) {
+for (let i=0;i<200;i++) {
     users.push(fakeUser());
 }
 

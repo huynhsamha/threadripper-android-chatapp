@@ -45,9 +45,19 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         this.notifyDataSetChanged();
     }
 
+    public void addAll(ArrayList<Conversation> arrayList) {
+        this.mArrayList.addAll(arrayList);
+        this.notifyDataSetChanged();
+    }
+
     public void addItem(Conversation item) {
         this.mArrayList.add(item);
         this.notifyItemChanged(this.mArrayList.size() - 1);
+    }
+
+    public void clean() {
+        this.mArrayList.clear();
+        this.notifyDataSetChanged();
     }
 
     public Conversation getItem(int position) {

@@ -10,10 +10,8 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.SweetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +94,7 @@ public class SearchUsersActivity extends BaseMainActivity {
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SearchUsersAdapter(this, null);

@@ -81,6 +81,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             holder.btnChat.setVisibility(View.VISIBLE);
             holder.btnChat.setOnClickListener(view -> {
                 // TODO
+                handleChat(position);
             });
         }
         else if (user.getRelationship().equals(Constants.RELATIONSHIP_NONE)) {
@@ -89,6 +90,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             holder.btnAddFriend.setVisibility(View.VISIBLE);
             holder.btnAddFriend.setOnClickListener(view -> {
                 // TODO
+                handleAddFriend(position);
             });
         }
         else if (user.getRelationship().equals(Constants.RELATIONSHIP_SENT)) {
@@ -101,6 +103,15 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         }
     }
 
+    void handleAddFriend(int position) {
+        User user = getItem(position);
+        user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        notifyItemChanged(position);
+    }
+
+    void handleChat(int position) {
+        User user = getItem(position);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 

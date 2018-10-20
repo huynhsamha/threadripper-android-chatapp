@@ -39,7 +39,7 @@ public class FragmentVideoCallList extends Fragment {
         getActivity().supportInvalidateOptionsMenu();
         ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Video Call");
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rcvGroups);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new VideoCallListAdapter(getContext(), null);
