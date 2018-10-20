@@ -3,6 +3,7 @@ package com.chatapp.threadripper.api;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
@@ -97,15 +98,34 @@ public class ApiService {
     }
 
     public Call<ApiResponseData> changeUserAvatar(File file) {
-
         MultipartBody.Part filePart = MultipartBody.Part.createFormData(
                 "file",
                 file.getName(),
                 RequestBody.create(MediaType.parse("image/*"), file)
         );
-
         RequestBody extension = RequestBody.create(MediaType.parse("text/plain"), FileUtils.getExtension(file));
-
         return getApiInstance().changeUserAvatar(Preferences.getChatAuthToken(), filePart, extension);
     }
+
+    public Call<ApiResponseData> uploadImageInChat(File file) {
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(
+                "file",
+                file.getName(),
+                RequestBody.create(MediaType.parse("image/*"), file)
+        );
+        RequestBody extension = RequestBody.create(MediaType.parse("text/plain"), FileUtils.getExtension(file));
+        return getApiInstance().uploadImageInChat(Preferences.getChatAuthToken(), filePart, extension);
+    }
+
+    public Call<ApiResponseData> uploadFileInChat(File file) {
+        String mimeType = FileUtils.getMimeType(file.getAbsolutePath());
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(
+                "file",
+                file.getName(),
+                RequestBody.create(MediaType.parse(mimeType), file)
+        );
+        RequestBody extension = RequestBody.create(MediaType.parse("text/plain"), FileUtils.getExtension(file));
+        return getApiInstance().uploadFileInChat(Preferences.getChatAuthToken(), filePart, extension);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.chatapp.threadripper.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.webkit.MimeTypeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,5 +36,14 @@ public class FileUtils {
         fos.close();
 
         return f;
+    }
+
+    public static String getMimeType(String url) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return type;
     }
 }

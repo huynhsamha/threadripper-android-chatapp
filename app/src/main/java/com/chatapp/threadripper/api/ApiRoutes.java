@@ -74,4 +74,20 @@ public interface ApiRoutes {
             @Part MultipartBody.Part file,
             @Part("ext") RequestBody extension
     );
+
+    @Multipart
+    @POST("image")
+    Call<ApiResponseData> uploadImageInChat(
+            @Header("Authorization") String authToken,
+            @Part MultipartBody.Part file,
+            @Part("ext") RequestBody extension
+    );
+
+    @Multipart
+    @POST("file")
+    Call<ApiResponseData> uploadFileInChat(
+            @Header("Authorization") String authToken,
+            @Part MultipartBody.Part file,
+            @Part("ext") RequestBody extension
+    );
 }
