@@ -27,6 +27,7 @@ import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,23 +71,6 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         useCache();
         fetchConversations();
         fetchPeople();
-
-        // List<String> usernames = new ArrayList<>();
-        // usernames.add("hope68");
-        // usernames.add("george.fay2760");
-        // ApiService.getInstance().createConversation(usernames).enqueue(new Callback<ApiResponseData>() {
-        //     @Override
-        //     public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
-        //         if (response.isSuccessful()) {
-        //             ApiResponseData data = response.body();
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void onFailure(Call<ApiResponseData> call, Throwable t) {
-        //         t.printStackTrace();
-        //     }
-        // });
 
         return view;
     }
@@ -228,6 +212,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
     void updateCache(ArrayList<User> users) {
         new Thread(() -> {
             for (User user: users) {
+                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
                 CacheService.getInstance().addOrUpdateCacheUser(user);
             }
         }).start();
@@ -245,7 +230,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         Intent intent = new Intent(getActivity(), ConversationActivity.class);
         intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
         intent.putExtra(Constants.CONVERSATION_NAME, ModelUtils.getConversationName(item));
-        // intent.putExtra(Constants.CONVERSATION_PHOTO, );
+        intent.putExtra(Constants.CONVERSATION_PHOTO, ModelUtils.getConversationAvatar(item));
         intent.putExtra(Constants.CONVERSATION_IS_ONLINE, ModelUtils.isOnlineGroup(item));
         startActivity(intent);
     }

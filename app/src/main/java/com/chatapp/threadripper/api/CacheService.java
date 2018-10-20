@@ -51,6 +51,15 @@ public class CacheService {
         });
     }
 
+    public void updateCurrentUser(User user) {
+        realm.executeTransaction(realm -> {
+            PreferencesRealm cache = new PreferencesRealm();
+            cache.setCurrentUser(new UserRealm(user));
+            cache.setChatAuthToken(Preferences.getChatAuthToken());
+            realm.copyToRealmOrUpdate(cache);
+        });
+    }
+
     public void addOrUpdateCacheUser(User user) {
         realm.executeTransaction(realm -> {
             realm.copyToRealmOrUpdate(new UserRealm(user));

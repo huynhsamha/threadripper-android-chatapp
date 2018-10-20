@@ -17,6 +17,8 @@ public class Constants {
     public static final int REQUEST_CODE_PICK_IMAGE = 40001;
     public static final int REQUEST_CODE_PERMISSION_IMAGE_CAPTURE = 40002;
     public static final int REQUEST_CODE_CAPTURE_IMAGE = 40003;
+    public static final int REQUEST_CODE_PERMISSION_READ_EXTERNAL = 40004;
+    public static final int REQUEST_CODE_PERMISSION_WRITE_EXTERNAL = 40005;
 
     public static final String CHAT_CONTENT_TYPE_TEXT = "text";
     public static final String CHAT_CONTENT_TYPE_URI = "uri";

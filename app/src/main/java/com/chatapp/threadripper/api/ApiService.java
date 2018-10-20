@@ -2,10 +2,12 @@ package com.chatapp.threadripper.api;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -14,11 +16,15 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONStringer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,5 +94,18 @@ public class ApiService {
 
         String body = json.toString();
         return getApiInstance().createConversation(Preferences.getChatAuthToken(), body);
+    }
+
+    public Call<ApiResponseData> changeUserAvatar(File file) {
+
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(
+                "file",
+                file.getName(),
+                RequestBody.create(MediaType.parse("image/*"), file)
+        );
+
+        RequestBody extension = RequestBody.create(MediaType.parse("text/plain"), FileUtils.getExtension(file));
+
+        return getApiInstance().changeUserAvatar(Preferences.getChatAuthToken(), filePart, extension);
     }
 }

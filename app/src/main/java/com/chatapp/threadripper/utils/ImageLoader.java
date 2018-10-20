@@ -22,7 +22,8 @@ public class ImageLoader {
      * Use invalid url for a null or empty url
      */
     static String safetyImageURL(String url) {
-        if (URLUtil.isValidUrl(url)) return url;
+        if (URLUtil.isValidUrl(url) && url != null
+                && !url.contains("default.jpg")) return url;
         return Constants.PLACEHOLDER_IMAGE_URL;
     }
 

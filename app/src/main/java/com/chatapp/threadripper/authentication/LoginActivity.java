@@ -108,6 +108,9 @@ public class LoginActivity extends BaseActivity {
 
         SweetDialog.showLoading(this);
 
+        // startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+        // finish();
+
         ApiService.getInstance().login(username, password).enqueue(new Callback<ApiResponseData>() {
             @Override
             public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {

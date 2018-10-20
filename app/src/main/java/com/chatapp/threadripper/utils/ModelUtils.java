@@ -24,6 +24,10 @@ public class ModelUtils {
         return TextUtils.join(", ", users);
     }
 
+    public static String getConversationAvatar(Conversation conversation) {
+        return "";
+    }
+
     public static boolean isOnlineGroup(Conversation conversation) {
         List<String> users = new ArrayList<>();
         for (User user : conversation.getListUser()) {

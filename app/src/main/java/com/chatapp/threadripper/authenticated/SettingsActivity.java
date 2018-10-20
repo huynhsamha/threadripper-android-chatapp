@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -19,15 +20,17 @@ import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.authentication.LoginActivity;
-import com.chatapp.threadripper.authentication.SignUpActivity;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -75,6 +78,8 @@ public class SettingsActivity extends BaseMainActivity {
         tvUsername.setText(Preferences.getCurrentUser().getUsername());
         tvEmail.setText(Preferences.getCurrentUser().getEmail());
         edtDisplayName.setText(Preferences.getCurrentUser().getDisplayName());
+
+        ImageLoader.loadUserAvatar(cirImgUserAvatar, Preferences.getCurrentUser().getPhotoUrl());
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             rvChangeUserAvatar.setVisibility(View.GONE); // not support capture image with API < 23
@@ -195,7 +200,16 @@ public class SettingsActivity extends BaseMainActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M) // >= 23
     void handleSelectImage() {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.REQUEST_CODE_PERMISSION_READ_EXTERNAL);
+            return;
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUEST_CODE_PERMISSION_WRITE_EXTERNAL);
+            return;
+        }
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(intent.ACTION_GET_CONTENT);
@@ -213,7 +227,9 @@ public class SettingsActivity extends BaseMainActivity {
 
                     @Override
                     public void onSelectOption2() {
-                        handleSelectImage();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            handleSelectImage();
+                        }
                     }
                 });
     }
@@ -228,6 +244,28 @@ public class SettingsActivity extends BaseMainActivity {
             } else {
                 // the fucking user!!!
                 ShowToast.lengthLong(this, "Camera permission is denied");
+            }
+        }
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_READ_EXTERNAL) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    handleSelectImage();
+                }
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Read external storage permission is denied");
+            }
+        }
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_WRITE_EXTERNAL) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    handleSelectImage();
+                }
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Write external storage permission is denied");
             }
         }
     }
@@ -249,11 +287,47 @@ public class SettingsActivity extends BaseMainActivity {
         }
     }
 
+
     void handlePickImageSuccess(Intent data) {
         Uri uri = data.getData();
         ImageLoader.loadImageChatMessage(cirImgUserAvatar, uri.toString());
 
         // TODO: Call API to update avatar
+        String realFilePath = ImageFilePath.getPath(SettingsActivity.this, data.getData());
+
+        try {
+            File file = new File(realFilePath);
+
+            ApiService.getInstance().changeUserAvatar(file).enqueue(new Callback<ApiResponseData>() {
+                @Override
+                public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
+                    if (response.isSuccessful()) {
+                        ApiResponseData data = response.body();
+                        String newAvatarUrl = data.getAvatarUrl();
+                        Preferences.getCurrentUser().setPhotoUrl(newAvatarUrl);
+                        CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser());
+                    } else {
+                        Gson gson = new Gson();
+                        try {
+                            ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                            SettingsActivity.this.ShowErrorDialog(err.getMessage());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            SettingsActivity.this.ShowErrorDialog(e.getMessage());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponseData> call, Throwable t) {
+                    SettingsActivity.this.ShowErrorDialog(t.getMessage());
+                }
+            });
+
+        } catch (Exception err) {
+            SettingsActivity.this.ShowErrorDialog(err.getMessage());
+        }
+
     }
 
     void handleCaptureImageSuccess(Intent data) {

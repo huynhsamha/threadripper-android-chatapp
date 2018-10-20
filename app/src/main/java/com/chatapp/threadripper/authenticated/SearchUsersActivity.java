@@ -14,6 +14,7 @@ import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,7 @@ public class SearchUsersActivity extends BaseMainActivity {
     void updateCache(ArrayList<User> users) {
         new Thread(() -> {
             for (User user: users) {
+                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
                 CacheService.getInstance().addOrUpdateCacheUser(user);
             }
         }).start();

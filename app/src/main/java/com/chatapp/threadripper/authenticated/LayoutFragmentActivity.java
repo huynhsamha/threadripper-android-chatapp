@@ -56,6 +56,11 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         configDrawerUserInfo();
     }
