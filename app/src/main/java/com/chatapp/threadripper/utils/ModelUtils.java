@@ -17,6 +17,7 @@ public class ModelUtils {
 
         List<String> users = new ArrayList<>();
         for (User user : conversation.getListUser()) {
+            if (user == null) continue;
             if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
             users.add(user.getDisplayName());
         }
@@ -29,9 +30,9 @@ public class ModelUtils {
     }
 
     public static boolean isOnlineGroup(Conversation conversation) {
-        List<String> users = new ArrayList<>();
         for (User user : conversation.getListUser()) {
-            if (user.getOnline()) return true;
+            if (user == null) continue;
+            if (user.isOnline()) return true;
         }
         return false;
     }

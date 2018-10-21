@@ -14,7 +14,7 @@ public class User {
     @SerializedName("avatarUrl") // server use avatarUrl
     String photoUrl;
 
-    Boolean online;
+    boolean online;
 
     String relationship = Constants.RELATIONSHIP_NONE;
     // relationship with current user
@@ -51,7 +51,7 @@ public class User {
         password = user.getPassword();
         displayName = user.getDisplayName();
         photoUrl = user.getPhotoUrl();
-        online = user.getOnline();
+        online = user.isOnline();
         relationship = user.getRelationship();
     }
 
@@ -100,11 +100,11 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
-    public Boolean getOnline() {
+    public boolean isOnline() {
         return online;
     }
 
-    public void setOnline(Boolean online) {
+    public void setOnline(boolean online) {
         this.online = online;
     }
 
