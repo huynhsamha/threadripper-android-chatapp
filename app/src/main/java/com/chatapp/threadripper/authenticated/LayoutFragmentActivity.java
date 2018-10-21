@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
@@ -24,6 +25,7 @@ import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.SweetDialog;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.Realm;
 
 public class LayoutFragmentActivity extends BaseMainActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -162,6 +164,8 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     void handleLogout() {
         Preferences.setChatAuthToken("");
         Preferences.setCurrentUser(new User());
+
+        CacheService.getInstance().clearCacheTokenAndUser();
 
         startActivity(new Intent(this, LoginActivity.class));
         finish();

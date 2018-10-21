@@ -1,12 +1,15 @@
 package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.authenticated.PhotoViewActivity;
+import com.chatapp.threadripper.authenticated.models.Conversation;
 import com.chatapp.threadripper.authenticated.models.Message;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderDate;
 import com.chatapp.threadripper.authenticated.adapters.viewholders.ViewHolderMe;
@@ -117,16 +120,29 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 vh.getRivChatImage().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.VISIBLE);
                 break;
+
             case Constants.CHAT_CONTENT_TYPE_URI:
                 ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getImgUrl());
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
+                vh.getRivChatImage().setOnClickListener(view -> {
+                    Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
+                    intent.putExtra(Constants.CHAT_IMAGE_URL, msg.getImgUrl());
+                    this.mContext.startActivity(intent);
+                });
                 break;
+
             case Constants.CHAT_CONTENT_TYPE_BITMAP:
                 vh.getRivChatImage().setImageBitmap(msg.getBitmap());
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
+                vh.getRivChatImage().setOnClickListener(view -> {
+                    Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
+                    intent.putExtra(Constants.CHAT_IMAGE_BITMAP, msg.getBitmap());
+                    this.mContext.startActivity(intent);
+                });
                 break;
+
             default:
                 // oh, no man!, what the fucking message!!!
                 vh.getRivChatImage().setVisibility(View.GONE);

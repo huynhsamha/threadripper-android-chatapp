@@ -13,8 +13,6 @@ import android.view.WindowManager;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
-import com.chatapp.threadripper.cacheRealm.PreferencesRealm;
-import com.chatapp.threadripper.utils.Preferences;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -47,7 +45,7 @@ public class Splash extends AppCompatActivity {
                 if (CacheService.getInstance().isConnected()) {
                     // update session of user in preference running on RAM from cache.
                     CacheService.getInstance().updatePreferenceOnRAM();
-                    // Dont need login, go to Main Screen
+                    // Don't need login, go to Main Screen
                     startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
                 } else {
                     startActivity(new Intent(Splash.this, LoginActivity.class));

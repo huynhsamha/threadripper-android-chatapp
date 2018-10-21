@@ -7,6 +7,9 @@ public class Constants {
 
     public static final String IS_CALLER_SIDE = "IS_CALLER_SIDE";
 
+    public static final String CHAT_IMAGE_URL = "CHAT_IMAGE_URL";
+    public static final String CHAT_IMAGE_BITMAP = "CHAT_IMAGE_BITMAP";
+
     public static final String CONVERSATION_ID = "CONVERSATION_ID";
     public static final String CONVERSATION_NAME = "CONVERSATION_NAME";
     public static final String CONVERSATION_PHOTO = "CONVERSATION_PHOTO";

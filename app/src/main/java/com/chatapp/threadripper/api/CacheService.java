@@ -40,6 +40,13 @@ public class CacheService {
         return getCacheAuthToken() != null;
     }
 
+    public void clearCacheTokenAndUser() {
+        realm.beginTransaction();
+        realm.delete(PreferencesRealm.class);
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public void updatePreferenceOnRAM() {
         PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
         Preferences.setCurrentUser(new User(cache.getCurrentUser()));
