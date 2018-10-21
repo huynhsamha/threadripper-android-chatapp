@@ -1,6 +1,7 @@
 package com.chatapp.threadripper.authenticated;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,11 +12,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.TabWidget;
+import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.TestApiService;
@@ -43,7 +52,7 @@ public class ConversationActivity extends BaseMainActivity {
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
-    private ImageButton imgBtnSend, btnAttacthChatImage, btnCaptureImage;
+    private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
     private CircleImageView cirImgUserAvatar;
     private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
@@ -68,11 +77,13 @@ public class ConversationActivity extends BaseMainActivity {
 
         setupToolbarWithBackButton(R.id.toolbar, displayName);
 
-
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
-        btnAttacthChatImage = (ImageButton) findViewById(R.id.btnAttacthChatImage);
+        btnAttachChatImage = (ImageButton) findViewById(R.id.btnAttachChatImage);
         btnCaptureImage = (ImageButton) findViewById(R.id.btnCaptureImage);
+        btnAttachFile = (ImageButton) findViewById(R.id.btnAttachFile);
+        btnShowButtons = (ImageButton) findViewById(R.id.btnShowButtons);
+
         rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
 
         // Load User Avatar & Online ?
@@ -83,6 +94,8 @@ public class ConversationActivity extends BaseMainActivity {
         ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
         if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
         else onlineIndicator.setVisibility(View.GONE);
+
+        btnShowButtons.setVisibility(View.GONE);
 
         // Messages
         mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
@@ -134,42 +147,69 @@ public class ConversationActivity extends BaseMainActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     void setListeners() {
 
-        edtMessage.setOnTouchListener(new View.OnTouchListener() {
+        // edtMessage.setOnFocusChangeListener((view, hasFocus) -> {
+        //     if (hasFocus) {
+        //         mRecyclerView.postDelayed(() -> {
+        //             hideButtonsBar();
+        //             scrollToBottom();
+        //         }, 300);
+        //     } else {
+        //         showButtonsBar();
+        //     }
+        // });
+
+        edtMessage.setOnTouchListener((view, event) -> {
+            mRecyclerView.postDelayed(() -> {
+                hideButtonsBar();
+                scrollToBottom();
+            }, 300);
+            return false;
+        });
+
+        edtMessage.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                // For the system keyboard toggle before scroll to last message
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollToBottom();
-                    }
-                }, 500);
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                hideButtonsBar();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
-        imgBtnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleClickButtonSend();
-            }
-        });
+        imgBtnSend.setOnClickListener(view -> handleClickButtonSend());
+        btnAttachChatImage.setOnClickListener(view -> handleAttachImage());
+        btnCaptureImage.setOnClickListener(view -> handleCaptureCamera());
+        btnAttachFile.setOnClickListener(view -> handleAttachFile());
 
-        btnAttacthChatImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleAttachImage();
-            }
-        });
+        btnShowButtons.setOnClickListener(view -> showButtonsBar());
+    }
 
-        btnCaptureImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleCaptureCamera();
-            }
-        });
+    void hideButtonsBar() {
+        btnShowButtons.setVisibility(View.VISIBLE);
+        btnAttachChatImage.setVisibility(View.GONE);
+        btnCaptureImage.setVisibility(View.GONE);
+        btnAttachFile.setVisibility(View.GONE);
+    }
+
+    void showButtonsBar() {
+        btnShowButtons.setVisibility(View.GONE);
+        btnAttachChatImage.setVisibility(View.VISIBLE);
+        btnCaptureImage.setVisibility(View.VISIBLE);
+        btnAttachFile.setVisibility(View.VISIBLE);
+    }
+
+    void handleAttachFile() {
+        btnAttachFile.setImageResource(R.drawable.ic_action_attach_file_accent);
     }
 
     void handleClickButtonSend() {
@@ -197,7 +237,7 @@ public class ConversationActivity extends BaseMainActivity {
     }
 
     void handleAttachImage() {
-        btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
+        btnAttachChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
 
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -326,7 +366,7 @@ public class ConversationActivity extends BaseMainActivity {
             }
 
             // reset button attach image
-            btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate);
+            btnAttachChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate);
         }
         else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
             if (resultCode == RESULT_OK && data != null) {

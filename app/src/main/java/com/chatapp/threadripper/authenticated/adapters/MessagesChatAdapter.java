@@ -89,7 +89,7 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         Message lastMessage = item.getLastMessage();
         if (lastMessage == null) {
             vh.tvTime.setText(DateTimeUtils.formatBestDateTime(new Date()));
-            vh.tvLastChat.setText("<No any message>");
+            vh.tvLastChat.setText("No any message");
         } else {
             vh.tvTime.setText(DateTimeUtils.formatBestDateTime(item.getLastMessage().getDatetime()));
 
