@@ -18,12 +18,14 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ShowToast;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PhotoViewActivity extends BaseMainActivity {
 
-    ImageView imgView;
+    PhotoView photoView;
     ImageButton btnClose;
 
     @Override
@@ -36,17 +38,17 @@ public class PhotoViewActivity extends BaseMainActivity {
         }
         changeStatusBarColor();
 
-        imgView = (ImageView) findViewById(R.id.imgView);
+        photoView = (PhotoView) findViewById(R.id.photoView);
         btnClose = (ImageButton) findViewById(R.id.btnClose);
 
         btnClose.setOnClickListener(view -> onBackPressed());
 
         String url = getIntent().getStringExtra(Constants.CHAT_IMAGE_URL);
         if (url != null) {
-            ImageLoader.loadImageChatMessage(imgView, url);
+            ImageLoader.loadPhotoView(photoView, url);
         } else {
             Bitmap bitmap = getIntent().getParcelableExtra(Constants.CHAT_IMAGE_BITMAP);
-            imgView.setImageBitmap(bitmap);
+            photoView.setImageBitmap(bitmap);
         }
     }
 

@@ -42,4 +42,11 @@ public class ImageLoader {
                 .centerCrop()
                 .into((ImageView) view);
     }
+
+    public static void loadPhotoView(View view, String url) {
+        Picasso.get().load(safetyImageURL(url))
+                .placeholder(R.drawable.placeholder_image_chat)
+                .error(R.drawable.placeholder_image_chat)
+                .into((ImageView) view);
+    }
 }
