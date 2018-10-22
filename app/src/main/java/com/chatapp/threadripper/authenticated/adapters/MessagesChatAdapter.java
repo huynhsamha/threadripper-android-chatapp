@@ -3,24 +3,18 @@ package com.chatapp.threadripper.authenticated.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.models.Contact;
-import com.chatapp.threadripper.authenticated.models.MessagesChat;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.utils.DateTimeUtils;
-import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -91,7 +85,9 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
             vh.tvTime.setText(DateTimeUtils.formatBestDateTime(new Date()));
             vh.tvLastChat.setText("No any message");
         } else {
-            vh.tvTime.setText(DateTimeUtils.formatBestDateTime(item.getLastMessage().getDatetime()));
+            if (lastMessage.getDateTime() != null) {
+                vh.tvTime.setText(DateTimeUtils.formatBestDateTime(lastMessage.getDateTime()));
+            }
 
             if (lastMessage.getType().equals(Message.MessageType.TEXT)) {
                 vh.tvLastChat.setText(lastMessage.getContent());

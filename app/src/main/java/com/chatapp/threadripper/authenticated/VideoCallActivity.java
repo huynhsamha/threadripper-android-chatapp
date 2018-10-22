@@ -21,8 +21,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity {
 
-    String TAG = "VIDEO_CALL_LOGCAT";
-
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
     TextView tvUsername, tvStatus;
@@ -30,7 +28,6 @@ public class VideoCallActivity extends BaseMainActivity {
 
 
     boolean callerSide; // me, caller or callee
-    int qbUserId;
     String username, userAvatar, displayName; // not me, the caller or callee
 
 
@@ -81,17 +78,19 @@ public class VideoCallActivity extends BaseMainActivity {
     void handleEndCalling() {
         // TODO
         if (callerSide) {
-            // TODO
             finish();
         } else {
-            // setResult(RESULT_CANCELED);
             finish();
         }
     }
 
     void handleAcceptCalling() {
-        // setResult(RESULT_OK);
         // TODO
+        if (callerSide) {
+
+        } else {
+
+        }
     }
 
     private void changeStatusBarColor() {

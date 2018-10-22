@@ -10,19 +10,22 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+public class ViewHolderYouOrMe extends RecyclerView.ViewHolder {
 
-public class ViewHolderYou extends RecyclerView.ViewHolder {
 
     private TextView time, chatText;
     private CircleImageView cirImgUserAvatar;
     private RoundedImageView rivChatImage;
 
-    public ViewHolderYou(View v) {
+    public ViewHolderYouOrMe(View v, boolean isYou) {
         super(v);
         time = (TextView) v.findViewById(R.id.tv_time);
         chatText = (TextView) v.findViewById(R.id.tv_chat_text);
-        cirImgUserAvatar = (CircleImageView) v.findViewById(R.id.cirImgUserAvatar);
         rivChatImage = (RoundedImageView) v.findViewById(R.id.rivChatImage);
+
+        if (isYou) {
+            cirImgUserAvatar = (CircleImageView) v.findViewById(R.id.cirImgUserAvatar);
+        }
     }
 
     public TextView getTime() {

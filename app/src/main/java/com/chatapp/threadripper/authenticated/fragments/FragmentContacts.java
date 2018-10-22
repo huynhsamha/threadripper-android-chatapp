@@ -12,11 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.TestApiService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.adapters.ContactAdapter;
-
-import java.util.ArrayList;
 
 
 public class FragmentContacts extends Fragment implements ContactAdapter.ViewHolder.ClickListener {
@@ -45,17 +42,17 @@ public class FragmentContacts extends Fragment implements ContactAdapter.ViewHol
         mAdapter = new ContactAdapter(getContext(), null, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        TestApiService.getInstance().getContactsList(new TestApiService.OnCompleteListener() {
-            @Override
-            public void onSuccess(ArrayList list) {
-                mAdapter.setArrayList(list);
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-
-            }
-        });
+        // TestApiService.getInstance().getContactsList(new TestApiService.OnCompleteListener() {
+        //     @Override
+        //     public void onSuccess(ArrayList list) {
+        //         mAdapter.setArrayList(list);
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(String errorMessage) {
+        //
+        //     }
+        // });
 
         return view;
     }

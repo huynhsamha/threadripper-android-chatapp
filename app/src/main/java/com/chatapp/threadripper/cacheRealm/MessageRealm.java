@@ -27,7 +27,7 @@ public class MessageRealm extends RealmObject {
         messageId = o.getMessageId();
         type = o.getType();
         content = o.getContent();
-        datetime = o.getDatetime();
+        datetime = o.getDateTime();
         conversationId = o.getConversationId();
         username = o.getUsername();
         read = o.isRead();

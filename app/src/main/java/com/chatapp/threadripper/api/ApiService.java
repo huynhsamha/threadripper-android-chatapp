@@ -1,34 +1,22 @@
 package com.chatapp.threadripper.api;
 
-import android.appwidget.AppWidgetProviderInfo;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.provider.MediaStore;
 
 import com.chatapp.threadripper.models.Conversation;
-import com.chatapp.threadripper.models.ErrorResponse;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.Preferences;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.json.JSONStringer;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -77,6 +65,10 @@ public class ApiService {
 
     public Call<List<Conversation>> getConversations() {
         return getApiInstance().getConversations(Preferences.getChatAuthToken());
+    }
+
+    public Call<List<Message>> getMessagesInConversation(String conversationId) {
+        return getApiInstance().getMessagesInConversation(Preferences.getChatAuthToken(), conversationId);
     }
 
     public Call<ApiResponseData> createConversation(List<String> listUsername) {

@@ -2,9 +2,7 @@ package com.chatapp.threadripper.api;
 
 import android.util.Log;
 
-import com.chatapp.threadripper.cacheRealm.MessageRealm;
 import com.chatapp.threadripper.models.Message;
-import com.chatapp.threadripper.models.MessageResponse;
 import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
@@ -13,6 +11,8 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
 public class SocketService {
+
+    String TAG = "SOCKET_LOG";
 
     private static SocketService instance;
 
@@ -49,8 +49,8 @@ public class SocketService {
         client.topic(channel).subscribe(response -> {
             String jsonString = response.getPayload();
             Gson gson = new Gson();
-            MessageResponse messageResponse = gson.fromJson(jsonString, MessageResponse.class);
-            Message message = messageResponse.toMessage();
+            Message message = gson.fromJson(jsonString, Message.class);
+            message.updateDateTime();
 
             if (listener == null) return;
 
@@ -75,6 +75,15 @@ public class SocketService {
         });
 
         return this;
+    }
+
+    public void sendMessage(Message message) {
+        message.setToken(Preferences.getChatAuthToken());
+
+        client.send("/queue/sendMessage", new Gson().toJson(message)).subscribe(
+                () -> Log.d(TAG, "Sent data!"),
+                error -> Log.e(TAG, "Error", error)
+        );
     }
 
     public void connect() {

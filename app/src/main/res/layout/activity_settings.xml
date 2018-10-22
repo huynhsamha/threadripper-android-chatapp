@@ -65,7 +65,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/btn_transparent_circle"
+                android:background="@drawable/btn_white_circle"
                 android:src="@drawable/ic_action_plus_bg_accent" />
 
         </com.andexert.library.RippleView>

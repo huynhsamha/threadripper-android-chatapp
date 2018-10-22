@@ -1,11 +1,10 @@
 package com.chatapp.threadripper.api;
 
 import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -20,6 +19,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiRoutes {
@@ -58,6 +58,12 @@ public interface ApiRoutes {
     @GET("conversation")
     Call<List<Conversation>> getConversations(
             @Header("Authorization") String authToken
+    );
+
+    @GET("message/{conversationId}")
+    Call<List<Message>> getMessagesInConversation(
+            @Header("Authorization") String authToken,
+            @Path("conversationId") String conversationId
     );
 
 

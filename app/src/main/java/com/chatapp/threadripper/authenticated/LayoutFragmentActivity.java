@@ -15,8 +15,6 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.SocketService;
-import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
-import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
@@ -61,8 +59,8 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
         // First connect socket and only once created
-        SocketService.init();
-        SocketService.getInstance().subscribe().connect();
+        // SocketService.init();
+        // SocketService.getInstance().subscribe().connect();
     }
 
     @Override
@@ -182,10 +180,4 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        SocketService.getInstance().disconnect();
-    }
 }

@@ -192,7 +192,8 @@ public class SettingsActivity extends BaseMainActivity {
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.M) // >= 23
+    @TargetApi(Build.VERSION_CODES.M)
+        // >= 23
     void handleCaptureCamera() {
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, Constants.REQUEST_CODE_PERMISSION_IMAGE_CAPTURE);
@@ -202,7 +203,8 @@ public class SettingsActivity extends BaseMainActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M) // >= 23
+    @RequiresApi(api = Build.VERSION_CODES.M)
+        // >= 23
     void handleSelectImage() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.REQUEST_CODE_PERMISSION_READ_EXTERNAL);
@@ -281,8 +283,7 @@ public class SettingsActivity extends BaseMainActivity {
                 // ShowToast.lengthShort(this, "OK");
                 handlePickImageSuccess(data);
             }
-        }
-        else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
+        } else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
             if (resultCode == RESULT_OK && data != null) {
                 handleCaptureImageSuccess(data);
             }
@@ -295,9 +296,8 @@ public class SettingsActivity extends BaseMainActivity {
         ImageLoader.loadImageChatMessage(cirImgUserAvatar, uri.toString());
 
         // Call API to update avatar
-        String realFilePath = ImageFilePath.getPath(SettingsActivity.this, data.getData());
-
         try {
+            String realFilePath = ImageFilePath.getPath(SettingsActivity.this, data.getData());
             File file = new File(realFilePath);
             postAvatarToServerWithFile(file);
 
@@ -313,15 +313,13 @@ public class SettingsActivity extends BaseMainActivity {
 
         // Call API to update avatar
         try {
-           File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
-           postAvatarToServerWithFile(file);
+            File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
+            postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
             SettingsActivity.this.ShowErrorDialog(err.getMessage());
         }
     }
-
-
 
     void postAvatarToServerWithFile(File file) {
         ApiService.getInstance().changeUserAvatar(file).enqueue(new Callback<ApiResponseData>() {

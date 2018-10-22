@@ -84,7 +84,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         fetchConversations();
         fetchPeople();
 
-        setUpSocket();
+        // setUpSocket();
 
         return view;
     }
@@ -222,6 +222,10 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                     if (conversations.isEmpty()) {
                         endFailLoading(1);
                     } else {
+                        for (Conversation c : conversations) {
+                            if (c.getLastMessage() != null)
+                                c.getLastMessage().updateDateTime();
+                        }
                         endSuccessLoading(1);
                         mAdapterGroups.setArrayList(conversations);
                         updateCacheConversation(conversations);

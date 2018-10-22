@@ -39,19 +39,19 @@ public class Splash extends AppCompatActivity {
         Realm.setDefaultConfiguration(config);
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (CacheService.getInstance().isConnected()) {
-                    // update session of user in preference running on RAM from cache.
-                    CacheService.getInstance().updatePreferenceOnRAM();
-                    // Don't need login, go to Main Screen
-                    startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
-                } else {
-                    startActivity(new Intent(Splash.this, LoginActivity.class));
-                }
-                finish();
+        new Handler().postDelayed(() -> {
+            if (CacheService.getInstance().isConnected()) {
+
+                // update session of user in preference running on RAM from cache.
+                CacheService.getInstance().updatePreferenceOnRAM();
+
+                // Don't need login, go to Main Screen
+                startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
+
+            } else {
+                startActivity(new Intent(Splash.this, LoginActivity.class));
             }
+            finish();
         }, 1 * 1000);
     }
 
