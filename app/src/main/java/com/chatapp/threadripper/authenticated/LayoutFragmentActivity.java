@@ -61,6 +61,8 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         // First connect socket and only once created
         // SocketService.init();
         // SocketService.getInstance().subscribe().connect();
+
+        initDetectNetworkStateChange();
     }
 
     @Override

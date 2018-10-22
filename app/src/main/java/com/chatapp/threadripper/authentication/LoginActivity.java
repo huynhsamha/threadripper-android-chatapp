@@ -60,6 +60,8 @@ public class LoginActivity extends BaseActivity {
         initViews();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
+
+        initDetectNetworkStateChange();
     }
 
 

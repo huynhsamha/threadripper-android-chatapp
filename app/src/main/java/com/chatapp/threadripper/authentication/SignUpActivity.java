@@ -42,6 +42,8 @@ public class SignUpActivity extends BaseActivity {
         initViews();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
+
+        initDetectNetworkStateChange();
     }
 
     private void initViews() {

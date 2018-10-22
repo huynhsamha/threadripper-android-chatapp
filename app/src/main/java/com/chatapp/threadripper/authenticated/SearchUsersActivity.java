@@ -43,6 +43,8 @@ public class SearchUsersActivity extends BaseMainActivity {
 
         useCache();
         requestSearchUsers();
+
+        initDetectNetworkStateChange();
     }
 
     void isLoading() {
