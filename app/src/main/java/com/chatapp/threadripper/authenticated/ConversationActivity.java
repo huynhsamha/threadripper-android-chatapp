@@ -109,7 +109,7 @@ public class ConversationActivity extends BaseMainActivity {
 
         fetchMessages();
 
-        setupWebSocket();
+        // setupWebSocket();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             btnCaptureImage.setVisibility(View.GONE); // not support capture image with API < 23

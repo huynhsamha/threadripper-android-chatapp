@@ -16,7 +16,7 @@ public class MessageRealm extends RealmObject {
     Date datetime;
     String conversationId;
     String username;
-    Boolean read;
+    boolean read;
 
 
     public MessageRealm() {
@@ -30,7 +30,7 @@ public class MessageRealm extends RealmObject {
         datetime = o.getDatetime();
         conversationId = o.getConversationId();
         username = o.getUsername();
-        read = o.getRead();
+        read = o.isRead();
     }
 
 
@@ -82,11 +82,11 @@ public class MessageRealm extends RealmObject {
         this.username = username;
     }
 
-    public Boolean getRead() {
+    public boolean isRead() {
         return read;
     }
 
-    public void setRead(Boolean read) {
+    public void setRead(boolean read) {
         this.read = read;
     }
 }

@@ -12,7 +12,8 @@ public class Message {
     Date datetime;
     String conversationId;
     String username;
-    Boolean read;
+    String token;
+    boolean read;
 
     public static class MessageType {
         public static final String JOIN = "JOIN";
@@ -30,7 +31,7 @@ public class Message {
         datetime = o.getDatetime();
         conversationId = o.getConversationId();
         username = o.getUsername();
-        read = o.getRead();
+        read = o.isRead();
     }
 
     public Message() {
@@ -41,6 +42,23 @@ public class Message {
     /**
      * Getters and Setters
      */
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
 
     public String getMessageId() {
         return messageId;
@@ -90,11 +108,4 @@ public class Message {
         this.username = username;
     }
 
-    public Boolean getRead() {
-        return read;
-    }
-
-    public void setRead(Boolean read) {
-        this.read = read;
-    }
 }

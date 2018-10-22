@@ -58,6 +58,11 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         this.notifyItemChanged(this.mArrayList.size()-1);
     }
 
+    public void removeItemsList(ArrayList<User> users) {
+        this.mArrayList.removeAll(users);
+        notifyDataSetChanged();
+    }
+
     public User getItem(int position) {
         return this.mArrayList.get(position);
     }

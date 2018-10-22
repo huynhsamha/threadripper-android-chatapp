@@ -27,6 +27,13 @@ public class CacheService {
         realm = Realm.getDefaultInstance();
     }
 
+    public void clearAllCache() {
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public String getCacheAuthToken() {
         PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
         if (cache == null) return null;

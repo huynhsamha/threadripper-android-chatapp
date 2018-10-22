@@ -7,7 +7,7 @@
             android:id="@+id/nav_settings"
             app:actionViewClass="android.widget.TextView"
             android:icon="@drawable/ic_action_settings"
-            android:title="Settings" />
+            android:title="Profile Settings" />
         <item
             android:id="@+id/nav_logout"
             app:actionViewClass="android.widget.TextView"

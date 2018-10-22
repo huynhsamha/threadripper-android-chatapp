@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,16 +19,21 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.api.Config;
+import com.chatapp.threadripper.api.SocketService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +41,14 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.client.StompClient;
 
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
+
+    String TAG = "FragmentMessagesChat - LOG";
+
     private RecyclerView mRcvGroups, mRcvPeople;
     private MessagesChatAdapter mAdapterGroups;
     private SearchUsersAdapter mAdapterPeople;
@@ -73,7 +84,32 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         fetchConversations();
         fetchPeople();
 
+        setUpSocket();
+
         return view;
+    }
+
+    void setUpSocket() {
+        SocketService.getInstance().addSocketListener(new SocketService.SocketListener() {
+            @Override
+            public void onMessage(Message message) {
+                handleNewMessage(message);
+            }
+
+            @Override
+            public void onJoin(String username) {
+                Log.d(TAG, "onJoin: " + username);
+            }
+
+            @Override
+            public void onLeave(String username) {
+                Log.d(TAG, "onLeave: " + username);
+            }
+        });
+    }
+
+    void handleNewMessage(Message message) {
+        Log.d(TAG, "handleNewMessage: " + message.toString());
     }
 
     void useCacheUser() {
@@ -114,7 +150,6 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         mRcvPeople.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapterPeople = new SearchUsersAdapter(getContext(), null);
         mRcvPeople.setAdapter(mAdapterPeople);
-
 
 
         tvLoading.setVisibility(View.VISIBLE);
@@ -162,6 +197,22 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         endLoadingCallbackOne(id);
     }
 
+    void updateFriendsList(ArrayList<Conversation> conversations) {
+        ArrayList<User> friends = new ArrayList<>();
+        for (Conversation conversation : conversations) {
+            if (conversation.getListUser().size() == 2) { // Friend
+                User user = conversation.getListUser().get(0);
+                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+                    user = conversation.getListUser().get(1); // 0th is me, 1st is friend
+                }
+                user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+                friends.add(user);
+            }
+        }
+        updateCacheUser(friends);
+        mAdapterPeople.removeItemsList(friends);
+    }
+
     void fetchConversations() {
         ApiService.getInstance().getConversations().enqueue(new Callback<List<Conversation>>() {
             @Override
@@ -174,6 +225,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                         endSuccessLoading(1);
                         mAdapterGroups.setArrayList(conversations);
                         updateCacheConversation(conversations);
+                        updateFriendsList(conversations);
                     }
                 } else {
                     endFailLoading(1);
@@ -198,9 +250,10 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
                     } else {
                         endSuccessLoading(2);
                         ArrayList<User> notFriends = new ArrayList<>();
-                        for (User user: users) {
+                        for (User user : users) {
                             handleUserResponse(user);
-                            if (user.getRelationship().equals(Constants.RELATIONSHIP_FRIEND)) continue;
+                            if (user.getRelationship().equals(Constants.RELATIONSHIP_FRIEND))
+                                continue;
                             notFriends.add(user);
                         }
                         // Show not friends
@@ -222,7 +275,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
     void updateCacheConversation(ArrayList<Conversation> conversations) {
         new Thread(() -> {
-            for (Conversation c: conversations) {
+            for (Conversation c : conversations) {
                 CacheService.getInstance().addOrUpdateCacheConversation(c);
             }
         }).start();
@@ -230,7 +283,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
     void updateCacheUser(ArrayList<User> users) {
         new Thread(() -> {
-            for (User user: users) {
+            for (User user : users) {
                 if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
                 CacheService.getInstance().addOrUpdateCacheUser(user);
             }
@@ -240,7 +293,8 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
     void handleUserResponse(User user) {
         if (CacheService.getInstance().checkRelationFriend(user)) {
             user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-        };
+        }
+        ;
     }
 
     @Override

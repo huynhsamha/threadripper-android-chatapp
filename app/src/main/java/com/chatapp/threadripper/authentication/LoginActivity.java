@@ -60,35 +60,32 @@ public class LoginActivity extends BaseActivity {
         initViews();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
-
-        // setupWebSocket();
-
     }
 
 
-    void setupWebSocket() {
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
-
-        client.topic("/topic/public").subscribe(message -> {
-            String str = message.getPayload();
-            JSONObject json = null;
-            try {
-                json = new JSONObject(str);
-                String type = json.getString("type");
-                if (type.equals("JOIN")) {
-                    client.disconnect();
-                    startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
-                    finish();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                btnLogin.setEnabled(true);
-            }
-        });
-
-        client.connect();
-    }
+    // void setupWebSocket() {
+    //     client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
+    //
+    //     client.topic("/topic/public").subscribe(message -> {
+    //         String str = message.getPayload();
+    //         JSONObject json = null;
+    //         try {
+    //             json = new JSONObject(str);
+    //             String type = json.getString("type");
+    //             if (type.equals("JOIN")) {
+    //                 client.disconnect();
+    //                 startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+    //                 finish();
+    //             }
+    //         } catch (JSONException e) {
+    //             e.printStackTrace();
+    //         } finally {
+    //             btnLogin.setEnabled(true);
+    //         }
+    //     });
+    //
+    //     client.connect();
+    // }
 
     void validateForm(String username, String password) throws Exception {
         if (username.isEmpty()) throw new Exception("Username can't be empty");

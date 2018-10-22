@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.api.SocketService;
 import com.chatapp.threadripper.authenticated.fragments.FragmentContacts;
 import com.chatapp.threadripper.authenticated.fragments.FragmentGroups;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
@@ -58,6 +59,10 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
+
+        // First connect socket and only once created
+        SocketService.init();
+        SocketService.getInstance().subscribe().connect();
     }
 
     @Override
@@ -119,21 +124,21 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         FragmentTransaction ft;
 
         switch (item.getItemId()) {
-            case R.id.nav_contacts:
-                FragmentContacts fragmentContacts = new FragmentContacts();
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
-                break;
+            // case R.id.nav_contacts:
+            //     FragmentContacts fragmentContacts = new FragmentContacts();
+            //     ft = getSupportFragmentManager().beginTransaction();
+            //     ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
+            //     break;
             case R.id.nav_chats:
                 FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
                 break;
-            case R.id.nav_groups:
-                FragmentGroups fragmentGroups = new FragmentGroups();
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayout, fragmentGroups).commit();
-                break;
+            // case R.id.nav_groups:
+            //     FragmentGroups fragmentGroups = new FragmentGroups();
+            //     ft = getSupportFragmentManager().beginTransaction();
+            //     ft.replace(R.id.frameLayout, fragmentGroups).commit();
+            //     break;
             case R.id.nav_call:
                 FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
                 ft = getSupportFragmentManager().beginTransaction();
@@ -165,7 +170,8 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         Preferences.setChatAuthToken("");
         Preferences.setCurrentUser(new User());
 
-        CacheService.getInstance().clearCacheTokenAndUser();
+        // CacheService.getInstance().clearCacheTokenAndUser();
+        CacheService.getInstance().clearAllCache();
 
         startActivity(new Intent(this, LoginActivity.class));
         finish();
@@ -174,5 +180,12 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        SocketService.getInstance().disconnect();
     }
 }
