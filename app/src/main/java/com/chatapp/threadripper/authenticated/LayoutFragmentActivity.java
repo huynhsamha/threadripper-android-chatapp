@@ -21,6 +21,7 @@ import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.services.SocketService;
@@ -95,6 +96,12 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         registerReceiver(mSocketReceiver, mIntentFilter);
     }
 
+    @Override
+    public void handleNewMessage(Message message) {
+        super.handleNewMessage(message);
+
+        Log.d("NEW_MESSAGE", "handleNewMessage: " + message.toString());
+    }
 
     void configDrawerUserInfo() {
         changeDrawerUserDisplayName(Preferences.getCurrentUser().getDisplayName());
