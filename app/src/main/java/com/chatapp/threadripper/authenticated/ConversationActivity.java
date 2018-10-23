@@ -3,26 +3,32 @@ package com.chatapp.threadripper.authenticated;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.SocketApiService;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
 import com.chatapp.threadripper.models.Message;
+import com.chatapp.threadripper.receivers.SocketReceiver;
+import com.chatapp.threadripper.services.SocketService;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
@@ -40,7 +46,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class ConversationActivity extends BaseMainActivity {
+public class ConversationActivity extends BaseMainActivity implements SocketReceiver.OnCallbackListener {
+
+    String TAG = "ConversationActivity";
 
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
@@ -54,6 +62,10 @@ public class ConversationActivity extends BaseMainActivity {
     String displayName, avatar, conversationId;
     String uriAttachImage;
     Bitmap bitmapCaptureImage;
+
+    IntentFilter mIntentFilter;
+    SocketReceiver mSocketReceiver;
+    ServiceConnection mSocketServiceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +85,37 @@ public class ConversationActivity extends BaseMainActivity {
         fetchMessages();
 
         // setupWebSocket();
+        initSocketReceiver();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        registerReceiver(mSocketReceiver, mIntentFilter);
+    }
+
+    void initSocketReceiver() {
+        mSocketReceiver = new SocketReceiver();
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+
+        mSocketReceiver.setListener(this);
+
+        mSocketServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        };
     }
 
     void initRecyclerView() {
@@ -119,22 +162,6 @@ public class ConversationActivity extends BaseMainActivity {
         }
     }
 
-    void setupWebSocket() {
-        SocketApiService.getInstance().addSocketListener(new SocketApiService.SocketListener() {
-            @Override
-            public void onMessage(Message message) {
-                handleOnReceiveMessage(message);
-            }
-
-            @Override
-            public void onJoin(String username) {
-            }
-
-            @Override
-            public void onLeave(String username) {
-            }
-        });
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     void setListeners() {
@@ -268,19 +295,8 @@ public class ConversationActivity extends BaseMainActivity {
         mAdapter.addItem(item);
         scrollToBottom();
 
-        // sendToSocket(item);
-    }
-
-    void sendToSocket(Message message) {
-        SocketApiService.getInstance().sendMessage(message);
-    }
-
-    void handleOnReceiveMessage(Message msg) {
-        msg.setYou(true);
-        msg.setConversationAvatar(avatar);
-
-        mAdapter.addItem(msg);
-        scrollToBottom();
+        // Intent intent = new Intent(this, SocketService.class);
+        // bindService(intent, mSocketServiceConnection, BIND_AUTO_CREATE);
     }
 
     void handleMessagesList(ArrayList<Message> messages) {
@@ -392,5 +408,26 @@ public class ConversationActivity extends BaseMainActivity {
                 btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
             }
         }
+    }
+
+    @Override
+    public void onNewMessage(Message message) {
+        if (!message.getConversationId().equals(conversationId)) return;
+
+        message.setConversationAvatar(avatar);
+        message.setYou(true);
+
+        mAdapter.addItem(message);
+        scrollToBottom();
+    }
+
+    @Override
+    public void onJoin(String username) {
+        Log.d(TAG, "onJoin: " + username);
+    }
+
+    @Override
+    public void onLeave(String username) {
+        Log.d(TAG, "onLeave: " + username);
     }
 }

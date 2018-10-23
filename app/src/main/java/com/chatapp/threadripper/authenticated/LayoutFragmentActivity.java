@@ -1,16 +1,12 @@
 package com.chatapp.threadripper.authenticated;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +17,7 @@ import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
-import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.services.SocketService;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
@@ -36,9 +30,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
     NavigationView navigationView, navigationViewBottom;
     DrawerLayout drawer;
-
-    IntentFilter mIntentFilter;
-    SocketReceiver mSocketReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +60,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
         initDetectNetworkStateChange();
 
-        initBroadcastReceiver();
-    }
-
-    void initBroadcastReceiver() {
-        mSocketReceiver = new SocketReceiver();
-
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
-        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
-        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
-
+        // Run Socket Service in background
         startService(new Intent(this, SocketService.class));
     }
 
@@ -92,15 +73,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         } catch (Exception e) {
 
         }
-
-        registerReceiver(mSocketReceiver, mIntentFilter);
-    }
-
-    @Override
-    public void handleNewMessage(Message message) {
-        super.handleNewMessage(message);
-
-        Log.d("NEW_MESSAGE", "handleNewMessage: " + message.toString());
     }
 
     void configDrawerUserInfo() {
@@ -163,7 +135,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
             case R.id.nav_chats:
                 FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayout, fragmentMessagesChat).commit();
+                ft.replace(R.id.frameLayout, fragmentMessagesChat, Constants.FRAGMENT_TAG_MESSAGE_CHAT_LIST).commit();
                 break;
             // case R.id.nav_groups:
             //     FragmentGroups fragmentGroups = new FragmentGroups();
@@ -173,7 +145,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
             case R.id.nav_call:
                 FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
                 ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayout, fragmentVideoCallList).commit();
+                ft.replace(R.id.frameLayout, fragmentVideoCallList, Constants.FRAGMENT_TAG_VIDEO_CALL_LIST).commit();
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

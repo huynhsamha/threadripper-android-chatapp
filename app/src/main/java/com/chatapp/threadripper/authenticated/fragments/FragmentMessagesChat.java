@@ -1,6 +1,8 @@
 package com.chatapp.threadripper.authenticated.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +21,6 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.api.SocketApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
@@ -28,6 +29,7 @@ import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
@@ -40,17 +42,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
+public class FragmentMessagesChat extends Fragment implements
+        MessagesChatAdapter.ViewHolder.ClickListener,
+        SocketReceiver.OnCallbackListener {
 
-    String TAG = "FragmentMessagesChat - LOG";
+    String TAG = "FragmentMessagesChat";
 
     private RecyclerView mRcvGroups, mRcvPeople;
     private MessagesChatAdapter mAdapterGroups;
     private SearchUsersAdapter mAdapterPeople;
-    private TextView tv_selection, tvNoAnyFriends, tvLoading;
+    private TextView tvNoAnyFriends, tvLoading;
     private SwipeRefreshLayout swipeContainer;
     boolean isLoadingFriends, isLoadingPeople;
 
+    IntentFilter mIntentFilter;
+    SocketReceiver mSocketReceiver;
 
     public FragmentMessagesChat() {
         setHasOptionsMenu(true);
@@ -72,7 +78,6 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
 
         setListener();
 
-
         isLoading();
         useCacheUser();
         userCacheConversation();
@@ -80,31 +85,27 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         fetchPeople();
 
         // setUpSocket();
+        initSocketReceiver();
 
         return view;
     }
 
-    void setUpSocket() {
-        SocketApiService.getInstance().addSocketListener(new SocketApiService.SocketListener() {
-            @Override
-            public void onMessage(Message message) {
-                handleNewMessage(message);
-            }
+    @Override
+    public void onResume() {
+        super.onResume();
 
-            @Override
-            public void onJoin(String username) {
-                Log.d(TAG, "onJoin: " + username);
-            }
-
-            @Override
-            public void onLeave(String username) {
-                Log.d(TAG, "onLeave: " + username);
-            }
-        });
+        getActivity().registerReceiver(mSocketReceiver, mIntentFilter);
     }
 
-    void handleNewMessage(Message message) {
-        Log.d(TAG, "handleNewMessage: " + message.toString());
+    void initSocketReceiver() {
+        mSocketReceiver = new SocketReceiver();
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+
+        mSocketReceiver.setListener(this);
     }
 
     void useCacheUser() {
@@ -127,7 +128,6 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
     }
 
     void initViews(View view) {
-        // tv_selection = (TextView) view.findViewById(R.id.tv_selection);
         tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
         tvLoading = (TextView) view.findViewById(R.id.tvLoading);
 
@@ -320,5 +320,20 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNewMessage(Message message) {
+        Log.d(TAG, "onNewMessage: " + message.toString());
+    }
+
+    @Override
+    public void onJoin(String username) {
+        Log.d(TAG, "onJoin: " + username);
+    }
+
+    @Override
+    public void onLeave(String username) {
+        Log.d(TAG, "onLeave: " + username);
     }
 }

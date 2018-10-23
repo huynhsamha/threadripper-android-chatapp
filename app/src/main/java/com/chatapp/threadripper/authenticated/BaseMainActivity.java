@@ -10,8 +10,4 @@ public class BaseMainActivity extends BaseActivity  {
 
     // This is main activity wrapping all activities after authenticated.
 
-    public void handleNewMessage(Message message) {
-        // subclass override this method to handle new message
-    }
-
 }

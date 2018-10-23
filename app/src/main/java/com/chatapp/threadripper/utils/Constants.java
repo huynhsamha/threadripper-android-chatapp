@@ -36,4 +36,8 @@ public class Constants {
     public static final String ACTION_STRING_RECEIVER_LEAVE = "ATION_STRING_RECEIVER_LEAVE";
 
     public static final String MESSAGE_CHAT = "MESSAGE_CHAT";
+
+    public static final String FRAGMENT_TAG_MESSAGE_CHAT_LIST = "FRAGMENT_TAG_MESSAGE_CHAT_LIST";
+    public static final String FRAGMENT_TAG_VIDEO_CALL_LIST = "FRAGMENT_TAG_VIDEO_CALL_LIST";
+
 }

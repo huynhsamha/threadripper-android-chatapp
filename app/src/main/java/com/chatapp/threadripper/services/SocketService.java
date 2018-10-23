@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.models.Message;
@@ -39,7 +40,7 @@ public class SocketService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-//        new Thread(() -> runSocketService()).start();
+        // new Thread(() -> runSocketService()).start();
         runSocketService();
 
         return START_REDELIVER_INTENT;
@@ -96,7 +97,23 @@ public class SocketService extends Service {
             }
         });
 
-        client.connect();
+        try {
+            // TODO: Error without explanation
+            client.connect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sendMessage(Message message) {
+        message.setToken(Preferences.getChatAuthToken());
+
+        client.send("/queue/sendMessage", new Gson().toJson(message)).subscribe(
+                () -> Log.d(TAG, "Sent data!"),
+                error -> Log.e(TAG, "Error", error)
+        );
     }
 
     @Override
