@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 24
@@ -25,6 +26,10 @@ android {
     }
 }
 
+realm {
+    syncEnabled = true;
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -34,26 +39,36 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:24.2.1'
     implementation 'com.android.support:design:24.2.1'
     implementation 'com.android.support:support-v4:24.2.1'
-    testImplementation 'junit:junit:4.12'
-    // Calligraphy: Fonts in Asset
+    testImplementation 'junit:junit:4.12'// Calligraphy: Fonts in Asset
     implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
+
     // Picasso: Image loader with cache
     implementation 'com.squareup.picasso:picasso:2.71828'
+
     // CircleImageView: Image View with shape circle
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
     // RippleEffect: button on click is ripple animation
     implementation 'com.patrickpissurno:ripple-effect:1.3.1'
+
     // OkHttp: connect web API and web socket
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+
     // StompProtocolAndroid
     implementation 'com.github.forresthopkinsa:StompProtocolAndroid:17.11.0'
-    // RoundedImageView
+
+    // Rounded Image View
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
-    // GSON and Retrofit
+    // Retrofit
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
 
+    // Sweet Alert Dialog
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
+
+    // Photo View
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }

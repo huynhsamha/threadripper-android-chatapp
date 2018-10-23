@@ -1,6 +1,7 @@
 package com.chatapp.threadripper.authenticated;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,32 +12,32 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.TestApiService;
-import com.chatapp.threadripper.api.Config;
-import com.chatapp.threadripper.authenticated.models.Message;
+import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.SocketApiService;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.client.StompClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class ConversationActivity extends BaseMainActivity {
@@ -44,33 +45,62 @@ public class ConversationActivity extends BaseMainActivity {
     private RecyclerView mRecyclerView;
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
-    private ImageButton imgBtnSend, btnAttacthChatImage, btnCaptureImage;
+    private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
     private CircleImageView cirImgUserAvatar;
     private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
 
-    String username, userAvatarImage;
+    boolean isOnline;
+    String displayName, avatar, conversationId;
     String uriAttachImage;
     Bitmap bitmapCaptureImage;
-
-    StompClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
+        getIntentData();
+
+        setupToolbarWithBackButton(R.id.toolbar, displayName);
+
+        initViews();
+
+        initRecyclerView();
+
+        setListeners();
+
+        fetchMessages();
+
+        // setupWebSocket();
+    }
+
+    void initRecyclerView() {
+        // Messages
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ConversationAdapter(this, null);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    void getIntentData() {
         Intent intent = getIntent();
-        username = intent.getStringExtra("Username");
-        userAvatarImage = intent.getStringExtra("Image");
-        boolean isOnline = intent.getBooleanExtra("IsOnline", false);
+        conversationId = intent.getStringExtra(Constants.CONVERSATION_ID);
+        displayName = intent.getStringExtra(Constants.CONVERSATION_NAME);
+        avatar = intent.getStringExtra(Constants.CONVERSATION_PHOTO);
+        isOnline = intent.getBooleanExtra(Constants.CONVERSATION_IS_ONLINE, false);
+    }
 
-        setupToolbarWithBackButton(R.id.toolbar, username);
-
+    void initViews() {
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
-        btnAttacthChatImage = (ImageButton) findViewById(R.id.btnAttacthChatImage);
+        btnAttachChatImage = (ImageButton) findViewById(R.id.btnAttachChatImage);
         btnCaptureImage = (ImageButton) findViewById(R.id.btnCaptureImage);
+        btnAttachFile = (ImageButton) findViewById(R.id.btnAttachFile);
+        btnShowButtons = (ImageButton) findViewById(R.id.btnShowButtons);
+
         rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
 
         // Load User Avatar & Online ?
@@ -78,23 +108,11 @@ public class ConversationActivity extends BaseMainActivity {
         onlineIndicator = findViewById(R.id.onlineIndicator);
 
         findViewById(R.id.rlImgUserAvatar).setVisibility(View.VISIBLE);
-        ImageLoader.loadUserAvatar(cirImgUserAvatar, userAvatarImage);
+        ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
         if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
         else onlineIndicator.setVisibility(View.GONE);
 
-        // Messages
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ConversationAdapter(this, null);
-        mRecyclerView.setAdapter(mAdapter);
-
-        setListeners();
-
-        fetchMessages();
-
-        setupWebSocket();
+        btnShowButtons.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             btnCaptureImage.setVisibility(View.GONE); // not support capture image with API < 23
@@ -102,72 +120,74 @@ public class ConversationActivity extends BaseMainActivity {
     }
 
     void setupWebSocket() {
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
+        SocketApiService.getInstance().addSocketListener(new SocketApiService.SocketListener() {
+            @Override
+            public void onMessage(Message message) {
+                handleOnReceiveMessage(message);
+            }
 
-        client.connect();
+            @Override
+            public void onJoin(String username) {
+            }
 
-        client.topic("/topic/public").subscribe(message -> {
-            String str = message.getPayload();
-            Log.d("LogConversation:", "setupWebSocket: " + str);
-            JSONObject json = null;
-            try {
-                json = new JSONObject(str);
-                String type = json.getString("type");
-                if (type.equals("CHAT")) {
-                    // Chat message
-                    String sender = json.getString("sender");
-                    String content = json.getString("content");
-                    if (!sender.equals(Preferences.getCurrentUser().getUsername())) { // other user
-                        runOnUiThread(new Runnable() { // main thread
-                            @Override
-                            public void run() {
-                                handleOnReceiveMessage(content);
-                            }
-                        });
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            @Override
+            public void onLeave(String username) {
             }
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     void setListeners() {
 
-        edtMessage.setOnTouchListener(new View.OnTouchListener() {
+        edtMessage.setOnTouchListener((view, event) -> {
+            mRecyclerView.postDelayed(() -> {
+                hideButtonsBar();
+                scrollToBottom();
+            }, 300);
+            return false;
+        });
+
+        edtMessage.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                // For the system keyboard toggle before scroll to last message
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollToBottom();
-                    }
-                }, 500);
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                hideButtonsBar();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
-        imgBtnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleClickButtonSend();
-            }
-        });
+        imgBtnSend.setOnClickListener(view -> handleClickButtonSend());
+        btnAttachChatImage.setOnClickListener(view -> handleAttachImage());
+        btnCaptureImage.setOnClickListener(view -> handleCaptureCamera());
+        btnAttachFile.setOnClickListener(view -> handleAttachFile());
 
-        btnAttacthChatImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleAttachImage();
-            }
-        });
+        btnShowButtons.setOnClickListener(view -> showButtonsBar());
+    }
 
-        btnCaptureImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleCaptureCamera();
-            }
-        });
+    void hideButtonsBar() {
+        btnShowButtons.setVisibility(View.VISIBLE);
+        btnAttachChatImage.setVisibility(View.GONE);
+        btnCaptureImage.setVisibility(View.GONE);
+        btnAttachFile.setVisibility(View.GONE);
+    }
+
+    void showButtonsBar() {
+        btnShowButtons.setVisibility(View.GONE);
+        btnAttachChatImage.setVisibility(View.VISIBLE);
+        btnCaptureImage.setVisibility(View.VISIBLE);
+        btnAttachFile.setVisibility(View.VISIBLE);
+    }
+
+    void handleAttachFile() {
+        btnAttachFile.setImageResource(R.drawable.ic_action_attach_file_accent);
     }
 
     void handleClickButtonSend() {
@@ -182,7 +202,8 @@ public class ConversationActivity extends BaseMainActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M) // >= 23
+    @TargetApi(Build.VERSION_CODES.M)
+        // >= 23
     void handleCaptureCamera() {
         btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera_accent);
 
@@ -195,7 +216,7 @@ public class ConversationActivity extends BaseMainActivity {
     }
 
     void handleAttachImage() {
-        btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
+        btnAttachChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
 
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -205,10 +226,10 @@ public class ConversationActivity extends BaseMainActivity {
 
     void handleSendCaptureImage() {
         Message item = new Message();
-        item.setTime("6:00pm");
-        item.setType("2");
-        item.setContentType(Constants.CHAT_CONTENT_TYPE_BITMAP);
+        item.setDateTime(new Date());
+        item.setType(Message.MessageType.IMAGE);
         item.setBitmap(bitmapCaptureImage);
+        item.setBitmap(true);
 
         mAdapter.addItem(item);
         scrollToBottom();
@@ -220,10 +241,9 @@ public class ConversationActivity extends BaseMainActivity {
 
     void handleSendAttachImage() {
         Message item = new Message();
-        item.setTime("6:00pm");
-        item.setType("2");
-        item.setContentType(Constants.CHAT_CONTENT_TYPE_URI);
-        item.setImgUrl(uriAttachImage);
+        item.setDateTime(new Date());
+        item.setType(Message.MessageType.IMAGE);
+        item.setContent(uriAttachImage);
 
         mAdapter.addItem(item);
         scrollToBottom();
@@ -238,75 +258,69 @@ public class ConversationActivity extends BaseMainActivity {
         if (msg.isEmpty()) return;
 
         Message item = new Message();
-        item.setTime("6:00pm");
-        item.setType("2");
-        item.setContentType(Constants.CHAT_CONTENT_TYPE_TEXT);
-        item.setText(msg);
+        item.setDateTime(new Date());
+        item.setType(Message.MessageType.TEXT);
+        item.setConversationId(msg);
+        item.setContent(msg);
 
-        mAdapter.addItem(item);
-        scrollToBottom();
         edtMessage.setText("");
 
-        JSONObject json = new JSONObject();
-
-        try {
-            json.put("sender", Preferences.getCurrentUser().getUsername());
-            json.put("content", msg);
-            json.put("type", "CHAT");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        client.send("/app/chat.sendMessage", json.toString()).subscribe(
-                () -> Log.d("LogConversation", "Sent data!"),
-                error -> Log.e("LogConversation", "Encountered error while sending data!", error)
-        );
-    }
-
-    void handleOnReceiveMessage(String msg) {
-        if (msg.isEmpty()) return;
-
-        Message item = new Message();
-        item.setTime("6:00pm");
-        item.setType("1");
-        item.setText(msg);
-        item.setAvatarUser(userAvatarImage);
-
         mAdapter.addItem(item);
         scrollToBottom();
+
+        // sendToSocket(item);
+    }
+
+    void sendToSocket(Message message) {
+        SocketApiService.getInstance().sendMessage(message);
+    }
+
+    void handleOnReceiveMessage(Message msg) {
+        msg.setYou(true);
+        msg.setConversationAvatar(avatar);
+
+        mAdapter.addItem(msg);
+        scrollToBottom();
+    }
+
+    void handleMessagesList(ArrayList<Message> messages) {
+        for (Message message : messages) {
+            message.updateDateTime();
+            if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+                message.setYou(true);
+            }
+        }
+
+        mAdapter.setItemsList(messages);
+
+        mRecyclerView.postDelayed(() -> scrollToBottom(), 300);
     }
 
     void fetchMessages() {
-        TestApiService.getInstance().getMessages(new TestApiService.OnCompleteListener() {
+        ApiService.getInstance().getMessagesInConversation(conversationId).enqueue(new Callback<List<Message>>() {
             @Override
-            public void onSuccess(ArrayList list) {
-                ArrayList<Message> messages = new ArrayList<>();
-                for (Object i : list) {
-                    Message m = (Message) i;
-                    if (m.getType().equals("1")) { // YOU
-                        m.setAvatarUser(userAvatarImage);
-                    }
-                    messages.add(m);
-                }
-                mAdapter.setItemsList(messages);
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                if (response.isSuccessful()) {
 
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollToBottom();
-                    }
-                }, 500);
+                    // parse to Message
+                    ArrayList<Message> messages = (ArrayList<Message>) response.body();
+                    handleMessagesList(messages);
+
+                } else {
+
+                }
             }
 
             @Override
-            public void onFailure(String errorMessage) {
+            public void onFailure(Call<List<Message>> call, Throwable t) {
 
             }
         });
     }
 
     void scrollToBottom() {
-        mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
+        if (mRecyclerView.getAdapter().getItemCount() > 0)
+            mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
     }
 
 
@@ -324,9 +338,8 @@ public class ConversationActivity extends BaseMainActivity {
             }
 
             // reset button attach image
-            btnAttacthChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate);
-        }
-        else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
+            btnAttachChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate);
+        } else if (requestCode == Constants.REQUEST_CODE_CAPTURE_IMAGE) {
             if (resultCode == RESULT_OK && data != null) {
                 handleCaptureImageSuccess(data);
             }

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
@@ -24,13 +25,12 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
-            android:background="@drawable/btn_grey_circle"
-            android:gravity="center"
             android:layout_margin="6dp"
-            android:stateListAnimator="@null"
+            android:background="@drawable/btn_grey_circle"
             android:foregroundGravity="center"
+            android:gravity="center"
             android:src="@drawable/ic_action_send"
-            />
+            android:stateListAnimator="@null" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -39,71 +39,97 @@
             android:layout_toLeftOf="@id/imgBtnSend"
             android:background="@drawable/bg_white_rounded">
 
-            <ImageButton
-                android:id="@+id/btnAttacthChatImage"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+            <LinearLayout
+                android:id="@+id/lnButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/btn_transparent_circle"
-                android:foregroundGravity="center"
-                android:src="@drawable/ic_action_add_photo_alternate"
-                android:layout_margin="5dp"
-                android:padding="10dp"
-                />
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/btnCaptureImage"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_toRightOf="@id/btnAttacthChatImage"
-                android:layout_centerInParent="true"
-                android:background="@drawable/btn_transparent_circle"
-                android:foregroundGravity="center"
-                android:src="@drawable/ic_action_linked_camera"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:padding="10dp"
-                />
+                <ImageButton
+                    android:id="@+id/btnShowButtons"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/btn_accent_circle"
+                    android:foregroundGravity="center"
+                    android:padding="3dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_arrow_right_white" />
+
+                <ImageButton
+                    android:id="@+id/btnAttachChatImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/btn_transparent_circle"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_action_add_photo_alternate" />
+
+                <ImageButton
+                    android:id="@+id/btnCaptureImage"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/btn_transparent_circle"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_action_linked_camera" />
+
+                <ImageButton
+                    android:id="@+id/btnAttachFile"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/btn_transparent_circle"
+                    android:foregroundGravity="center"
+                    android:src="@drawable/ic_action_attach_file" />
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/edtMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="40dp"
-                android:layout_toRightOf="@id/btnCaptureImage"
+                android:layout_toRightOf="@id/lnButtons"
                 android:background="@android:color/transparent"
                 android:hint="Enter your message"
                 android:inputType="textMultiLine"
                 android:maxLines="6"
+                android:minHeight="40dp"
                 android:padding="@dimen/space5"
+                android:scrollbars="vertical"
                 android:textAppearance="@style/Light"
                 android:textColor="@color/colorTextBlack"
                 android:textColorHint="@color/colorTextHint"
-                android:scrollbars="vertical"
                 android:textSize="@dimen/h3" />
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/rivImageIsPickedOrCaptured"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/btnCaptureImage"
+                android:layout_margin="@dimen/space5"
+                android:layout_toRightOf="@id/lnButtons"
                 android:maxHeight="150dp"
                 android:maxWidth="@dimen/maxwidth"
                 android:scaleType="fitCenter"
                 android:src="@drawable/placeholder_image_chat"
-                app:riv_border_width="1dp"
-                app:riv_border_color="#E9ECEC"
-                app:riv_corner_radius="20dp"
-                android:layout_margin="@dimen/space5"
                 android:visibility="gone"
-                />
+                app:riv_border_color="#E9ECEC"
+                app:riv_border_width="1dp"
+                app:riv_corner_radius="20dp" />
         </RelativeLayout>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rcvGroups"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/rl_bottom"

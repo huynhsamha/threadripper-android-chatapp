@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.cacheRealm.UserRealm;
 import com.chatapp.threadripper.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
@@ -13,7 +14,7 @@ public class User {
     @SerializedName("avatarUrl") // server use avatarUrl
     String photoUrl;
 
-    Boolean online;
+    boolean online;
 
     String relationship = Constants.RELATIONSHIP_NONE;
     // relationship with current user
@@ -42,6 +43,16 @@ public class User {
         this.password = password;
         this.displayName = displayName;
         this.photoUrl = photoUrl;
+    }
+
+    public User(UserRealm user) {
+        username = user.getUsername();
+        email = user.getEmail();
+        password = user.getPassword();
+        displayName = user.getDisplayName();
+        photoUrl = user.getPhotoUrl();
+        online = user.isOnline();
+        relationship = user.getRelationship();
     }
 
 
@@ -89,11 +100,11 @@ public class User {
         this.photoUrl = photoUrl;
     }
 
-    public Boolean getOnline() {
+    public boolean isOnline() {
         return online;
     }
 
-    public void setOnline(Boolean online) {
+    public void setOnline(boolean online) {
         this.online = online;
     }
 

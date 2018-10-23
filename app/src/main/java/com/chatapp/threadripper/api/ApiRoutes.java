@@ -1,11 +1,13 @@
 package com.chatapp.threadripper.api;
 
+import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.List;
-import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -13,8 +15,11 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiRoutes {
@@ -43,10 +48,52 @@ public interface ApiRoutes {
             @Field("newPassword") String newPassword
     );
 
-    @GET("user")
-    Call<List<User>> getUsers();
-
 
     @GET("user")
-    Call<List<User>> searchUsers(@Query("search") String keywords);
+    Call<List<User>> searchUsers(
+            @Query("search") String keywords
+    );
+
+
+    @GET("conversation")
+    Call<List<Conversation>> getConversations(
+            @Header("Authorization") String authToken
+    );
+
+    @GET("message/{conversationId}")
+    Call<List<Message>> getMessagesInConversation(
+            @Header("Authorization") String authToken,
+            @Path("conversationId") String conversationId
+    );
+
+
+    @POST("conversation")
+    Call<ApiResponseData> createConversation(
+            @Header("Authorization") String authToken,
+            @Body String body
+    );
+
+    @Multipart
+    @POST("avatar")
+    Call<ApiResponseData> changeUserAvatar(
+            @Header("Authorization") String authToken,
+            @Part MultipartBody.Part file,
+            @Part("ext") RequestBody extension
+    );
+
+    @Multipart
+    @POST("image")
+    Call<ApiResponseData> uploadImageInChat(
+            @Header("Authorization") String authToken,
+            @Part MultipartBody.Part file,
+            @Part("ext") RequestBody extension
+    );
+
+    @Multipart
+    @POST("file")
+    Call<ApiResponseData> uploadFileInChat(
+            @Header("Authorization") String authToken,
+            @Part MultipartBody.Part file,
+            @Part("ext") RequestBody extension
+    );
 }

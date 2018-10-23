@@ -13,4 +13,14 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tvCheckConnection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="@id/frameLayout"
+        android:gravity="center"
+        android:padding="2dp"
+        android:visibility="gone"
+        android:text="Connection is established!" />
 </RelativeLayout>

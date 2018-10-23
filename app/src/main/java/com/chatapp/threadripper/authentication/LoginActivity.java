@@ -17,6 +17,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiRoutes;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.models.ErrorResponse;
@@ -60,49 +61,9 @@ public class LoginActivity extends BaseActivity {
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
-        // setupWebSocket();
-
-        // ApiService.getInstance().searchUsers("a").enqueue(new Callback<List<User>>() {
-        //     @Override
-        //     public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-        //         if (response.isSuccessful()) {
-        //             List<User> users = response.body();
-        //         } else {
-        //
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void onFailure(Call<List<User>> call, Throwable t) {
-        //
-        //     }
-        // });
+        initDetectNetworkStateChange();
     }
 
-
-    void setupWebSocket() {
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
-
-        client.topic("/topic/public").subscribe(message -> {
-            String str = message.getPayload();
-            JSONObject json = null;
-            try {
-                json = new JSONObject(str);
-                String type = json.getString("type");
-                if (type.equals("JOIN")) {
-                    client.disconnect();
-                    startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
-                    finish();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                btnLogin.setEnabled(true);
-            }
-        });
-
-        client.connect();
-    }
 
     void validateForm(String username, String password) throws Exception {
         if (username.isEmpty()) throw new Exception("Username can't be empty");
@@ -114,7 +75,7 @@ public class LoginActivity extends BaseActivity {
         String password = edtPassword.getText().toString();
 
         try {
-            validateForm(username,  password);
+            validateForm(username, password);
         } catch (Exception e) {
             ShowToast.lengthShort(this, e.getMessage());
             return;
@@ -136,6 +97,9 @@ public class LoginActivity extends BaseActivity {
                     String chatAuthToken = response.headers().get("Authorization");
                     if (chatAuthToken != null && chatAuthToken.contains("CHAT")) {
                         Preferences.setChatAuthToken(chatAuthToken);
+
+                        // Update cache
+                        CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser(), chatAuthToken);
                     }
 
                     startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
@@ -159,24 +123,6 @@ public class LoginActivity extends BaseActivity {
                 LoginActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
-
-
-
-        // JSONObject json = new JSONObject();
-        //
-        // try {
-        //     json.put("sender", username);
-        //     json.put("type", "JOIN");
-        // } catch (JSONException e) {
-        //     e.printStackTrace();
-        // }
-        //
-        // client.send("/app/chat.addUser", json.toString()).subscribe(
-        //         () -> Log.d("Login", "Sent data!"),
-        //         error -> Log.e("Login", "Encountered error while sending data!", error)
-        // );
-        //
-        // btnLogin.setEnabled(false);
     }
 
     void safetyUserInformation() {

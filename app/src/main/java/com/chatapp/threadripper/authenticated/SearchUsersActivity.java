@@ -10,10 +10,11 @@ import android.widget.TextView;
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.TestApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.SweetDialog;
+import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class SearchUsersActivity extends BaseMainActivity {
     EditText edtSearch;
     RecyclerView mRecyclerView;
     SearchUsersAdapter mAdapter;
-    TextView tvNoAnyone;
+    TextView tvNoAnyone, tvLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,10 @@ public class SearchUsersActivity extends BaseMainActivity {
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
+        useCache();
         requestSearchUsers();
+
+        initDetectNetworkStateChange();
     }
 
     void isLoading() {
@@ -55,37 +59,61 @@ public class SearchUsersActivity extends BaseMainActivity {
         edtSearch.setEnabled(true);
     }
 
+    void useCache() {
+        ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheUsers();
+        if (cacheUsers.isEmpty()) {
+            tvLoading.setVisibility(View.VISIBLE);
+        } else {
+            tvLoading.setVisibility(View.GONE);
+            tvNoAnyone.setVisibility(View.GONE);
+            mAdapter.setArrayList(cacheUsers);
+        }
+    }
+
+    void updateCache(ArrayList<User> users) {
+        new Thread(() -> {
+            for (User user: users) {
+                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
+                CacheService.getInstance().addOrUpdateCacheUser(user);
+            }
+        }).start();
+    }
+
+    void handleUserResponse(User user) {
+        if (CacheService.getInstance().checkRelationFriend(user)) {
+            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        };
+    }
+
     void requestSearchUsers() {
         String keywords = edtSearch.getText().toString();
 
-        // SweetDialog.showLoading(this);
         isLoading();
 
         ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                // SweetDialog.hideLoading();
                 endLoading();
+
                 if (response.isSuccessful()) {
-                    List<User> users = response.body();
+                    ArrayList<User> users = (ArrayList<User>) response.body();
 
                     if (users.isEmpty()) {
                         tvNoAnyone.setVisibility(View.VISIBLE);
                     } else {
                         tvNoAnyone.setVisibility(View.GONE);
-                        mAdapter.setArrayList((ArrayList<User>) users);
+                        for (User user: users) handleUserResponse(user);
+                        mAdapter.setArrayList(users);
+                        updateCache(users);
                     }
 
                 } else {
-                    // SweetDialog.hideLoading();
-                    endLoading();
                     tvNoAnyone.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                // SweetDialog.hideLoading();
                 endLoading();
             }
         });
@@ -93,11 +121,12 @@ public class SearchUsersActivity extends BaseMainActivity {
 
     void initViews() {
         tvNoAnyone = (TextView) findViewById(R.id.tvNoAnyone);
+        tvLoading = (TextView) findViewById(R.id.tvLoading);
         rvSearch = (RippleView) findViewById(R.id.rvSearch);
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SearchUsersAdapter(this, null);

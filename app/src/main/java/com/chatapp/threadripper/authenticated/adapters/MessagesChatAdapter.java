@@ -3,31 +3,29 @@ package com.chatapp.threadripper.authenticated.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.models.Contact;
-import com.chatapp.threadripper.authenticated.models.MessagesChat;
-import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.Message;
+import com.chatapp.threadripper.utils.DateTimeUtils;
+import com.chatapp.threadripper.utils.ModelUtils;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MessagesChatAdapter extends SelectableAdapter<MessagesChatAdapter.ViewHolder> {
+public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapter.ViewHolder> {
 
-    private ArrayList<MessagesChat> mArrayList;
+    private ArrayList<Conversation> mArrayList;
     private Context mContext;
     private ViewHolder.ClickListener clickListener;
 
-
-    public MessagesChatAdapter(Context context, ArrayList<MessagesChat> arrayList, ViewHolder.ClickListener clickListener) {
+    public MessagesChatAdapter(Context context, ArrayList<Conversation> arrayList, ViewHolder.ClickListener clickListener) {
         this.mContext = context;
         this.clickListener = clickListener;
 
@@ -35,57 +33,72 @@ public class MessagesChatAdapter extends SelectableAdapter<MessagesChatAdapter.V
         else this.mArrayList = new ArrayList<>();
     }
 
-    public void setArrayList(ArrayList<MessagesChat> arrayList) {
+    public void setArrayList(ArrayList<Conversation> arrayList) {
         this.mArrayList.clear();
         this.mArrayList.addAll(arrayList);
         this.notifyDataSetChanged();
     }
 
-    public void addItem(MessagesChat item) {
-        this.mArrayList.add(item);
-        this.notifyItemChanged(this.mArrayList.size()-1);
+    public void addAll(ArrayList<Conversation> arrayList) {
+        this.mArrayList.addAll(arrayList);
+        this.notifyDataSetChanged();
     }
 
-    public MessagesChat getItem(int position) {
+    public void addItem(Conversation item) {
+        this.mArrayList.add(item);
+        this.notifyItemChanged(this.mArrayList.size() - 1);
+    }
+
+    public void clean() {
+        this.mArrayList.clear();
+        this.notifyDataSetChanged();
+    }
+
+    public Conversation getItem(int position) {
         return this.mArrayList.get(position);
     }
 
-    // Create new views
+
     @Override
     public MessagesChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_chat, null);
 
-        ViewHolder viewHolder = new ViewHolder(itemLayoutView, clickListener);
+        ViewHolder viewHolder = new MessagesChatAdapter.ViewHolder(itemLayoutView, clickListener);
 
         return viewHolder;
     }
 
+
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(MessagesChatAdapter.ViewHolder vh, int position) {
 
-        viewHolder.tvName.setText(mArrayList.get(position).getName());
+        Conversation item = getItem(position);
 
-        if (isSelected(position)) {
-            viewHolder.checked.setChecked(true);
-            viewHolder.checked.setVisibility(View.VISIBLE);
+        vh.tvName.setText(ModelUtils.getConversationName(item));
+        vh.onlineView.setVisibility(ModelUtils.isOnlineGroup(item) ? View.VISIBLE : View.INVISIBLE);
+        // ImageLoader.loadUserAvatar(vh.cirImgUserAvatar, );
+
+        Message lastMessage = item.getLastMessage();
+        if (lastMessage == null) {
+            vh.tvTime.setText(DateTimeUtils.formatBestDateTime(new Date()));
+            vh.tvLastChat.setText("No any message");
         } else {
-            viewHolder.checked.setChecked(false);
-            viewHolder.checked.setVisibility(View.GONE);
+            if (lastMessage.getDateTime() != null) {
+                vh.tvTime.setText(DateTimeUtils.formatBestDateTime(lastMessage.getDateTime()));
+            }
+
+            if (lastMessage.getType().equals(Message.MessageType.TEXT)) {
+                vh.tvLastChat.setText(lastMessage.getContent());
+            } else if (lastMessage.getType().equals(Message.MessageType.IMAGE)) {
+                vh.tvLastChat.setText(lastMessage.getUsername() + " sent an image");
+            } else if (lastMessage.getType().equals(Message.MessageType.FILE)) {
+                vh.tvLastChat.setText(lastMessage.getUsername() + " sent a file");
+            } else if (lastMessage.getType().equals(Message.MessageType.CALL)) {
+                vh.tvLastChat.setText("A call end");
+            }
         }
-
-        viewHolder.tvTime.setText(mArrayList.get(position).getTime());
-
-        ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getImage());
-
-        if (mArrayList.get(position).getOnline()) {
-            viewHolder.onlineView.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.onlineView.setVisibility(View.INVISIBLE);
-        }
-
-        viewHolder.tvLastChat.setText(mArrayList.get(position).getLastChat());
     }
 
     @Override
@@ -94,16 +107,18 @@ public class MessagesChatAdapter extends SelectableAdapter<MessagesChatAdapter.V
     }
 
 
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView tvName;
         public TextView tvTime;
         public TextView tvLastChat;
         public CircleImageView cirImgUserAvatar;
-        private final View onlineView;
-        public CheckBox checked;
-        private ClickListener listener;
+        public View onlineView;
+        ClickListener listener;
+
+        public interface ClickListener {
+            public void onItemClicked(int position);
+        }
 
 
         public ViewHolder(View itemLayoutView, ClickListener listener) {
@@ -116,34 +131,15 @@ public class MessagesChatAdapter extends SelectableAdapter<MessagesChatAdapter.V
             tvLastChat = (TextView) itemLayoutView.findViewById(R.id.tv_last_chat);
             cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
             onlineView = itemLayoutView.findViewById(R.id.online_indicator);
-            checked = (CheckBox) itemLayoutView.findViewById(R.id.chk_list);
 
             itemLayoutView.setOnClickListener(this);
-
-            itemLayoutView.setOnLongClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(View view) {
             if (listener != null) {
                 listener.onItemClicked(getAdapterPosition());
             }
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            if (listener != null) {
-                return listener.onItemLongClicked(getAdapterPosition());
-            }
-            return false;
-        }
-
-        public interface ClickListener {
-            void onItemClicked(int position);
-
-            boolean onItemLongClicked(int position);
-
-            boolean onCreateOptionsMenu(Menu menu);
         }
     }
 }

@@ -6,7 +6,7 @@
     tools:targetApi="lollipop">
     <item>
         <shape android:shape="oval">
-            <solid android:color="#ffffff" />
+            <solid android:color="#00ffffff" />
             <size
                 android:width="120dp"
                 android:height="120dp" />

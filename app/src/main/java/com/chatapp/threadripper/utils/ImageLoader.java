@@ -22,7 +22,8 @@ public class ImageLoader {
      * Use invalid url for a null or empty url
      */
     static String safetyImageURL(String url) {
-        if (URLUtil.isValidUrl(url)) return url;
+        if (URLUtil.isValidUrl(url) && url != null
+                && !url.contains("default.jpg")) return url;
         return Constants.PLACEHOLDER_IMAGE_URL;
     }
 
@@ -39,6 +40,13 @@ public class ImageLoader {
                 .error(R.drawable.placeholder_image_chat)
                 .fit()
                 .centerCrop()
+                .into((ImageView) view);
+    }
+
+    public static void loadPhotoView(View view, String url) {
+        Picasso.get().load(safetyImageURL(url))
+                .placeholder(R.drawable.placeholder_image_chat)
+                .error(R.drawable.placeholder_image_chat)
                 .into((ImageView) view);
     }
 }

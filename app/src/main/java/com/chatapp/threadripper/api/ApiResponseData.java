@@ -19,6 +19,10 @@ public class ApiResponseData {
     boolean active = false;
     String message = "";
     String result = "";
+    String conversationId = "";
+    String avatarUrl = "";
+    String imageUrl = "";
+    String fileUrl = "";
 
 
     @Override
@@ -26,9 +30,35 @@ public class ApiResponseData {
         return "Api Response Data";
     }
 
+
     /**
      * Getter & Setter
      */
+
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
 
     public User getUser() {
         return user;
@@ -76,5 +106,13 @@ public class ApiResponseData {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
     }
 }

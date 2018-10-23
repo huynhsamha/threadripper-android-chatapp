@@ -1,12 +1,16 @@
 package com.chatapp.threadripper.utils;
 
 
+import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.User;
+
+import java.util.List;
 
 public class Preferences {
 
     private static User currentUser = new User();
     private static String chatAuthToken = "";
+
 
     public static String getChatAuthToken() {
         return chatAuthToken;
