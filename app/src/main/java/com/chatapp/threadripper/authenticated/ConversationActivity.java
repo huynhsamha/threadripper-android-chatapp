@@ -20,7 +20,7 @@ import android.widget.ImageButton;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.SocketService;
+import com.chatapp.threadripper.api.SocketApiService;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.utils.Constants;
@@ -120,7 +120,7 @@ public class ConversationActivity extends BaseMainActivity {
     }
 
     void setupWebSocket() {
-        SocketService.getInstance().addSocketListener(new SocketService.SocketListener() {
+        SocketApiService.getInstance().addSocketListener(new SocketApiService.SocketListener() {
             @Override
             public void onMessage(Message message) {
                 handleOnReceiveMessage(message);
@@ -272,7 +272,7 @@ public class ConversationActivity extends BaseMainActivity {
     }
 
     void sendToSocket(Message message) {
-        SocketService.getInstance().sendMessage(message);
+        SocketApiService.getInstance().sendMessage(message);
     }
 
     void handleOnReceiveMessage(Message msg) {

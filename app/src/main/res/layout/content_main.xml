@@ -12,9 +12,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        />
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/tvCheckConnection"
@@ -23,6 +21,6 @@
         android:layout_alignParentTop="@id/frameLayout"
         android:gravity="center"
         android:padding="2dp"
-        android:text="Connection is established!"
-        />
+        android:visibility="gone"
+        android:text="Connection is established!" />
 </RelativeLayout>

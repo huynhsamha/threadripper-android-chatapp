@@ -10,11 +10,11 @@ import com.google.gson.Gson;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
-public class SocketService {
+public class SocketApiService {
 
     String TAG = "SOCKET_LOG";
 
-    private static SocketService instance;
+    private static SocketApiService instance;
 
     public interface SocketListener {
         void onMessage(Message message);
@@ -27,21 +27,21 @@ public class SocketService {
     private SocketListener listener;
 
     public static void init() {
-        instance = new SocketService();
+        instance = new SocketApiService();
     }
 
-    public static SocketService getInstance() {
+    public static SocketApiService getInstance() {
         if (instance == null) {
-            instance = new SocketService();
+            instance = new SocketApiService();
         }
         return instance;
     }
 
-    public SocketService() {
+    public SocketApiService() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
     }
 
-    public SocketService subscribe() {
+    public SocketApiService subscribe() {
 
         String username = Preferences.getCurrentUser().getUsername();
         String channel = "/topic/" + username;
@@ -98,7 +98,7 @@ public class SocketService {
         instance = null;
     }
 
-    public SocketService addSocketListener(SocketListener listener) {
+    public SocketApiService addSocketListener(SocketListener listener) {
         this.listener = listener;
         return this;
     }

@@ -30,4 +30,10 @@ public class Constants {
     public static final String RELATIONSHIP_FRIEND = "FRIEND";
     public static final String RELATIONSHIP_SENT = "SENT";
     public static final String RELATIONSHIP_NONE = "NONE";
+
+    public static final String ACTION_STRING_RECEIVER_NEW_MESSAGE = "ATION_STRING_RECEIVER_NEW_MESSAGE";
+    public static final String ACTION_STRING_RECEIVER_JOIN = "ATION_STRING_RECEIVER_JOIN";
+    public static final String ACTION_STRING_RECEIVER_LEAVE = "ATION_STRING_RECEIVER_LEAVE";
+
+    public static final String MESSAGE_CHAT = "MESSAGE_CHAT";
 }

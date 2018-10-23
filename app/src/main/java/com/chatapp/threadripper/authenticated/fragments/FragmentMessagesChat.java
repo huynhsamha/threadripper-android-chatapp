@@ -19,8 +19,7 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.api.Config;
-import com.chatapp.threadripper.api.SocketService;
+import com.chatapp.threadripper.api.SocketApiService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
@@ -33,16 +32,12 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.client.StompClient;
 
 
 public class FragmentMessagesChat extends Fragment implements MessagesChatAdapter.ViewHolder.ClickListener {
@@ -90,7 +85,7 @@ public class FragmentMessagesChat extends Fragment implements MessagesChatAdapte
     }
 
     void setUpSocket() {
-        SocketService.getInstance().addSocketListener(new SocketService.SocketListener() {
+        SocketApiService.getInstance().addSocketListener(new SocketApiService.SocketListener() {
             @Override
             public void onMessage(Message message) {
                 handleNewMessage(message);

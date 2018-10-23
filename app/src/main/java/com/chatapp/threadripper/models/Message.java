@@ -5,9 +5,10 @@ import android.graphics.Bitmap;
 import com.chatapp.threadripper.cacheRealm.MessageRealm;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
 
     String messageId;
     String type;

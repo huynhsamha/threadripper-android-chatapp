@@ -24,14 +24,6 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <receiver android:name=".receivers.NetworkChangeReceiver">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".Splash"
             android:theme="@style/AppThemeFull">
@@ -72,6 +64,24 @@
         <activity
             android:name=".authenticated.PhotoViewActivity"
             android:theme="@style/AppThemeFull" />
+
+        <service
+            android:name=".services.SocketService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".receivers.SocketReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name=".receivers.NetworkChangeReceiver">
+            <intent-filter>
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
