@@ -93,6 +93,15 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
+    void sendBroadcastTyping(Message message) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.ACTION_STRING_RECEIVER_TYPING);
+        intent.putExtra(Constants.CONVERSATION_ID, message.getConversationId());
+        intent.putExtra(Constants.USER_USERNAME, message.getUsername());
+        intent.putExtra(Constants.CHAT_IS_TYPING_BOOLEAN, message.getContent().equals("true"));
+        sendBroadcast(intent);
+    }
+
     @SuppressLint("CheckResult")
     void initSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
@@ -128,6 +137,17 @@ public class SocketService extends Service {
 
                         case Message.MessageType.LEAVE:
                             sendBroadcastLeave(message.getUsername());
+                            break;
+
+                        case Message.MessageType.CALL:
+                        case Message.MessageType.VIDEO:
+                            break;
+
+                        case Message.MessageType.READ:
+                            break;
+
+                        case Message.MessageType.TYPING:
+                            sendBroadcastTyping(message);
                             break;
 
                         default:

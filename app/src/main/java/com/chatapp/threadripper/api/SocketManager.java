@@ -102,6 +102,15 @@ public class SocketManager {
         return pushMessage(message);
     }
 
+    public boolean isTyping(String conversationId, boolean typing) {
+        Message message = new Message();
+        message.setType(Message.MessageType.TYPING);
+        message.setConversationId(conversationId);
+        message.setContent(typing ? "true" : "false");
+
+        return pushMessage(message);
+    }
+
     public boolean sendText(String conversationId, String content) {
         Message message = new Message();
         message.setType(Message.MessageType.TEXT);

@@ -15,11 +15,12 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
@@ -30,6 +31,7 @@ import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
@@ -43,9 +45,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +66,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     // private CircleImageView cirImgUserAvatar;
     // private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
+    TextView tvUserTyping;
+
+    Set<String> typingUsername = new HashSet<>(); // use Set for unique username
+
 
     boolean isOnline;
     String displayName, avatar, conversationId;
@@ -108,8 +116,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
-        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
-        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_TYPING);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_READ);
 
         mSocketReceiver.setListener(this);
     }
@@ -133,6 +143,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     void initViews() {
+        tvUserTyping = (TextView) findViewById(R.id.tvUserTyping);
         edtMessage = (EditText) findViewById(R.id.edtMessage);
         imgBtnSend = (ImageButton) findViewById(R.id.imgBtnSend);
         btnAttachChatImage = (ImageButton) findViewById(R.id.btnAttachChatImage);
@@ -151,6 +162,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         // if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
         // else onlineIndicator.setVisibility(View.GONE);
 
+        tvUserTyping.setText("");
         btnShowButtons.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -174,6 +186,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 hideButtonsBar();
+                SocketManager.getInstance().isTyping(conversationId, true);
             }
 
             @Override
@@ -183,7 +196,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                SocketManager.getInstance().isTyping(conversationId, false);
             }
         });
 
@@ -545,12 +558,27 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     @Override
     public void onJoin(String username) {
-        Log.d(TAG, "onJoin: " + username);
+
     }
 
     @Override
     public void onLeave(String username) {
-        Log.d(TAG, "onLeave: " + username);
+
     }
 
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onTyping(String _conversationId, String username, boolean typing) {
+        if (!_conversationId.equals(conversationId)) return;
+        if (username.equals(Preferences.getCurrentUser().getUsername())) return;
+
+        if (typing) typingUsername.add(username);
+        else typingUsername.remove(username);
+
+        if (typingUsername.isEmpty()) {
+            tvUserTyping.setText("");
+        } else {
+            tvUserTyping.setText(TextUtils.join(", ", typingUsername) + " is typing...");
+        }
+    }
 }

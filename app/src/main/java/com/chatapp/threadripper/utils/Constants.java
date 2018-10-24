@@ -9,6 +9,7 @@ public class Constants {
 
     public static final String CHAT_IMAGE_URL = "CHAT_IMAGE_URL";
     public static final String CHAT_IMAGE_BITMAP = "CHAT_IMAGE_BITMAP";
+    public static final String CHAT_IS_TYPING_BOOLEAN = "CHAT_IS_TYPING_BOOLEAN";
 
     public static final String CONVERSATION_ID = "CONVERSATION_ID";
     public static final String CONVERSATION_NAME = "CONVERSATION_NAME";
@@ -31,9 +32,12 @@ public class Constants {
     public static final String RELATIONSHIP_SENT = "SENT";
     public static final String RELATIONSHIP_NONE = "NONE";
 
-    public static final String ACTION_STRING_RECEIVER_NEW_MESSAGE = "ATION_STRING_RECEIVER_NEW_MESSAGE";
-    public static final String ACTION_STRING_RECEIVER_JOIN = "ATION_STRING_RECEIVER_JOIN";
-    public static final String ACTION_STRING_RECEIVER_LEAVE = "ATION_STRING_RECEIVER_LEAVE";
+    public static final String ACTION_STRING_RECEIVER_NEW_MESSAGE = "ACTION_STRING_RECEIVER_NEW_MESSAGE";
+    public static final String ACTION_STRING_RECEIVER_JOIN = "ACTION_STRING_RECEIVER_JOIN";
+    public static final String ACTION_STRING_RECEIVER_LEAVE = "ACTION_STRING_RECEIVER_LEAVE";
+    public static final String ACTION_STRING_RECEIVER_TYPING = "ACTION_STRING_RECEIVER_TYPING";
+    public static final String ACTION_STRING_RECEIVER_READ = "ACTION_STRING_RECEIVER_READ";
+    public static final String ACTION_STRING_RECEIVER_CALL = "ACTION_STRING_RECEIVER_CALL";
 
     public static final String MESSAGE_CHAT = "MESSAGE_CHAT";
 

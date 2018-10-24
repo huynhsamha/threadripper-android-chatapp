@@ -104,6 +104,8 @@ public class FragmentMessagesChat extends Fragment implements
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_TYPING);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_READ);
 
         mSocketReceiver.setListener(this);
     }
@@ -343,5 +345,10 @@ public class FragmentMessagesChat extends Fragment implements
     @Override
     public void onLeave(String username) {
         Log.d(TAG, "onLeave: " + username);
+    }
+
+    @Override
+    public void onTyping(String conversationId, String username, boolean typing) {
+
     }
 }
