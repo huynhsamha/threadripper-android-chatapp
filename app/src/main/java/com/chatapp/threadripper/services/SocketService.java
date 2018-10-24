@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.services;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -12,6 +13,7 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
+import io.reactivex.CompletableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
@@ -31,7 +33,8 @@ public class SocketService extends Service {
     private StompClient client;
     private SocketBinder binder = new SocketBinder();
 
-    public SocketService() {}
+    public SocketService() {
+    }
 
     @Override
     public void onCreate() {
@@ -69,7 +72,6 @@ public class SocketService extends Service {
     }
 
 
-
     void sendBroadcastNewMessage(Message message) {
         Intent intent = new Intent();
         intent.setAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
@@ -91,6 +93,7 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
+    @SuppressLint("CheckResult")
     void initSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
 
@@ -98,31 +101,39 @@ public class SocketService extends Service {
         String channel = "/topic/" + username;
 
         client.topic(channel)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-            String jsonString = response.getPayload();
-            Gson gson = new Gson();
-            Message message = gson.fromJson(jsonString, Message.class);
-            message.updateDateTime();
+                    String jsonString = response.getPayload();
+                    Gson gson = new Gson();
+                    Message message = gson.fromJson(jsonString, Message.class);
 
-            switch (message.getType()) {
-                case Message.MessageType.TEXT:
-                case Message.MessageType.FILE:
-                case Message.MessageType.IMAGE:
-                    sendBroadcastNewMessage(message);
-                    break;
+                    if (message.getType() == null) {
+                        return; // fucking message !!!
+                        // used for handle crash bug from internal libraries
+                    }
 
-                case Message.MessageType.JOIN:
-                    sendBroadcastJoin(message.getUsername());
-                    break;
+                    message.updateDateTime();
 
-                case Message.MessageType.LEAVE:
-                    sendBroadcastLeave(message.getUsername());
-                    break;
+                    switch (message.getType()) {
+                        case Message.MessageType.TEXT:
+                        case Message.MessageType.FILE:
+                        case Message.MessageType.IMAGE:
+                            sendBroadcastNewMessage(message);
+                            break;
 
-                default:
-                    break;
-            }
-        });
+                        case Message.MessageType.JOIN:
+                            sendBroadcastJoin(message.getUsername());
+                            break;
+
+                        case Message.MessageType.LEAVE:
+                            sendBroadcastLeave(message.getUsername());
+                            break;
+
+                        default:
+                            break;
+                    }
+                });
     }
 
     public void connectSocket() {
@@ -146,13 +157,23 @@ public class SocketService extends Service {
         }
     }
 
+    @SuppressLint("CheckResult")
     public void sendMessage(Message message) {
         message.setToken(Preferences.getChatAuthToken());
 
-        client.send("/queue/sendMessage", new Gson().toJson(message)).subscribe(
-                () -> Log.d(TAG, "Sent data!"),
-                error -> Log.e(TAG, "Error", error)
-        );
+        client.send("/queue/sendMessage", new Gson().toJson(message))
+                .compose(applySchedulers())
+                .subscribe(
+                        () -> Log.d(TAG, "Sent data!"),
+                        error -> Log.e(TAG, "Error", error)
+                );
+    }
+
+    protected CompletableTransformer applySchedulers() {
+        return upstream -> upstream
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 }

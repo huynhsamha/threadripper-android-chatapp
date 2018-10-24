@@ -54,8 +54,12 @@ dependencies {
     // OkHttp: connect web API and web socket
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 
-    // StompProtocolAndroid
-    implementation 'com.github.forresthopkinsa:StompProtocolAndroid:17.11.0'
+    // RxAndroid
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
+
+    // StompProtocolAndroid - Require reactivex - rxjava2
+    implementation 'com.github.NaikSoftware:StompProtocolAndroid:1.5.4'
 
     // Rounded Image View
     implementation 'com.makeramen:roundedimageview:2.3.0'
@@ -72,7 +76,4 @@ dependencies {
     // Photo View
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
-    // RxAndroid
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
 }
