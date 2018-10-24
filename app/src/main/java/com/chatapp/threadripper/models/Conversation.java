@@ -12,6 +12,7 @@ public class Conversation {
     String conversationId;
     String conversationName;
     Message lastMessage;
+    String photoUrl;
     List<User> listUser = new ArrayList<>();
 
     public Conversation() {
@@ -21,6 +22,7 @@ public class Conversation {
     public Conversation(ConversationRealm o) {
         conversationId = o.getConversationId();
         conversationName = o.getConversationName();
+        photoUrl = o.getPhotoUrl();
         if (o.getLastMessage() != null)
             lastMessage = new Message(o.getLastMessage());
         for (UserRealm u : o.getListUser()) {
@@ -63,5 +65,13 @@ public class Conversation {
 
     public void setListUser(List<User> listUser) {
         this.listUser = listUser;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

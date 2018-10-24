@@ -38,31 +38,31 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/h1" />
 
-        <RelativeLayout
-            android:id="@+id/rlImgUserAvatar"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:visibility="gone">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/rlImgUserAvatar"-->
+            <!--android:layout_width="36dp"-->
+            <!--android:layout_height="36dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:visibility="gone">-->
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/cirImgUserAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/placeholder_user_avatar" />
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:id="@+id/cirImgUserAvatar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:src="@drawable/placeholder_user_avatar" />-->
 
-            <View
-                android:id="@+id/onlineIndicator"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="1dp"
-                android:layout_marginRight="1dp"
-                android:background="@drawable/bg_online" />
+            <!--<View-->
+                <!--android:id="@+id/onlineIndicator"-->
+                <!--android:layout_width="12dp"-->
+                <!--android:layout_height="12dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_marginBottom="1dp"-->
+                <!--android:layout_marginRight="1dp"-->
+                <!--android:background="@drawable/bg_online" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
     </RelativeLayout>
 

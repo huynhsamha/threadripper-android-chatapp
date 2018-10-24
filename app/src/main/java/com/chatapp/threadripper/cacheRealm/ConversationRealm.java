@@ -15,6 +15,7 @@ public class ConversationRealm extends RealmObject {
     String conversationId;
     String conversationName;
     MessageRealm lastMessage;
+    String photoUrl;
     RealmList<UserRealm> listUser = new RealmList<>();
 
     public ConversationRealm() {
@@ -24,6 +25,7 @@ public class ConversationRealm extends RealmObject {
     public ConversationRealm(Conversation o) {
         conversationId = o.getConversationId();
         conversationName = o.getConversationName();
+        photoUrl = o.getPhotoUrl();
         if (o.getLastMessage() != null)
             lastMessage = new MessageRealm(o.getLastMessage());
         for (User u : o.getListUser()) {
@@ -63,5 +65,13 @@ public class ConversationRealm extends RealmObject {
 
     public void setListUser(RealmList<UserRealm> listUser) {
         this.listUser = listUser;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

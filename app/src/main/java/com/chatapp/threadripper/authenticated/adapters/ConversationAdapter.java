@@ -147,8 +147,18 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
         if (isYou) {
-            // TODO
-            ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), msg.getConversationAvatar());
+            // TODO - implement load image for group > 2 people
+
+            if (msg.getConversationAvatar() == null) {
+                ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), msg.getConversationAvatar());
+                return;
+            }
+
+            if (msg.getConversationAvatar().equals(Constants.PLACEHOLDER_GROUP_AVATAR)) {
+                ImageLoader.loadGroupAvatar(vh.getCirImgUserAvatar(), "");
+            } else {
+                ImageLoader.loadUserAvatar(vh.getCirImgUserAvatar(), msg.getConversationAvatar());
+            }
         }
     }
 

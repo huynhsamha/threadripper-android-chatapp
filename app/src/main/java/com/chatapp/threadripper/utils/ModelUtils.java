@@ -16,7 +16,8 @@ import java.util.List;
 public class ModelUtils {
 
     public static String getConversationName(Conversation conversation) {
-        if (conversation.getConversationName() != null) {
+        if (conversation.getConversationName() != null
+                && !conversation.getConversationName().isEmpty()) {
             return conversation.getConversationName();
         }
 
@@ -31,7 +32,31 @@ public class ModelUtils {
     }
 
     public static String getConversationAvatar(Conversation conversation) {
-        return "";
+        if (conversation.getPhotoUrl() != null
+                && !conversation.getPhotoUrl().isEmpty()) {
+            return conversation.getPhotoUrl();
+        }
+
+        if (conversation.getListUser().size() < 2) {
+            // fucking conversation !!!
+            if (conversation.getListUser().size() == 1) {
+                return conversation.getListUser().get(0).getPhotoUrl();
+            }
+            return "";
+        }
+
+        if (conversation.getListUser().size() == 2) {
+            User user = conversation.getListUser().get(0);
+            if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+                // this is me, so return the other
+                return conversation.getListUser().get(1).getPhotoUrl();
+            }
+            return user.getPhotoUrl();
+        }
+
+
+        // TODO: handle for group with multiple users
+        return Constants.PLACEHOLDER_GROUP_AVATAR;
     }
 
     public static boolean isOnlineGroup(Conversation conversation) {

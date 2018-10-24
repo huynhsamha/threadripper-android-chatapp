@@ -59,8 +59,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
     private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
-    private CircleImageView cirImgUserAvatar;
-    private View onlineIndicator;
+    // private CircleImageView cirImgUserAvatar;
+    // private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
 
     boolean isOnline;
@@ -143,13 +143,13 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
 
         // Load User Avatar & Online ?
-        cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
-        onlineIndicator = findViewById(R.id.onlineIndicator);
+        // cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
+        // onlineIndicator = findViewById(R.id.onlineIndicator);
 
-        findViewById(R.id.rlImgUserAvatar).setVisibility(View.VISIBLE);
-        ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
-        if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
-        else onlineIndicator.setVisibility(View.GONE);
+        // findViewById(R.id.rlImgUserAvatar).setVisibility(View.VISIBLE);
+        // ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
+        // if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
+        // else onlineIndicator.setVisibility(View.GONE);
 
         btnShowButtons.setVisibility(View.GONE);
 
@@ -388,6 +388,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             message.updateDateTime();
             if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
                 message.setYou(true);
+                message.setConversationAvatar(avatar);
             }
         }
 

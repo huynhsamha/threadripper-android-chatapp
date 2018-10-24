@@ -224,8 +224,11 @@ public class FragmentMessagesChat extends Fragment implements
                         endFailLoading(1);
                     } else {
                         for (Conversation c : conversations) {
-                            if (c.getLastMessage() != null)
+                            c.setConversationName(ModelUtils.getConversationName(c));
+                            c.setPhotoUrl(ModelUtils.getConversationAvatar(c));
+                            if (c.getLastMessage() != null) {
                                 c.getLastMessage().updateDateTime();
+                            }
                         }
                         endSuccessLoading(1);
                         mAdapterGroups.setArrayList(conversations);
@@ -299,7 +302,6 @@ public class FragmentMessagesChat extends Fragment implements
         if (CacheService.getInstance().checkRelationFriend(user)) {
             user.setRelationship(Constants.RELATIONSHIP_FRIEND);
         }
-        ;
     }
 
     @Override

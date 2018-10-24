@@ -11,6 +11,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.utils.DateTimeUtils;
+import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ModelUtils;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
 
         vh.tvName.setText(ModelUtils.getConversationName(item));
         vh.onlineView.setVisibility(ModelUtils.isOnlineGroup(item) ? View.VISIBLE : View.INVISIBLE);
-        // ImageLoader.loadUserAvatar(vh.cirImgUserAvatar, );
+        ImageLoader.loadUserAvatar(vh.cirImgUserAvatar, item.getPhotoUrl());
 
         Message lastMessage = item.getLastMessage();
         if (lastMessage == null) {
@@ -97,6 +98,9 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
                 vh.tvLastChat.setText(lastMessage.getUsername() + " sent a file");
             } else if (lastMessage.getType().equals(Message.MessageType.CALL)) {
                 vh.tvLastChat.setText("A call end");
+            } else {
+                // handle error case !!!
+                vh.tvLastChat.setText("");
             }
         }
     }
@@ -117,7 +121,7 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         ClickListener listener;
 
         public interface ClickListener {
-            public void onItemClicked(int position);
+            void onItemClicked(int position);
         }
 
 

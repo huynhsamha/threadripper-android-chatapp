@@ -40,4 +40,5 @@ public class Constants {
     public static final String FRAGMENT_TAG_MESSAGE_CHAT_LIST = "FRAGMENT_TAG_MESSAGE_CHAT_LIST";
     public static final String FRAGMENT_TAG_VIDEO_CALL_LIST = "FRAGMENT_TAG_VIDEO_CALL_LIST";
 
+    public static final String PLACEHOLDER_GROUP_AVATAR = "PLACEHOLDER_GROUP_AVATAR";
 }

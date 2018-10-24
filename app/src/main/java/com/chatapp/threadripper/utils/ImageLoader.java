@@ -34,6 +34,13 @@ public class ImageLoader {
                 .into((ImageView) view);
     }
 
+    public static void loadGroupAvatar(View view, String url) {
+        Picasso.get().load(safetyImageURL(url))
+                .placeholder(R.drawable.placeholder_group_avatar)
+                .error(R.drawable.placeholder_group_avatar)
+                .into((ImageView) view);
+    }
+
     public static void loadImageChatMessage(View view, String url) {
         Picasso.get().load(safetyImageURL(url))
                 .placeholder(R.drawable.placeholder_image_chat)
