@@ -64,8 +64,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         navigationViewBottom.setNavigationItemSelectedListener(this);
 
         initDetectNetworkStateChange();
-
-        SocketManager.getInstance().connectSocketService(this);
     }
 
     @Override
@@ -73,11 +71,13 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         super.onResume();
 
         try {
+
+            // Update displayName and photoUrl of user in drawer
             configDrawerUserInfo();
+
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
-
     }
 
     @Override

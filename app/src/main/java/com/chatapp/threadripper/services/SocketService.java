@@ -2,9 +2,7 @@ package com.chatapp.threadripper.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -14,6 +12,8 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -97,7 +97,8 @@ public class SocketService extends Service {
         String username = Preferences.getCurrentUser().getUsername();
         String channel = "/topic/" + username;
 
-        client.topic(channel).subscribe(response -> {
+        client.topic(channel)
+                .subscribe(response -> {
             String jsonString = response.getPayload();
             Gson gson = new Gson();
             Message message = gson.fromJson(jsonString, Message.class);
@@ -127,7 +128,9 @@ public class SocketService extends Service {
     public void connectSocket() {
         try {
             // TODO: Error without explanation
-            client.connect();
+            if (!client.isConnected()) {
+                client.connect();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

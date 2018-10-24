@@ -41,6 +41,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -197,10 +198,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     void hideButtonsBar() {
-        btnShowButtons.setVisibility(View.VISIBLE);
         btnAttachChatImage.setVisibility(View.GONE);
         btnCaptureImage.setVisibility(View.GONE);
         btnAttachFile.setVisibility(View.GONE);
+        btnShowButtons.setVisibility(View.VISIBLE);
     }
 
     void showButtonsBar() {
@@ -403,6 +404,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
                     // parse to Message
                     ArrayList<Message> messages = (ArrayList<Message>) response.body();
+                    Collections.reverse(messages); // reverse messages list for render
                     handleMessagesList(messages);
 
                 } else {

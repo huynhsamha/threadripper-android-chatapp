@@ -8,6 +8,7 @@ import android.os.IBinder;
 
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.services.SocketService;
+import com.chatapp.threadripper.utils.Preferences;
 
 public class SocketManager {
 
@@ -17,7 +18,7 @@ public class SocketManager {
 
     ServiceConnection mSocketServiceConnection;
     SocketService mSocketService;
-    boolean mBound = false;
+    boolean mBound = false; // is bound service
 
 
     private static SocketManager instance;
@@ -38,22 +39,28 @@ public class SocketManager {
 
                 // start connecting to socket
                 mSocketService.connectSocket();
+
+                join();
             }
 
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 mBound = false; // mark currently is unbound
+                mSocketService = null; // delete instance
             }
         };
 
     }
 
     public void connectSocketService(Context context) {
-        context.bindService(new Intent(context, SocketService.class), mSocketServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(context, SocketService.class);
+        context.bindService(intent, mSocketServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void disconnectSocketService(Context context) {
-        context.unbindService(mSocketServiceConnection);
+        if (mSocketServiceConnection != null) {
+            context.unbindService(mSocketServiceConnection);
+        }
     }
 
     public boolean isConnected() {
@@ -66,5 +73,21 @@ public class SocketManager {
             return true;
         }
         return false;
+    }
+
+    public boolean join() {
+        Message message = new Message();
+        message.setToken(Preferences.getChatAuthToken());
+        message.setType(Message.MessageType.JOIN);
+
+        return sendMessage(message);
+    }
+
+    public boolean leave() {
+        Message message = new Message();
+        message.setToken(Preferences.getChatAuthToken());
+        message.setType(Message.MessageType.LEAVE);
+
+        return sendMessage(message);
     }
 }
