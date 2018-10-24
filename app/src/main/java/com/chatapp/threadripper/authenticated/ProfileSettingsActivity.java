@@ -32,14 +32,13 @@ import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SettingsActivity extends BaseMainActivity {
+public class ProfileSettingsActivity extends BaseMainActivity {
 
     RippleView rvToggleEditUsername, rvChangeUserAvatar, rvAcceptChangedUsername, rvCancelChangedUsername, rvBtnBack;
     EditText edtDisplayName, edtOldPassword, edtPassword, edtConfirmPassword;
@@ -50,7 +49,7 @@ public class SettingsActivity extends BaseMainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_profile_settings);
 
         initViews();
         setListeners();
@@ -171,17 +170,17 @@ public class SettingsActivity extends BaseMainActivity {
 
                 if (response.isSuccessful()) {
                     ApiResponseData data = response.body();
-                    SweetDialog.showSuccessMessage(SettingsActivity.this, "Successful",
+                    SweetDialog.showSuccessMessage(ProfileSettingsActivity.this, "Successful",
                             "Password has been changed successfully.");
 
                 } else {
                     Gson gson = new Gson();
                     try {
                         ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                        SettingsActivity.this.ShowErrorDialog(err.getMessage());
+                        ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        SettingsActivity.this.ShowErrorDialog(e.getMessage());
+                        ProfileSettingsActivity.this.ShowErrorDialog(e.getMessage());
                     }
                 }
             }
@@ -189,7 +188,7 @@ public class SettingsActivity extends BaseMainActivity {
             @Override
             public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                SettingsActivity.this.ShowErrorDialog(t.getMessage());
+                ProfileSettingsActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
     }
@@ -299,12 +298,12 @@ public class SettingsActivity extends BaseMainActivity {
 
         // Call API to update avatar
         try {
-            String realFilePath = ImageFilePath.getPath(SettingsActivity.this, data.getData());
+            String realFilePath = ImageFilePath.getPath(ProfileSettingsActivity.this, data.getData());
             File file = new File(realFilePath);
             postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
-            SettingsActivity.this.ShowErrorDialog(err.getMessage());
+            ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
         }
 
     }
@@ -319,7 +318,7 @@ public class SettingsActivity extends BaseMainActivity {
             postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
-            SettingsActivity.this.ShowErrorDialog(err.getMessage());
+            ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
         }
     }
 
@@ -336,17 +335,17 @@ public class SettingsActivity extends BaseMainActivity {
                     Gson gson = new Gson();
                     try {
                         ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                        SettingsActivity.this.ShowErrorDialog(err.getMessage());
+                        ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        SettingsActivity.this.ShowErrorDialog(e.getMessage());
+                        ProfileSettingsActivity.this.ShowErrorDialog(e.getMessage());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponseData> call, Throwable t) {
-                SettingsActivity.this.ShowErrorDialog(t.getMessage());
+                ProfileSettingsActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
     }

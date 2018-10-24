@@ -1,10 +1,7 @@
 package com.chatapp.threadripper.authenticated;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,12 +14,10 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.services.SocketService;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
@@ -158,7 +153,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
                 ft.replace(R.id.frameLayout, fragmentVideoCallList, Constants.FRAGMENT_TAG_VIDEO_CALL_LIST).commit();
                 break;
             case R.id.nav_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, ProfileSettingsActivity.class));
                 break;
             case R.id.nav_logout:
                 SweetDialog.showWarningMessageWithCancel(this, "Alert",

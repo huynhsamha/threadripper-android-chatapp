@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".authenticated.SettingsActivity"
+            android:name=".authenticated.ProfileSettingsActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".authenticated.SearchUsersActivity"
