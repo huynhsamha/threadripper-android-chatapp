@@ -3,17 +3,15 @@ package com.chatapp.threadripper.authenticated;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -24,18 +22,24 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
+import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.receivers.SocketReceiver;
-import com.chatapp.threadripper.services.SocketService;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.FileUtils;
+import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
+import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,12 +64,13 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     boolean isOnline;
     String displayName, avatar, conversationId;
-    String uriAttachImage;
+    String uriAttachImageString;
+    Uri uriAttachImage;
     Bitmap bitmapCaptureImage;
 
     IntentFilter mIntentFilter;
     SocketReceiver mSocketReceiver;
-    ServiceConnection mSocketServiceConnection;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,18 +109,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
 
         mSocketReceiver.setListener(this);
-
-        mSocketServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
-            }
-        };
     }
 
     void initRecyclerView() {
@@ -192,7 +185,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         });
 
         imgBtnSend.setOnClickListener(view -> handleClickButtonSend());
-        btnAttachChatImage.setOnClickListener(view -> handleAttachImage());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            btnAttachChatImage.setOnClickListener(view -> handleAttachImage());
+        }
         btnCaptureImage.setOnClickListener(view -> handleCaptureCamera());
         btnAttachFile.setOnClickListener(view -> handleAttachFile());
 
@@ -221,7 +216,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         if (edtMessage.getVisibility() == View.VISIBLE) { // send a message text
             handleSendMessage();
         } else if (rivImageIsPickedOrCaptured.getVisibility() == View.VISIBLE) { // send a message image
-            if (uriAttachImage != null) { // image is picked - use uri
+            if (uriAttachImageString != null) { // image is picked - use uri
                 handleSendAttachImage();
             } else if (bitmapCaptureImage != null) { // image is captured - use bitmap
                 handleSendCaptureImage();
@@ -242,7 +237,18 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+        // >= 23
     void handleAttachImage() {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.REQUEST_CODE_PERMISSION_READ_EXTERNAL);
+            return;
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUEST_CODE_PERMISSION_WRITE_EXTERNAL);
+            return;
+        }
+
         btnAttachChatImage.setImageResource(R.drawable.ic_action_add_photo_alternate_accent);
 
         Intent intent = new Intent();
@@ -251,52 +257,127 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.REQUEST_CODE_PICK_IMAGE);
     }
 
-    void handleSendCaptureImage() {
-        Message item = new Message();
-        item.setDateTime(new Date());
-        item.setType(Message.MessageType.IMAGE);
-        item.setBitmap(bitmapCaptureImage);
-        item.setBitmap(true);
-
-        mAdapter.addItem(item);
-        scrollToBottom();
-
-        edtMessage.setVisibility(View.VISIBLE);
-        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
-        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
-    }
-
-    void handleSendAttachImage() {
-        Message item = new Message();
-        item.setDateTime(new Date());
-        item.setType(Message.MessageType.IMAGE);
-        item.setContent(uriAttachImage);
-
-        mAdapter.addItem(item);
-        scrollToBottom();
-
-        edtMessage.setVisibility(View.VISIBLE);
-        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
-        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
-    }
-
     void handleSendMessage() {
-        String msg = edtMessage.getText().toString().trim();
-        if (msg.isEmpty()) return;
+        String content = edtMessage.getText().toString().trim();
+        if (content.isEmpty()) return;
 
-        Message item = new Message();
-        item.setDateTime(new Date());
-        item.setType(Message.MessageType.TEXT);
-        item.setConversationId(msg);
-        item.setContent(msg);
+        Message message = new Message();
+        message.setDateTime(new Date());
+        message.setType(Message.MessageType.TEXT);
+        message.setConversationId(conversationId);
+        message.setContent(content);
+
+        mAdapter.addItem(message);
+        scrollToBottom();
 
         edtMessage.setText("");
 
-        mAdapter.addItem(item);
+        SocketManager.getInstance().sendMessage(message);
+    }
+
+    void handleSendCaptureImage() {
+        Message message = new Message();
+        message.setDateTime(new Date());
+        message.setType(Message.MessageType.IMAGE);
+        message.setBitmap(bitmapCaptureImage);
+        message.setBitmap(true);
+
+        mAdapter.addItem(message);
         scrollToBottom();
 
-        // Intent intent = new Intent(this, SocketService.class);
-        // bindService(intent, mSocketServiceConnection, BIND_AUTO_CREATE);
+        edtMessage.setVisibility(View.VISIBLE);
+        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
+        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
+
+        try {
+            File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
+            postImageToServerWithFile(file, new OnCompletePostImage() {
+                @Override
+                public void onSuccess(String url) {
+                    message.setContent(url);
+                    SocketManager.getInstance().sendMessage(message);
+                }
+
+                @Override
+                public void onFailure(String errMessage) {
+                    ConversationActivity.this.ShowErrorDialog(errMessage);
+                }
+            });
+
+        } catch (Exception err) {
+            ConversationActivity.this.ShowErrorDialog(err.getMessage());
+        }
+    }
+
+    void handleSendAttachImage() {
+        Message message = new Message();
+        message.setDateTime(new Date());
+        message.setType(Message.MessageType.IMAGE);
+        message.setContent(uriAttachImageString);
+
+        mAdapter.addItem(message);
+        scrollToBottom();
+
+        edtMessage.setVisibility(View.VISIBLE);
+        rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
+        rivImageIsPickedOrCaptured.setVisibility(View.GONE);
+
+        try {
+            String realFilePath = ImageFilePath.getPath(ConversationActivity.this, uriAttachImage);
+            File file = new File(realFilePath);
+
+            postImageToServerWithFile(file, new OnCompletePostImage() {
+                @Override
+                public void onSuccess(String url) {
+                    message.setContent(url);
+                    SocketManager.getInstance().sendMessage(message);
+                }
+
+                @Override
+                public void onFailure(String errMessage) {
+                    ConversationActivity.this.ShowErrorDialog(errMessage);
+                }
+            });
+
+        } catch (Exception err) {
+            ConversationActivity.this.ShowErrorDialog(err.getMessage());
+        }
+    }
+
+    interface OnCompletePostImage {
+        void onSuccess(String url);
+
+        void onFailure(String errMessage);
+    }
+
+    void postImageToServerWithFile(File file, OnCompletePostImage listener) {
+        ApiService.getInstance().uploadImageInChat(file).enqueue(new Callback<ApiResponseData>() {
+            @Override
+            public void onResponse(Call<ApiResponseData> call, Response<ApiResponseData> response) {
+                if (response.isSuccessful()) {
+                    ApiResponseData data = response.body();
+                    String url = data.getImageUrl();
+                    listener.onSuccess(url);
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        // ConversationActivity.this.ShowErrorDialog(err.getMessage());
+                        listener.onFailure(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // ConversationActivity.this.ShowErrorDialog(e.getMessage());
+                        listener.onFailure(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponseData> call, Throwable t) {
+                // ConversationActivity.this.ShowErrorDialog(t.getMessage());
+                listener.onFailure(t.getMessage());
+            }
+        });
     }
 
     void handleMessagesList(ArrayList<Message> messages) {
@@ -370,11 +451,12 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         rivImageIsPickedOrCaptured.setVisibility(View.VISIBLE);
 
         Uri uri = data.getData();
-        uriAttachImage = uri.toString();
-        ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachImage);
+        uriAttachImage = uri;
+        uriAttachImageString = uri.toString();
+        ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachImageString);
         bitmapCaptureImage = null; // reset method capture image, current image is picked
 
-        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachImage);
+        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachImageString);
         // example: content://com.android.providers.media.documents/document/image%3A14109
     }
 
@@ -385,7 +467,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
         // ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, photo.toString());
         rivImageIsPickedOrCaptured.setImageBitmap(bitmapCaptureImage);
-        uriAttachImage = null; // reset method pick image, current image is captured
+        uriAttachImageString = null; // reset method pick image, current image is captured
+        uriAttachImage = null;
 
         // Log.d("LogImage", "handleCaptureImageSuccess: " + photo.toString());
         // example: android.graphics.Bitmap@312c4eb
@@ -408,6 +491,28 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
             }
         }
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_READ_EXTERNAL) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    handleAttachImage();
+                }
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Read external storage permission is denied");
+            }
+        }
+
+        if (requestCode == Constants.REQUEST_CODE_PERMISSION_WRITE_EXTERNAL) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    handleAttachImage();
+                }
+            } else {
+                // the fucking user!!!
+                ShowToast.lengthLong(this, "Write external storage permission is denied");
+            }
+        }
     }
 
     @Override
@@ -415,10 +520,20 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         if (!message.getConversationId().equals(conversationId)) return;
 
         message.setConversationAvatar(avatar);
-        message.setYou(true);
 
-        mAdapter.addItem(message);
-        scrollToBottom();
+        if (message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            // My message, socket resend to app
+            // TODO: current we don't need do anything
+
+            message.setYou(false);
+
+        } else {
+            // Other user send message
+
+            message.setYou(true);
+            mAdapter.addItem(message);
+            scrollToBottom();
+        }
     }
 
     @Override
@@ -430,4 +545,5 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     public void onLeave(String username) {
         Log.d(TAG, "onLeave: " + username);
     }
+
 }

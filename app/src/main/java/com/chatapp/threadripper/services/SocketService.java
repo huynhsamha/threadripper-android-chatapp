@@ -3,6 +3,7 @@ package com.chatapp.threadripper.services;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,31 +21,54 @@ public class SocketService extends Service {
 
     String TAG = "SOCKET_LOG";
 
+    public class SocketBinder extends Binder {
+        // return instance of service for client use public methods
+        public SocketService getService() {
+            return SocketService.this;
+        }
+    }
+
     private StompClient client;
+    private SocketBinder binder = new SocketBinder();
 
-    public SocketService() {
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    public SocketService() {}
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
+        // run when service is created
+        initSocket(); // init the StompClient socket for connective
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // new Thread(() -> runSocketService()).start();
-        runSocketService();
-
+        // Don't use startService() -> don't use the onStartCommand()
         return START_REDELIVER_INTENT;
     }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // use onBind() <- activity use bindService()
+        // return interface for client use the public methods of the service
+        return binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+
 
     void sendBroadcastNewMessage(Message message) {
         Intent intent = new Intent();
@@ -67,7 +91,9 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
-    void runSocketService() {
+    void initSocket() {
+        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
+
         String username = Preferences.getCurrentUser().getUsername();
         String channel = "/topic/" + username;
 
@@ -96,7 +122,9 @@ public class SocketService extends Service {
                     break;
             }
         });
+    }
 
+    public void connectSocket() {
         try {
             // TODO: Error without explanation
             client.connect();
@@ -104,7 +132,15 @@ public class SocketService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    public void disconnectSocket() {
+        try {
+            client.disconnect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessage(Message message) {
@@ -116,10 +152,4 @@ public class SocketService extends Service {
         );
     }
 
-    @Override
-    public void onDestroy() {
-
-
-        super.onDestroy();
-    }
 }
