@@ -282,6 +282,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         Message message = new Message();
         message.setDateTime(new Date());
         message.setType(Message.MessageType.IMAGE);
+        message.setConversationId(conversationId);
         message.setBitmap(bitmapCaptureImage);
         message.setBitmap(true);
 
@@ -316,6 +317,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         Message message = new Message();
         message.setDateTime(new Date());
         message.setType(Message.MessageType.IMAGE);
+        message.setConversationId(conversationId);
         message.setContent(uriAttachImageString);
 
         mAdapter.addItem(message);

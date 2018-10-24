@@ -39,6 +39,7 @@ public class Message implements Serializable {
         public static final String IMAGE = "IMAGE";
         public static final String FILE = "FILE";
         public static final String CALL = "CALL";
+        public static final String TYPING = "TYPING";
     }
 
     public void updateDateTime() {
