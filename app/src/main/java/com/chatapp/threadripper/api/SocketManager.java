@@ -67,27 +67,56 @@ public class SocketManager {
         return mBound && mSocketService != null;
     }
 
-    public boolean sendMessage(Message message) {
+    private boolean pushMessage(Message message) {
+        // Add token to message for authentication
+        message.setToken(Preferences.getChatAuthToken());
+
         if (isConnected()) {
             mSocketService.sendMessage(message);
             return true;
         }
-        return false;
+
+        return false; // cannot send to socket
     }
 
-    public boolean join() {
+    public boolean join() { // join to socket
         Message message = new Message();
-        message.setToken(Preferences.getChatAuthToken());
         message.setType(Message.MessageType.JOIN);
 
-        return sendMessage(message);
+        return pushMessage(message);
     }
 
-    public boolean leave() {
+    public boolean leave() { // leave the socket
         Message message = new Message();
-        message.setToken(Preferences.getChatAuthToken());
         message.setType(Message.MessageType.LEAVE);
 
-        return sendMessage(message);
+        return pushMessage(message);
+    }
+
+    public boolean readMessage(String conversationId, String lastMessageId) {
+        Message message = new Message();
+        message.setType(Message.MessageType.READ);
+        message.setConversationId(conversationId);
+        message.setContent(lastMessageId);
+
+        return pushMessage(message);
+    }
+
+    public boolean sendText(String conversationId, String content) {
+        Message message = new Message();
+        message.setType(Message.MessageType.TEXT);
+        message.setConversationId(conversationId);
+        message.setContent(content);
+
+        return pushMessage(message);
+    }
+
+    public boolean sendImage(String conversationId, String url) {
+        Message message = new Message();
+        message.setType(Message.MessageType.IMAGE);
+        message.setConversationId(conversationId);
+        message.setContent(url);
+
+        return pushMessage(message);
     }
 }

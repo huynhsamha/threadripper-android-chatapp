@@ -275,7 +275,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         edtMessage.setText("");
 
-        SocketManager.getInstance().sendMessage(message);
+        SocketManager.getInstance().sendText(conversationId, content);
     }
 
     void handleSendCaptureImage() {
@@ -299,7 +299,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 @Override
                 public void onSuccess(String url) {
                     message.setContent(url);
-                    SocketManager.getInstance().sendMessage(message);
+                    SocketManager.getInstance().sendImage(conversationId, url);
                 }
 
                 @Override
@@ -335,7 +335,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 @Override
                 public void onSuccess(String url) {
                     message.setContent(url);
-                    SocketManager.getInstance().sendMessage(message);
+                    SocketManager.getInstance().sendImage(conversationId, url);
                 }
 
                 @Override
