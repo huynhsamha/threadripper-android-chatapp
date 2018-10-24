@@ -91,6 +91,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         // setupWebSocket();
         initSocketReceiver();
+
+        initDetectNetworkStateChange();
     }
 
     @Override

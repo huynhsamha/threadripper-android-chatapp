@@ -183,12 +183,18 @@ public class FragmentMessagesChat extends Fragment implements
     }
 
     void endFailLoading(int id) {
-        if (id == 1) tvNoAnyFriends.setVisibility(View.VISIBLE);
+        if (id == 1) {
+            if (mAdapterGroups.getItemCount() == 0) // cache is empty
+                tvNoAnyFriends.setVisibility(View.VISIBLE);
+        }
         endLoadingCallbackOne(id);
     }
 
     void endSuccessLoading(int id) {
-        if (id == 1) tvNoAnyFriends.setVisibility(View.GONE);
+        if (id == 1) {
+            if (mAdapterGroups.getItemCount() == 0) // cache is empty
+                tvNoAnyFriends.setVisibility(View.GONE);
+        }
         endLoadingCallbackOne(id);
     }
 

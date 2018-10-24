@@ -9,14 +9,6 @@
     android:orientation="vertical"
     tools:context="com.chatapp.threadripper.authenticated.SearchUsersActivity">
 
-    <TextView
-        android:id="@+id/tvCheckConnection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="2dp"
-        android:text="Connection is established!"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,23 +36,23 @@
 
         <EditText
             android:id="@+id/edtSearch"
+            style="@style/EditTextCorner"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:inputType="text"
             android:layout_marginTop="10dp"
-            android:hint="Search ..."
             android:layout_weight="1"
-            style="@style/EditTextCorner"
+            android:hint="Search ..."
+            android:inputType="text"
             android:textSize="18dp" />
 
         <com.andexert.library.RippleView
             android:id="@+id/rvSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:rv_centered="true"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:padding="10dp"
+            app:rv_centered="true"
             app:rv_color="#979292"
             app:rv_rippleDuration="200">
 
@@ -76,21 +68,29 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tvCheckConnection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="Connection is established!"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/tvLoading"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Loading ..."/>
+        android:text="Loading ..."
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvNoAnyone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Can not find anyone. Please try other keywords"
         android:gravity="center"
-        android:visibility="gone"
-        />
+        android:text="Can not find anyone. Please try other keywords"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcvGroups"

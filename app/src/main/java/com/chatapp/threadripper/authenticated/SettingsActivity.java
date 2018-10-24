@@ -56,6 +56,8 @@ public class SettingsActivity extends BaseMainActivity {
         setListeners();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
+
+        initDetectNetworkStateChange();
     }
 
     void initViews() {
