@@ -82,9 +82,6 @@ public class FragmentMessagesChat extends Fragment implements
 
         initSocketReceiver();
 
-
-
-
         return view;
     }
 

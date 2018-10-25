@@ -58,6 +58,11 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         initDetectNetworkStateChange();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         checkRunWalkThrough();
     }

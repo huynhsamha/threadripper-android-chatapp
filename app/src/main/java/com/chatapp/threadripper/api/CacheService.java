@@ -18,9 +18,11 @@ import io.realm.RealmResults;
 public class CacheService {
 
     private Realm realm;
+    private static CacheService instance;
 
     public static CacheService getInstance() {
-        return new CacheService();
+        if (instance == null) instance = new CacheService();
+        return instance;
     }
 
     public CacheService() {
@@ -36,6 +38,7 @@ public class CacheService {
 
     /**
      * Get Chat Auth Token, don't make public
+     *
      * @return Chat Auth Token
      */
     private String getCacheAuthToken() {
@@ -75,14 +78,16 @@ public class CacheService {
         realm.executeTransaction(realm -> {
             PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
 
-            if (cache != null) {
-                cache.setCurrentUser(new UserRealm(Preferences.getCurrentUser()));
-                cache.setChatAuthToken(Preferences.getChatAuthToken());
-                cache.setFirstUseApp(Preferences.isFirstUseApp());
-                cache.setFirstUseProfileSettings(Preferences.isFirstUseProfileSettings());
-                cache.setFirstUseChatting(Preferences.isFirstUseChatting());
-                cache.setFirstUseVideoCall(Preferences.isFirstUseVideoCall());
+            if (cache == null) { // create new Cache Preferences
+                cache = new PreferencesRealm();
             }
+
+            cache.setCurrentUser(new UserRealm(Preferences.getCurrentUser()));
+            cache.setChatAuthToken(Preferences.getChatAuthToken());
+            cache.setFirstUseApp(Preferences.isFirstUseApp());
+            cache.setFirstUseProfileSettings(Preferences.isFirstUseProfileSettings());
+            cache.setFirstUseChatting(Preferences.isFirstUseChatting());
+            cache.setFirstUseVideoCall(Preferences.isFirstUseVideoCall());
         });
     }
 

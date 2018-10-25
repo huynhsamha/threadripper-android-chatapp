@@ -22,6 +22,14 @@ public class Preferences {
     private static boolean firstUseChatting = true;
     private static boolean firstUseVideoCall = true;
 
+    public static void resetAll() {
+        currentUser = new User();
+        chatAuthToken = "";
+        firstUseApp = true;
+        firstUseProfileSettings = true;
+        firstUseChatting = true;
+        firstUseVideoCall = true;
+    }
 
     public static String getChatAuthToken() {
         return chatAuthToken;
