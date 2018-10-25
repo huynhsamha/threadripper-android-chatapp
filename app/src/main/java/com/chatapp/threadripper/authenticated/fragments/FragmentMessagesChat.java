@@ -38,6 +38,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 
 public class FragmentMessagesChat extends Fragment implements
@@ -80,6 +81,9 @@ public class FragmentMessagesChat extends Fragment implements
         fetchConversations();
 
         initSocketReceiver();
+
+
+
 
         return view;
     }

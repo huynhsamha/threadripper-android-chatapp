@@ -18,12 +18,11 @@
             android:id="@+id/tvCheckConnection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:gravity="center"
             android:padding="2dp"
             android:text="Connection is established!"
-            android:layout_alignParentTop="true"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
@@ -54,32 +53,39 @@
                 android:src="@drawable/ic_action_back" />
         </com.andexert.library.RippleView>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cirImgUserAvatar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/placeholder_user_avatar"
-            app:civ_border_color="@color/colorAccent"
-            app:civ_border_width="4dp" />
+        <RelativeLayout
+            android:id="@+id/wrapperAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
-        <com.andexert.library.RippleView
-            android:id="@+id/rvChangeUserAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@id/cirImgUserAvatar"
-            android:layout_alignRight="@id/cirImgUserAvatar"
-            app:rv_centered="true"
-            app:rv_color="@color/colorRippleView"
-            app:rv_rippleDuration="100">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/cirImgUserAvatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/placeholder_user_avatar"
+                app:civ_border_color="@color/colorAccent"
+                app:civ_border_width="4dp" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_white_circle"
-                android:src="@drawable/ic_action_plus_bg_accent" />
+            <com.andexert.library.RippleView
+                android:id="@+id/rvChangeUserAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@id/cirImgUserAvatar"
+                android:layout_alignRight="@id/cirImgUserAvatar"
+                app:rv_centered="true"
+                app:rv_color="@color/colorRippleView"
+                app:rv_rippleDuration="100">
 
-        </com.andexert.library.RippleView>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/btn_white_circle"
+                    android:src="@drawable/ic_action_plus_bg_accent" />
+
+            </com.andexert.library.RippleView>
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/edtDisplayName"

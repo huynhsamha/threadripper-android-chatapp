@@ -34,7 +34,11 @@ public class CacheService {
         realm.close();
     }
 
-    public String getCacheAuthToken() {
+    /**
+     * Get Chat Auth Token, don't make public
+     * @return Chat Auth Token
+     */
+    private String getCacheAuthToken() {
         PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
         if (cache == null) return null;
         if (cache.getCurrentUser().getUsername() == null ||
@@ -47,34 +51,38 @@ public class CacheService {
         return getCacheAuthToken() != null;
     }
 
-    public void clearCacheTokenAndUser() {
-        realm.beginTransaction();
-        realm.delete(PreferencesRealm.class);
-        realm.commitTransaction();
-        realm.close();
-    }
 
-    public void updatePreferenceOnRAM() {
+    /**
+     * On run Splash screen, get Preferences from Cache into RAM
+     */
+    public void syncPreferencesOnRAM() {
         PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
-        Preferences.setCurrentUser(new User(cache.getCurrentUser()));
-        Preferences.setChatAuthToken(cache.getChatAuthToken());
+
+        if (cache != null) {
+            Preferences.setCurrentUser(new User(cache.getCurrentUser()));
+            Preferences.setChatAuthToken(cache.getChatAuthToken());
+            Preferences.setFirstUseApp(cache.isFirstUseApp());
+            Preferences.setFirstUseProfileSettings(cache.isFirstUseProfileSettings());
+            Preferences.setFirstUseChatting(cache.isFirstUseChatting());
+            Preferences.setFirstUseVideoCall(cache.isFirstUseVideoCall());
+        }
     }
 
-    public void updateCurrentUser(User user, String chatAuthToken) {
+    /**
+     * On runtime, maybe update state of user to cache, via Preferences on RAM
+     */
+    public void syncPreferencesInCache() {
         realm.executeTransaction(realm -> {
-            PreferencesRealm cache = new PreferencesRealm();
-            cache.setCurrentUser(new UserRealm(user));
-            cache.setChatAuthToken(chatAuthToken);
-            realm.copyToRealmOrUpdate(cache);
-        });
-    }
+            PreferencesRealm cache = realm.where(PreferencesRealm.class).findFirst();
 
-    public void updateCurrentUser(User user) {
-        realm.executeTransaction(realm -> {
-            PreferencesRealm cache = new PreferencesRealm();
-            cache.setCurrentUser(new UserRealm(user));
-            cache.setChatAuthToken(Preferences.getChatAuthToken());
-            realm.copyToRealmOrUpdate(cache);
+            if (cache != null) {
+                cache.setCurrentUser(new UserRealm(Preferences.getCurrentUser()));
+                cache.setChatAuthToken(Preferences.getChatAuthToken());
+                cache.setFirstUseApp(Preferences.isFirstUseApp());
+                cache.setFirstUseProfileSettings(Preferences.isFirstUseProfileSettings());
+                cache.setFirstUseChatting(Preferences.isFirstUseChatting());
+                cache.setFirstUseVideoCall(Preferences.isFirstUseVideoCall());
+            }
         });
     }
 

@@ -8,8 +8,19 @@ import java.util.List;
 
 public class Preferences {
 
+    /**
+     * Preferences that is the state of the user
+     * This is used on runtime, that is on RAM
+     * It is sync with Cache via PreferencesRealm
+     */
+
     private static User currentUser = new User();
     private static String chatAuthToken = "";
+
+    private static boolean firstUseApp = true;
+    private static boolean firstUseProfileSettings = true;
+    private static boolean firstUseChatting = true;
+    private static boolean firstUseVideoCall = true;
 
 
     public static String getChatAuthToken() {
@@ -28,4 +39,35 @@ public class Preferences {
         if (user != null) Preferences.currentUser = user;
     }
 
+    public static boolean isFirstUseApp() {
+        return firstUseApp;
+    }
+
+    public static void setFirstUseApp(boolean firstUseApp) {
+        Preferences.firstUseApp = firstUseApp;
+    }
+
+    public static boolean isFirstUseProfileSettings() {
+        return firstUseProfileSettings;
+    }
+
+    public static void setFirstUseProfileSettings(boolean firstUseProfileSettings) {
+        Preferences.firstUseProfileSettings = firstUseProfileSettings;
+    }
+
+    public static boolean isFirstUseChatting() {
+        return firstUseChatting;
+    }
+
+    public static void setFirstUseChatting(boolean firstUseChatting) {
+        Preferences.firstUseChatting = firstUseChatting;
+    }
+
+    public static boolean isFirstUseVideoCall() {
+        return firstUseVideoCall;
+    }
+
+    public static void setFirstUseVideoCall(boolean firstUseVideoCall) {
+        Preferences.firstUseVideoCall = firstUseVideoCall;
+    }
 }
