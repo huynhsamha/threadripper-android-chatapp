@@ -15,7 +15,7 @@ public class FileUtils {
     public static String getExtension(File file) {
         String fileAbsolutePath = file.getAbsolutePath();
         String fileExtension = fileAbsolutePath.substring(fileAbsolutePath.lastIndexOf("."));
-        return fileExtension;
+        return fileExtension.substring(1); // from '.jpg' -> 'jpg', '.png' -> 'png'
     }
 
     public static File bitmap2File(Context context, Bitmap bitmap) throws IOException {
