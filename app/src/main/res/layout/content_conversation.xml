@@ -48,24 +48,13 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/btnShowButtons"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/btn_accent_circle"
-                    android:foregroundGravity="center"
-                    android:padding="3dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_action_arrow_right_white" />
-
-                <ImageButton
                     android:id="@+id/btnAttachChatImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="@drawable/btn_transparent_circle"
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_action_add_photo_alternate" />
@@ -92,6 +81,19 @@
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_action_attach_file" />
 
+                <ImageButton
+                    android:id="@+id/btnShowButtons"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/btn_accent_circle"
+                    android:foregroundGravity="center"
+                    android:padding="3dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_arrow_right_white" />
             </LinearLayout>
 
             <EditText
@@ -130,31 +132,29 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvConversations"
+        android:id="@+id/rcvMessages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/rl_bottom"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:overScrollMode="never"
         android:layout_marginBottom="25dp"
-        />
+        android:overScrollMode="never" />
 
 
     <TextView
         android:id="@+id/tvUserTyping"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        android:text="Alice is typing..."
-        android:paddingLeft="15dp"
-        android:gravity="center_vertical"
-        android:background="#fff"
         android:layout_alignTop="@id/rl_bottom"
         android:layout_marginTop="-25dp"
+        android:background="#fff"
         android:ellipsize="middle"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
         android:singleLine="true"
-        />
+        android:text="Alice is typing..." />
 
     <TextView
         android:id="@+id/tvCheckConnection"

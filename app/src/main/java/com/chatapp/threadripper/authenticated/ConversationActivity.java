@@ -25,8 +25,10 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
+import com.chatapp.threadripper.authentication.LoginActivity;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.receivers.SocketReceiver;
@@ -48,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,17 +60,14 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     String TAG = "ConversationActivity";
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView rcvMessages;
     private ConversationAdapter mAdapter;
     private EditText edtMessage;
     private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
-    // private CircleImageView cirImgUserAvatar;
-    // private View onlineIndicator;
     private RoundedImageView rivImageIsPickedOrCaptured;
     TextView tvUserTyping;
 
     Set<String> typingUsername = new HashSet<>(); // use Set for unique username
-
 
     boolean isOnline;
     String displayName, avatar, conversationId;
@@ -77,6 +77,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     IntentFilter mIntentFilter;
     SocketReceiver mSocketReceiver;
+
+    RealmResults<Message> messages;
 
 
     @Override
@@ -90,13 +92,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         initViews();
 
-        initRecyclerView();
-
         setListeners();
 
         fetchMessages();
 
-        // setupWebSocket();
         initSocketReceiver();
 
         initDetectNetworkStateChange();
@@ -122,16 +121,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         mSocketReceiver.setListener(this);
     }
 
-    void initRecyclerView() {
-        // Messages
-        mRecyclerView = (RecyclerView) findViewById(R.id.rcvConversations);
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ConversationAdapter(this, null);
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
     void getIntentData() {
         Intent intent = getIntent();
         conversationId = intent.getStringExtra(Constants.CONVERSATION_ID);
@@ -151,21 +140,23 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
 
-        // Load User Avatar & Online ?
-        // cirImgUserAvatar = (CircleImageView) findViewById(R.id.cirImgUserAvatar);
-        // onlineIndicator = findViewById(R.id.onlineIndicator);
-
-        // findViewById(R.id.rlImgUserAvatar).setVisibility(View.VISIBLE);
-        // ImageLoader.loadUserAvatar(cirImgUserAvatar, avatar);
-        // if (isOnline) onlineIndicator.setVisibility(View.VISIBLE);
-        // else onlineIndicator.setVisibility(View.GONE);
-
         tvUserTyping.setText("");
         btnShowButtons.setVisibility(View.GONE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             btnCaptureImage.setVisibility(View.GONE); // not support capture image with API < 23
         }
+
+        // Messages Recycler View
+        rcvMessages = (RecyclerView) findViewById(R.id.rcvMessages);
+
+        rcvMessages.setHasFixedSize(true);
+        rcvMessages.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ConversationAdapter(this, null);
+        rcvMessages.setAdapter(mAdapter);
+
+        messages = CacheService.getInstance().retrieveCacheMessages(conversationId);
+        mAdapter.addAllItems(messages);
     }
 
 
@@ -173,7 +164,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     void setListeners() {
 
         edtMessage.setOnTouchListener((view, event) -> {
-            mRecyclerView.postDelayed(() -> {
+            rcvMessages.postDelayed(() -> {
                 hideButtonsBar();
                 scrollToBottom();
             }, 300);
@@ -403,39 +394,46 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 message.setYou(true);
                 message.setConversationAvatar(avatar);
             }
+            CacheService.getInstance().addOrUpdateCacheMessage(message);
         }
 
-        mAdapter.setItemsList(messages);
+        // mAdapter.addAllItems(messages);
 
-        mRecyclerView.postDelayed(() -> scrollToBottom(), 300);
+        rcvMessages.postDelayed(this::scrollToBottom, 300);
     }
 
     void fetchMessages() {
         ApiService.getInstance().getMessagesInConversation(conversationId).enqueue(new Callback<List<Message>>() {
             @Override
-            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+            public void onResponse(@NonNull Call<List<Message>> call, @NonNull Response<List<Message>> response) {
                 if (response.isSuccessful()) {
 
-                    // parse to Message
                     ArrayList<Message> messages = (ArrayList<Message>) response.body();
-                    Collections.reverse(messages); // reverse messages list for render
                     handleMessagesList(messages);
 
                 } else {
-
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        ConversationActivity.this.ShowErrorDialog(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ConversationActivity.this.ShowErrorDialog(e.getMessage());
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Message>> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<List<Message>> call, @NonNull Throwable t) {
+                ConversationActivity.this.ShowErrorDialog(t.getMessage());
             }
         });
     }
 
     void scrollToBottom() {
-        if (mRecyclerView.getAdapter().getItemCount() > 0)
-            mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() - 1);
+        if (rcvMessages.getAdapter().getItemCount() > 0) {
+            rcvMessages.smoothScrollToPosition(rcvMessages.getAdapter().getItemCount() - 1);
+        }
     }
 
 

@@ -21,28 +21,21 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
-import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.ModelUtils;
-import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 
 public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnCallbackListener {
@@ -112,7 +105,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         tvLoading = (TextView) view.findViewById(R.id.tvLoading);
 
         // Friends Recycler View
-        mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvConversations);
+        mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvMessages);
         mRcvConversations.setHasFixedSize(true);
         mRcvConversations.setLayoutManager(new LinearLayoutManager(getContext()));
 

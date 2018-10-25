@@ -10,6 +10,7 @@ import com.chatapp.threadripper.utils.Preferences;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class CacheService {
 
@@ -125,5 +126,12 @@ public class CacheService {
 
     public RealmResults<Conversation> retrieveCacheConversations() {
         return realm.where(Conversation.class).findAll();
+    }
+
+    public RealmResults<Message> retrieveCacheMessages(String conversationId) {
+        return realm.where(Message.class)
+                .equalTo("conversationId", conversationId)
+                .sort("messageId", Sort.ASCENDING)
+                .findAll();
     }
 }

@@ -80,4 +80,6 @@ dependencies {
 
     // MaterialTapTargetPrompt
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.13.0'
+
+    implementation 'io.realm:android-adapters:2.1.1'
 }

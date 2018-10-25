@@ -51,18 +51,6 @@ public class SearchUsersActivity extends BaseMainActivity {
         friends = CacheService.getInstance().retrieveCacheFriends();
     }
 
-    void isLoading() {
-        // rvBtnBack.setEnabled(false);
-        // rvSearch.setEnabled(false);
-        // edtSearch.setEnabled(false);
-    }
-
-    void endLoading() {
-        // rvBtnBack.setEnabled(true);
-        // rvSearch.setEnabled(true);
-        // edtSearch.setEnabled(true);
-    }
-
     void handleUserResponse(User user) {
         if (!friends.contains(user)) {
             CacheService.getInstance().addOrUpdateCacheUser(user);
@@ -73,13 +61,9 @@ public class SearchUsersActivity extends BaseMainActivity {
     void requestSearchUsers() {
         String keywords = edtSearch.getText().toString();
 
-        isLoading();
-
         ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
-
-                endLoading();
 
                 if (response.isSuccessful()) {
                     ArrayList<User> users = (ArrayList<User>) response.body();
@@ -104,7 +88,6 @@ public class SearchUsersActivity extends BaseMainActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
-                endLoading();
             }
         });
     }
@@ -117,7 +100,7 @@ public class SearchUsersActivity extends BaseMainActivity {
         edtSearch = (EditText) findViewById(R.id.edtSearch);
 
         // Not Friends Recycler View
-        mRecyclerView = (RecyclerView) findViewById(R.id.rcvConversations);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvMessages);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 

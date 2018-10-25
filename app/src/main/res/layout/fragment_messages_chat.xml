@@ -57,7 +57,7 @@
                     android:text="You have no any conversation now. \nPlease add friends for chatting and group chats." />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rcvConversations"
+                    android:id="@+id/rcvMessages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never" />

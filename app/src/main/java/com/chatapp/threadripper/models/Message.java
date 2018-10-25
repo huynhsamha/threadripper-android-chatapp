@@ -14,27 +14,27 @@ import io.realm.annotations.PrimaryKey;
 public class Message extends RealmObject implements Serializable {
 
     @PrimaryKey
-    String messageId;
-    String type;
-    String content;
-    Date dateTime;
-    String conversationId;
-    String username;
-    String token;
-    boolean read;
+    private String messageId;
+    private String type;
+    private String content;
+    private Date dateTime;
+    private String conversationId;
+    private String username;
+    private String token;
+    private boolean read;
 
-    String datetime; // server send string format, parse to "dateTime" (Date())
+    private String datetime; // server send string format, parse to "dateTime" (Date())
 
     // Used for render image
     // bitmap for camera capture | url for server | uri for image in device
     @Ignore
-    Bitmap bitmap;
-    boolean isBitmap = false;
+    private Bitmap bitmap;
+    private boolean isBitmap = false;
 
     // Used for render View
-    boolean isYou = false;  // for you or me message
-    boolean isDate = false; // for a Date inline
-    String conversationAvatar; // Used for render Avatar message
+    private boolean isYou = false;  // for you or me message
+    private String conversationAvatar; // Used for render Avatar message
+    private boolean isLeadingBlock = false; // used for render time of message, which is first message in range time
 
     public static class MessageType {
         public static final String JOIN = "JOIN";
@@ -150,14 +150,6 @@ public class Message extends RealmObject implements Serializable {
         isYou = you;
     }
 
-    public boolean isDate() {
-        return isDate;
-    }
-
-    public void setDate(boolean date) {
-        isDate = date;
-    }
-
     public String getConversationAvatar() {
         return conversationAvatar;
     }
@@ -172,5 +164,13 @@ public class Message extends RealmObject implements Serializable {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public boolean isLeadingBlock() {
+        return isLeadingBlock;
+    }
+
+    public void setLeadingBlock(boolean leadingBlock) {
+        isLeadingBlock = leadingBlock;
     }
 }
