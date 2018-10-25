@@ -126,7 +126,7 @@ public class SearchUsersActivity extends BaseMainActivity {
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvConversations);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SearchUsersAdapter(this, null);

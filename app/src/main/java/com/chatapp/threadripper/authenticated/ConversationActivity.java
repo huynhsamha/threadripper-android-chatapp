@@ -31,7 +31,6 @@ import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
@@ -48,7 +47,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -126,7 +124,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     void initRecyclerView() {
         // Messages
-        mRecyclerView = (RecyclerView) findViewById(R.id.rcvGroups);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rcvConversations);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

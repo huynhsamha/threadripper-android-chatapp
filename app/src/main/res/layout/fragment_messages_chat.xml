@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:text="Friends and Groups" />
+                    android:text="Friends" />
 
                 <TextView
                     android:id="@+id/tvNoAnyFriends"
@@ -42,25 +42,26 @@
                     android:gravity="center"
                     android:text="You have no any conversation now. \nPlease add friends for chatting and group chats." />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rcvGroups"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never" />
-
-
                 <TextView
                     style="@style/TextViewHeaderList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
-                    android:text="People" />
+                    android:text="Messages" />
+
+                <TextView
+                    android:id="@+id/tvNoAnyConversations"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center"
+                    android:text="You have no any conversation now. \nPlease add friends for chatting and group chats." />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rcvPeople"
+                    android:id="@+id/rcvConversations"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never" />
+
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
