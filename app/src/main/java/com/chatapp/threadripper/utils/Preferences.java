@@ -9,7 +9,7 @@ import java.util.List;
 public class Preferences {
 
     /**
-     * Preferences that is the state of the user
+     * AppState that is the state of the user
      * This is used on runtime, that is on RAM
      * It is sync with Cache via PreferencesRealm
      */

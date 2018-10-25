@@ -1,8 +1,11 @@
 package com.chatapp.threadripper.authenticated;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,12 +16,11 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,58 +33,41 @@ public class SearchUsersActivity extends BaseMainActivity {
     SearchUsersAdapter mAdapter;
     TextView tvNoAnyone, tvLoading;
 
+    RealmResults<User> friends;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_users);
 
         initViews();
-        setListeners();
 
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
-        useCache();
         requestSearchUsers();
 
         initDetectNetworkStateChange();
+
+        friends = CacheService.getInstance().retrieveCacheFriends();
     }
 
     void isLoading() {
-        rvBtnBack.setEnabled(false);
-        rvSearch.setEnabled(false);
-        edtSearch.setEnabled(false);
+        // rvBtnBack.setEnabled(false);
+        // rvSearch.setEnabled(false);
+        // edtSearch.setEnabled(false);
     }
 
     void endLoading() {
-        rvBtnBack.setEnabled(true);
-        rvSearch.setEnabled(true);
-        edtSearch.setEnabled(true);
-    }
-
-    void useCache() {
-        ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheUsers();
-        if (cacheUsers.isEmpty()) {
-            tvLoading.setVisibility(View.VISIBLE);
-        } else {
-            tvLoading.setVisibility(View.GONE);
-            tvNoAnyone.setVisibility(View.GONE);
-            mAdapter.setArrayList(cacheUsers);
-        }
-    }
-
-    void updateCache(ArrayList<User> users) {
-        new Thread(() -> {
-            for (User user: users) {
-                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
-                CacheService.getInstance().addOrUpdateCacheUser(user);
-            }
-        }).start();
+        // rvBtnBack.setEnabled(true);
+        // rvSearch.setEnabled(true);
+        // edtSearch.setEnabled(true);
     }
 
     void handleUserResponse(User user) {
-        if (CacheService.getInstance().checkRelationFriend(user)) {
-            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-        };
+        if (!friends.contains(user)) {
+            CacheService.getInstance().addOrUpdateCacheUser(user);
+            mAdapter.addItem(user);
+        }
     }
 
     void requestSearchUsers() {
@@ -92,19 +77,24 @@ public class SearchUsersActivity extends BaseMainActivity {
 
         ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+
                 endLoading();
 
                 if (response.isSuccessful()) {
                     ArrayList<User> users = (ArrayList<User>) response.body();
 
-                    if (users.isEmpty()) {
+                    if (users != null && users.isEmpty()) {
                         tvNoAnyone.setVisibility(View.VISIBLE);
                     } else {
                         tvNoAnyone.setVisibility(View.GONE);
-                        for (User user: users) handleUserResponse(user);
-                        mAdapter.setArrayList(users);
-                        updateCache(users);
+                        mAdapter.clearAllItems();
+                        if (users != null) {
+                            for (User user: users) handleUserResponse(user);
+                        }
+                        if (mAdapter.getItemCount() == 0) {
+                            tvNoAnyone.setVisibility(View.VISIBLE);
+                        }
                     }
 
                 } else {
@@ -113,7 +103,7 @@ public class SearchUsersActivity extends BaseMainActivity {
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable t) {
                 endLoading();
             }
         });
@@ -126,16 +116,33 @@ public class SearchUsersActivity extends BaseMainActivity {
         rvBtnBack = (RippleView) findViewById(R.id.rvBtnBack);
         edtSearch = (EditText) findViewById(R.id.edtSearch);
 
+        // Not Friends Recycler View
         mRecyclerView = (RecyclerView) findViewById(R.id.rcvConversations);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mAdapter = new SearchUsersAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
-    }
 
-    void setListeners() {
         rvBtnBack.setOnRippleCompleteListener(rippleView -> onBackPressed());
-
         rvSearch.setOnRippleCompleteListener(view -> requestSearchUsers());
+
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                requestSearchUsers();
+            }
+        });
     }
+
 }

@@ -1,33 +1,25 @@
 package com.chatapp.threadripper.models;
 
-import com.chatapp.threadripper.cacheRealm.ConversationRealm;
-import com.chatapp.threadripper.cacheRealm.MessageRealm;
-import com.chatapp.threadripper.cacheRealm.UserRealm;
+import com.chatapp.threadripper.utils.ModelUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Conversation {
+public class Conversation extends RealmObject {
 
-    String conversationId;
-    String conversationName;
-    Message lastMessage;
-    String photoUrl;
-    List<User> listUser = new ArrayList<>();
+    @PrimaryKey
+    private String conversationId;
+    private String conversationName;
+    private Message lastMessage;
+    private String photoUrl;
+    private RealmList<User> listUser = new RealmList<>();
 
-    public Conversation() {
-
-    }
-
-    public Conversation(ConversationRealm o) {
-        conversationId = o.getConversationId();
-        conversationName = o.getConversationName();
-        photoUrl = o.getPhotoUrl();
-        if (o.getLastMessage() != null)
-            lastMessage = new Message(o.getLastMessage());
-        for (UserRealm u : o.getListUser()) {
-            if (u != null)
-                listUser.add(new User(u));
+    public void update() {
+        setConversationName(ModelUtils.getConversationName(this));
+        setPhotoUrl(ModelUtils.getConversationAvatar(this));
+        if (getLastMessage() != null) {
+            getLastMessage().updateDateTime();
         }
     }
 
@@ -59,11 +51,11 @@ public class Conversation {
         this.lastMessage = lastMessage;
     }
 
-    public List<User> getListUser() {
+    public RealmList<User> getListUser() {
         return listUser;
     }
 
-    public void setListUser(List<User> listUser) {
+    public void setListUser(RealmList<User> listUser) {
         this.listUser = listUser;
     }
 

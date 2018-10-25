@@ -89,9 +89,9 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     void checkRunWalkThrough() {
         drawer.openDrawer(GravityCompat.START);
         showWalkThroughMenu(() -> {});
-        // if (Preferences.isFirstUseApp()) {
+        // if (AppState.isFirstUseApp()) {
 
-                // Preferences.setFirstUseProfileSettings(false);
+                // AppState.setFirstUseProfileSettings(false);
                 // CacheService.getInstance().syncPreferencesInCache();
         // }
     }

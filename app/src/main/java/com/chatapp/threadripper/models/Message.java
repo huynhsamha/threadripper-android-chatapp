@@ -2,14 +2,18 @@ package com.chatapp.threadripper.models;
 
 import android.graphics.Bitmap;
 
-import com.chatapp.threadripper.cacheRealm.MessageRealm;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Message implements Serializable {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
+public class Message extends RealmObject implements Serializable {
+
+    @PrimaryKey
     String messageId;
     String type;
     String content;
@@ -23,6 +27,7 @@ public class Message implements Serializable {
 
     // Used for render image
     // bitmap for camera capture | url for server | uri for image in device
+    @Ignore
     Bitmap bitmap;
     boolean isBitmap = false;
 
@@ -30,7 +35,6 @@ public class Message implements Serializable {
     boolean isYou = false;  // for you or me message
     boolean isDate = false; // for a Date inline
     String conversationAvatar; // Used for render Avatar message
-
 
     public static class MessageType {
         public static final String JOIN = "JOIN";
@@ -52,21 +56,6 @@ public class Message implements Serializable {
             dateTime = DateTimeUtils.parseDateTime(format, datetime);
         }
     }
-
-    public Message(MessageRealm o) {
-        messageId = o.getMessageId();
-        type = o.getType();
-        content = o.getContent();
-        dateTime = o.getDatetime();
-        conversationId = o.getConversationId();
-        username = o.getUsername();
-        read = o.isRead();
-    }
-
-    public Message() {
-
-    }
-
 
     /**
      * Getters and Setters
