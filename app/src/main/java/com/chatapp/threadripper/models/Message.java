@@ -14,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
 public class Message extends RealmObject implements Serializable {
 
     @PrimaryKey
-    private String messageId;
+    private long messageId;
     private String type;
     private String content;
     private Date dateTime;
@@ -27,9 +27,9 @@ public class Message extends RealmObject implements Serializable {
 
     // Used for render image
     // bitmap for camera capture | url for server | uri for image in device
-    @Ignore
-    private Bitmap bitmap;
-    private boolean isBitmap = false;
+    // @Ignore
+    // private Bitmap bitmap;
+    // private boolean isBitmap = false;
 
     // Used for render View
     private boolean isYou = false;  // for you or me message
@@ -78,11 +78,11 @@ public class Message extends RealmObject implements Serializable {
         this.read = read;
     }
 
-    public String getMessageId() {
+    public long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(long messageId) {
         this.messageId = messageId;
     }
 
@@ -126,21 +126,21 @@ public class Message extends RealmObject implements Serializable {
         this.username = username;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    public boolean isBitmap() {
-        return isBitmap;
-    }
-
-    public void setBitmap(boolean bitmap) {
-        isBitmap = bitmap;
-    }
+    // public Bitmap getBitmap() {
+    //     return bitmap;
+    // }
+    //
+    // public void setBitmap(Bitmap bitmap) {
+    //     this.bitmap = bitmap;
+    // }
+    //
+    // public boolean isBitmap() {
+    //     return isBitmap;
+    // }
+    //
+    // public void setBitmap(boolean bitmap) {
+    //     isBitmap = bitmap;
+    // }
 
     public boolean isYou() {
         return isYou;

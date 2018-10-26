@@ -19,18 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
-public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Message> mItems;
+    private OrderedRealmCollection<Message> mItems;
     private ContactAdapter.ViewHolder.ClickListener clickListener;
 
     private final int YOU = 1, ME = 2;
 
-    public ConversationAdapter(Context context, List<Message> data) {
+    public ConversationAdapter(Context context, OrderedRealmCollection<Message> data) {
+        super(data, true);
         this.mContext = context;
-        if (data == null) data = new ArrayList<>();
         this.mItems = data;
     }
 
@@ -38,26 +39,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemCount() {
         return mItems.size();
     }
-
-    private Message getItem(int position) {
-        return this.mItems.get(position);
-    }
-
-    public void addAllItems(List<Message> items) {
-        this.mItems.addAll(items);
-        notifyDataSetChanged();
-    }
-
-    public void addItem(Message item) {
-        this.mItems.add(item);
-        notifyDataSetChanged();
-    }
-
-    public void clearAllItems() {
-        this.mItems.clear();
-        notifyDataSetChanged();
-    }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -114,16 +95,16 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
 
-                if (msg.isBitmap()) {
-                    // bitmap when use camera capture
-                    vh.getRivChatImage().setImageBitmap(msg.getBitmap());
-                    vh.getRivChatImage().setOnClickListener(view -> {
-                        Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
-                        intent.putExtra(Constants.CHAT_IMAGE_BITMAP, msg.getBitmap());
-                        this.mContext.startActivity(intent);
-                    });
-
-                } else {
+                // if (msg.isBitmap()) {
+                //     // bitmap when use camera capture
+                //     vh.getRivChatImage().setImageBitmap(msg.getBitmap());
+                //     vh.getRivChatImage().setOnClickListener(view -> {
+                //         Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
+                //         intent.putExtra(Constants.CHAT_IMAGE_BITMAP, msg.getBitmap());
+                //         this.mContext.startActivity(intent);
+                //     });
+                //
+                // } else {
                     // this is url (server) or uri (in device)
                     ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getContent());
                     vh.getRivChatImage().setOnClickListener(view -> {
@@ -131,7 +112,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         intent.putExtra(Constants.CHAT_IMAGE_URL, msg.getContent());
                         this.mContext.startActivity(intent);
                     });
-                }
+                // }
                 break;
 
             default:

@@ -22,8 +22,13 @@ public class CacheService {
         return instance;
     }
 
-    public CacheService() {
+    private CacheService() {
         realm = Realm.getDefaultInstance();
+    }
+
+    public void close() {
+        realm.close();
+        instance = null;
     }
 
     public void clearAllCache() {

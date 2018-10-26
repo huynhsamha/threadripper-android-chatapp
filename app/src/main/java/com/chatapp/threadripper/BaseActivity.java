@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authentication.SignUpActivity;
 import com.chatapp.threadripper.receivers.NetworkChangeReceiver;
 import com.chatapp.threadripper.utils.KeyboardUtils;
@@ -68,8 +69,19 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        try {
+            // Update: Don't need send leave message
+            // On Destroy (closing app), leave socket => status online = false
+            // SocketManager.getInstance().leave();
+
+            // CacheService.getInstance().close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         unregisterNetworkChanges();
+        super.onDestroy();
     }
 
     public static void dialogStateConnectionChanged(boolean value){
