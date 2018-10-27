@@ -1,24 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/spaceLR"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="@dimen/space10">
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_gravity="center_horizontal"
+        android:drawablePadding="@dimen/space5"
+        android:drawableRight="@drawable/ic_clock"
+        android:drawableEnd="@drawable/ic_clock"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:paddingTop="@dimen/space20"
+        android:paddingBottom="@dimen/space15"
+        android:text="5:04pm"
+        android:textAppearance="@style/ExtraLight"
+        android:textColor="@color/colorTextInfo"
+        android:textSize="@dimen/h4" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/space5"
+        android:paddingStart="@dimen/space5"
+        tools:ignore="RtlSymmetry">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cirImgUserAvatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:src="@drawable/placeholder_user_avatar" />
 
@@ -26,40 +45,31 @@
             android:id="@+id/tv_chat_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space20"
+            android:layout_marginRight="@dimen/space20"
             android:background="@drawable/bg_chat_you"
             android:maxWidth="@dimen/maxwidth"
             android:padding="@dimen/space10"
             android:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?"
             android:textAppearance="@style/Light"
             android:textColor="@color/colorTextBlack"
-            android:textSize="@dimen/h3" />
+            android:textSize="@dimen/h3"
+            />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/rivChatImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="150dp"
-            android:maxWidth="@dimen/maxwidth"
-            android:scaleType="fitCenter"
+            android:layout_marginEnd="50dp"
+            android:layout_marginRight="50dp"
+            android:maxHeight="400dp"
+            android:minWidth="220dp"
+            android:minHeight="220dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/placeholder_image_chat"
-            android:visibility="gone"
-            app:riv_border_width="1dp"
             app:riv_border_color="#E9ECEC"
+            app:riv_border_width="1dp"
             app:riv_corner_radius="20dp" />
 
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/space10"
-            android:drawableLeft="@drawable/ic_clock"
-            android:drawablePadding="@dimen/space5"
-            android:text="5:04pm"
-            android:textAppearance="@style/ExtraLight"
-            android:textColor="@color/colorTextInfo"
-            android:textSize="@dimen/h4" />
-
-
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

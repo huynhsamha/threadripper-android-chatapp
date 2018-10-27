@@ -14,6 +14,7 @@ import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +84,22 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
         Message msg = mItems.get(position);
 
         vh.getTime().setText(DateTimeUtils.formatBestDateTime(msg.getDateTime()));
+        if (!msg.isLeadingBlock()) {
+            vh.getTime().setVisibility(View.GONE);
+        } else {
+            vh.getTime().setVisibility(View.VISIBLE);
+        }
 
         switch (msg.getType()) {
             case Message.MessageType.TEXT:
                 vh.getChatText().setText(msg.getContent());
                 vh.getRivChatImage().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.VISIBLE);
+                if (!msg.isLeadingBlock()) {
+                    vh.getChatText().setOnClickListener(view -> {
+                        ViewUtils.toggleView(vh.getTime());
+                    });
+                }
                 break;
 
             case Message.MessageType.IMAGE:
@@ -105,13 +116,13 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                 //     });
                 //
                 // } else {
-                    // this is url (server) or uri (in device)
-                    ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getContent());
-                    vh.getRivChatImage().setOnClickListener(view -> {
-                        Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
-                        intent.putExtra(Constants.CHAT_IMAGE_URL, msg.getContent());
-                        this.mContext.startActivity(intent);
-                    });
+                // this is url (server) or uri (in device)
+                ImageLoader.loadImageChatMessage(vh.getRivChatImage(), msg.getContent());
+                vh.getRivChatImage().setOnClickListener(view -> {
+                    Intent intent = new Intent(this.mContext, PhotoViewActivity.class);
+                    intent.putExtra(Constants.CHAT_IMAGE_URL, msg.getContent());
+                    this.mContext.startActivity(intent);
+                });
                 // }
                 break;
 

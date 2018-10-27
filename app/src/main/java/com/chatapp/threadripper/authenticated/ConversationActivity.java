@@ -32,6 +32,7 @@ import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
@@ -185,7 +186,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             }
         });
 
-        imgBtnSend.setOnClickListener(view -> handleClickButtonSend());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            imgBtnSend.setOnClickListener(view -> handleClickButtonSend());
+        }
         btnCaptureImage.setOnClickListener(view -> handleCaptureCamera());
         btnAttachFile.setOnClickListener(view -> handleAttachFile());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -213,6 +216,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         btnAttachFile.setImageResource(R.drawable.ic_action_attach_file_accent);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     void handleClickButtonSend() {
         if (edtMessage.getVisibility() == View.VISIBLE) { // send a message text
             handleSendMessage();
@@ -372,7 +376,17 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         });
     }
 
+    void compareDifferentTimeMessages(Message mOld, Message mNew) {
+        // determine if message should be leading block (show time)
+        if (mOld == null || mNew == null) return;
+        int diffInMinutes = DateTimeUtils.differentInMinutes(mOld.getDateTime(), mNew.getDateTime());
+        if (diffInMinutes > 30) { // later 30 minutes
+            mNew.setLeadingBlock(true);
+        }
+    }
+
     void handleReceivedMessagesList(ArrayList<Message> messages) {
+        // add messages received from server to cache "messages"
         for (Message message : messages) {
             handleReceivedMessage(message);
         }
@@ -386,7 +400,16 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
             message.setYou(true);
         }
-        updateCache(message);
+
+        // determine if message should be leading block (show time)
+        if (messages.isEmpty()) {
+            message.setLeadingBlock(true); // first message, it should be leading block
+        } else {
+            Message lastMessage = messages.get(messages.size()-1); // get last message
+            compareDifferentTimeMessages(lastMessage, message);
+        }
+
+        updateCache(message); // push it to "messages"
     }
 
     void fetchMessages() {
