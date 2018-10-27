@@ -21,7 +21,7 @@ public class DateTimeUtils {
     }
 
     public static String formatBestDateTime(Date date) {
-        if (differentInDays(new Date(), date) > 1) {
+        if (differentInDays(date, new Date()) > 1) {
             return formatDateTime(date);
         }
         return formatTime(date);

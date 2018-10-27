@@ -128,4 +128,13 @@ public class SocketManager {
 
         return pushMessage(message);
     }
+
+    public boolean sendReadMessages(String conversationId, long messageId) {
+        Message message = new Message();
+        message.setType(Message.MessageType.READ);
+        message.setConversationId(conversationId);
+        message.setContent(String.valueOf(messageId));
+
+        return pushMessage(message);
+    }
 }

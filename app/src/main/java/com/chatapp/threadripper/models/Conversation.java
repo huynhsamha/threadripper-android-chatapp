@@ -14,6 +14,7 @@ public class Conversation extends RealmObject {
     private Message lastMessage;
     private String photoUrl;
     private RealmList<User> listUser = new RealmList<>();
+    private int notiCount;
 
     public void update() {
         setConversationName(ModelUtils.getConversationName(this));
@@ -21,6 +22,10 @@ public class Conversation extends RealmObject {
         if (getLastMessage() != null) {
             getLastMessage().updateDateTime();
         }
+    }
+
+    public void increaseNotificationCount()  {
+        this.notiCount++;
     }
 
     /**
@@ -65,5 +70,13 @@ public class Conversation extends RealmObject {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public int getNotiCount() {
+        return notiCount;
+    }
+
+    public void setNotiCount(int notiCount) {
+        this.notiCount = notiCount;
     }
 }

@@ -23,15 +23,19 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
+import com.chatapp.threadripper.authenticated.adapters.HorizontalAvatarAdapter;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +46,9 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
     String TAG = "FragmentMessagesChat";
 
-    private RecyclerView mRcvConversations;
+    private RecyclerView mRcvConversations, mRcvHorizontalAvatar;
     private MessagesChatAdapter mAdapterConversations;
+    private HorizontalAvatarAdapter mAdapterHorizontalAvatar;
     private TextView tvNoAnyConversations, tvNoAnyFriends, tvLoading;
     private SwipeRefreshLayout swipeContainer;
 
@@ -51,6 +56,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     SocketReceiver mSocketReceiver;
 
     RealmResults<Conversation> conversations;
+    RealmResults<User> onlineFriends;
 
     public FragmentMessagesChat() {
         setHasOptionsMenu(true);
@@ -82,8 +88,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         super.onResume();
 
         getActivity().registerReceiver(mSocketReceiver, mIntentFilter);
-
-        mAdapterConversations.notifyDataSetChanged();
     }
 
     void initSocketReceiver() {
@@ -102,23 +106,41 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     void initViews(View view) {
         tvNoAnyConversations = (TextView) view.findViewById(R.id.tvNoAnyConversations);
         tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
-        tvLoading = (TextView) view.findViewById(R.id.tvLoading);
+        // tvLoading = (TextView) view.findViewById(R.id.tvLoading);
 
         // Friends Recycler View
         mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvMessages);
         mRcvConversations.setHasFixedSize(true);
         mRcvConversations.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        conversations = CacheService.getInstance().retrieveCacheConversations();
+        conversations = CacheService.getInstance().retrieveCacheConversationsByLastActiveTime();
 
         mAdapterConversations = new MessagesChatAdapter(getContext(), conversations);
         mRcvConversations.setAdapter(mAdapterConversations);
 
-        conversations.addChangeListener((conversations, changeSet) -> {
+        conversations.addChangeListener(conversations -> {
             if (conversations.isEmpty()) {
                 tvNoAnyConversations.setVisibility(View.VISIBLE);
             } else {
                 tvNoAnyConversations.setVisibility(View.GONE);
+            }
+        });
+
+        // Horizontal Avatar Recycler View
+        mRcvHorizontalAvatar = (RecyclerView) view.findViewById(R.id.rcvHorizontalAvatar);
+        mRcvHorizontalAvatar.setHasFixedSize(true);
+        mRcvHorizontalAvatar.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        onlineFriends = CacheService.getInstance().retrieveCacheFriendsOnline();
+
+        mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
+        mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);
+
+        onlineFriends.addChangeListener(users -> {
+            if (users.isEmpty()) {
+                tvNoAnyFriends.setVisibility(View.VISIBLE);
+            } else {
+                tvNoAnyFriends.setVisibility(View.GONE);
             }
         });
 
@@ -135,18 +157,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         swipeContainer.setOnRefreshListener(this::fetchConversations);
     }
 
-    void endFailLoading() {
-        swipeContainer.setRefreshing(false);
-        tvLoading.setVisibility(View.GONE);
-    }
-
-    void endSuccessLoading() {
-        swipeContainer.setRefreshing(false);
-        tvLoading.setVisibility(View.GONE);
-
-        mAdapterConversations.notifyDataSetChanged();
-    }
-
     void fetchConversations() {
         ApiService.getInstance().getConversations().enqueue(new Callback<List<Conversation>>() {
             @Override
@@ -154,22 +164,30 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                 if (response.isSuccessful()) {
                     ArrayList<Conversation> items = (ArrayList<Conversation>) response.body();
                     if (items == null || items.isEmpty()) {
-                        endFailLoading();
+                        // no do anything
                     } else {
                         for (Conversation c : items) {
                             c.update();
                             CacheService.getInstance().addOrUpdateCacheConversation(c);
                         }
-                        endSuccessLoading();
                     }
+
                 } else {
-                    endFailLoading();
+                    // no do anything
                 }
+
+                if (conversations.isEmpty()) {
+                    tvNoAnyConversations.setVisibility(View.VISIBLE);
+                } else {
+                    tvNoAnyConversations.setVisibility(View.GONE);
+                }
+
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Conversation>> call, @NonNull Throwable t) {
-                endFailLoading();
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -191,21 +209,30 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
     @Override
     public void onNewMessage(Message message) {
-        Log.d(TAG, "onNewMessage: " + message.toString());
+        // handle and add message to Realm
+        message.updateDateTime();
+        if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            message.setYou(true);
+        }
+        CacheService.getInstance().addOrUpdateCacheMessage(message);
+
+        // handle and add conversation to Realm
+        String conversationId = message.getConversationId();
+        CacheService.getInstance().updateLastMessageConversation(conversationId, message.getMessageId());
     }
 
     @Override
     public void onJoin(String username) {
-        Log.d(TAG, "onJoin: " + username);
+        CacheService.getInstance().setUserOnlineOrOffline(username, true);
     }
 
     @Override
     public void onLeave(String username) {
-        Log.d(TAG, "onLeave: " + username);
+        CacheService.getInstance().setUserOnlineOrOffline(username, false);
     }
 
     @Override
     public void onTyping(String conversationId, String username, boolean typing) {
-
+        // no receive broadcast
     }
 }

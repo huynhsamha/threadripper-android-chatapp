@@ -129,8 +129,22 @@ public class CacheService {
                 .findAll();
     }
 
+    public RealmResults<User> retrieveCacheFriendsOnline() {
+        return realm.where(User.class)
+                .equalTo("relationship", Constants.RELATIONSHIP_FRIEND)
+                .sort("online", Sort.DESCENDING) // online first
+                .findAll();
+    }
+
+
     public RealmResults<Conversation> retrieveCacheConversations() {
         return realm.where(Conversation.class).findAll();
+    }
+
+    public RealmResults<Conversation> retrieveCacheConversationsByLastActiveTime() {
+        return realm.where(Conversation.class)
+                .sort("lastMessage.dateTime", Sort.DESCENDING)
+                .findAll();
     }
 
     public RealmResults<Message> retrieveCacheMessages(String conversationId) {
@@ -138,5 +152,34 @@ public class CacheService {
                 .equalTo("conversationId", conversationId)
                 .sort("messageId", Sort.ASCENDING)
                 .findAll();
+    }
+
+    public void setUserOnlineOrOffline(String username, boolean isOnline) {
+        realm.executeTransaction(realm -> {
+            User user = realm.where(User.class).equalTo("username", username).findFirst();
+            user.setOnline(isOnline);
+
+            realm.copyToRealmOrUpdate(user);
+        });
+    }
+
+    public void updateLastMessageConversation(String conversationId, long lastMessageId) {
+        realm.executeTransaction(realm -> {
+            Conversation conversation = realm.where(Conversation.class).equalTo("conversationId", conversationId).findFirst();
+            Message message = realm.where(Message.class).equalTo("messageId", lastMessageId).findFirst();
+            conversation.setLastMessage(message);
+            conversation.increaseNotificationCount();
+
+            realm.copyToRealmOrUpdate(conversation);
+        });
+    }
+
+    public void setReadAllMessagesConversation(String conversationId) {
+        realm.executeTransaction(realm -> {
+            Conversation conversation = realm.where(Conversation.class).equalTo("conversationId", conversationId).findFirst();
+            conversation.setNotiCount(0);
+
+            realm.copyToRealmOrUpdate(conversation);
+        });
     }
 }

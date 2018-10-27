@@ -98,7 +98,19 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         initSocketReceiver();
 
         initDetectNetworkStateChange();
+
+        markReadAllMessages();
     }
+
+    void markReadAllMessages() {
+        if (messages.isEmpty()) return;
+
+        long lastMessageId = Objects.requireNonNull(messages.get(messages.size() - 1)).getMessageId();
+        SocketManager.getInstance().sendReadMessages(conversationId, lastMessageId);
+
+        CacheService.getInstance().setReadAllMessagesConversation(conversationId);
+    }
+
 
     @Override
     protected void onResume() {
@@ -164,6 +176,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             rcvMessages.postDelayed(() -> {
                 hideButtonsBar();
                 scrollToBottom();
+
+                markReadAllMessages();
             }, 300);
             return false;
         });

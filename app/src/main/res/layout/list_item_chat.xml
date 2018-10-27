@@ -50,10 +50,11 @@
                 style="@style/h2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Laura Owens, Laura Owens, Laura Owens, Laura Owens, Laura Owens"
+                android:layout_marginEnd="70dp"
+                android:layout_marginRight="70dp"
                 android:ellipsize="end"
                 android:lines="1"
-                android:layout_marginRight="70dp"
+                android:text="Laura Owens, Laura Owens, Laura Owens, Laura Owens, Laura Owens"
                 android:textAppearance="@style/Light" />
 
             <TextView
@@ -61,12 +62,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_user_name"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
                 android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:lines="1"
                 android:text="Hi, Joe, looks great! :) Hi, Joe, looks great! :) Hi, Joe, looks great! :) Hi, Joe, looks great! :)"
                 android:textAppearance="@style/ExtraLight"
                 android:textColor="@color/colorTextInfo"
-                android:ellipsize="end"
-                android:lines="1"
                 android:textSize="@dimen/h3" />
 
             <TextView
@@ -79,6 +82,20 @@
                 android:textAppearance="@style/ExtraLight"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="@dimen/h4" />
+
+            <TextView
+                android:id="@+id/tvNotiCount"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/btn_accent_circle"
+                android:gravity="center"
+                android:text="46"
+                android:textAppearance="@style/ExtraLight"
+                android:textColor="@color/colorTextWhite"
+                android:textSize="@dimen/h5" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

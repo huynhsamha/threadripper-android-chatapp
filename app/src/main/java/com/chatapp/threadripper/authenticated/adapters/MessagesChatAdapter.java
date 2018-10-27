@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
@@ -17,19 +18,22 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ModelUtils;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 
-public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapter.ViewHolder> {
+public class MessagesChatAdapter extends RealmRecyclerViewAdapter<Conversation, MessagesChatAdapter.ViewHolder> {
 
     private Context mContext;
     private OrderedRealmCollection<Conversation> mItems;
 
     public MessagesChatAdapter(Context context, OrderedRealmCollection<Conversation> data) {
+        super(data, true);
         this.mContext = context;
         this.mItems = data;
     }
@@ -62,29 +66,40 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
         vh.onlineView.setVisibility(ModelUtils.isOnlineGroup(item) ? View.VISIBLE : View.INVISIBLE);
         ImageLoader.loadUserAvatar(vh.cirImgUserAvatar, item.getPhotoUrl());
 
+        if (item.getNotiCount() > 0) {
+            vh.tvNotiCount.setVisibility(View.VISIBLE);
+            vh.tvNotiCount.setText(String.valueOf(item.getNotiCount()));
+        } else {
+            vh.tvNotiCount.setVisibility(View.GONE);
+        }
+
         Message lastMessage = item.getLastMessage();
 
         if (lastMessage == null) {
-            vh.tvTime.setText(DateTimeUtils.formatBestDateTime(new Date()));
-            vh.tvLastChat.setText("No any message");
+            vh.tvTime.setVisibility(View.GONE);
+            vh.tvLastChat.setText("Please wave to everyone");
 
         } else {
+            vh.tvTime.setVisibility(View.VISIBLE);
             if (lastMessage.getDateTime() != null) {
                 vh.tvTime.setText(DateTimeUtils.formatBestDateTime(lastMessage.getDateTime()));
             }
 
+            String username = lastMessage.getUsername();
+            if (username.equals(Preferences.getCurrentUser().getUsername())) username = "You";
+
             switch (lastMessage.getType()) {
                 case Message.MessageType.TEXT:
-                    vh.tvLastChat.setText(lastMessage.getContent());
+                    vh.tvLastChat.setText(username + ": " + lastMessage.getContent());
                     break;
                 case Message.MessageType.IMAGE:
-                    vh.tvLastChat.setText(lastMessage.getUsername() + " sent an image");
+                    vh.tvLastChat.setText(username + " sent an image");
                     break;
                 case Message.MessageType.FILE:
-                    vh.tvLastChat.setText(lastMessage.getUsername() + " sent a file");
+                    vh.tvLastChat.setText(username + " sent a file");
                     break;
                 case Message.MessageType.CALL:
-                    vh.tvLastChat.setText("A call end");
+                    vh.tvLastChat.setText("A call ended");
                     break;
                 default:
                     // handle error case !!!
@@ -105,20 +120,18 @@ public class MessagesChatAdapter extends RecyclerView.Adapter<MessagesChatAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
-        public TextView tvName;
-        public TextView tvTime;
-        public TextView tvLastChat;
+        View view, onlineView;
+        TextView tvName, tvTime, tvLastChat, tvNotiCount;
         public CircleImageView cirImgUserAvatar;
-        public View onlineView;
 
-        public ViewHolder(View itemLayoutView) {
+        ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
 
             view = itemLayoutView;
             tvName = (TextView) itemLayoutView.findViewById(R.id.tv_user_name);
             tvTime = (TextView) itemLayoutView.findViewById(R.id.tv_time);
             tvLastChat = (TextView) itemLayoutView.findViewById(R.id.tv_last_chat);
+            tvNotiCount = (TextView) itemLayoutView.findViewById(R.id.tvNotiCount);
             cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
             onlineView = itemLayoutView.findViewById(R.id.online_indicator);
         }
