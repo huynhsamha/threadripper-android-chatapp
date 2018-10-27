@@ -91,18 +91,11 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
 
     private void handleAddFriend(int position) {
         User user = getItem(position);
-        user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-        updateServer(user);
-        updateCache(user);
-        this.mItems.remove(user);
-        notifyDataSetChanged();
+        createGroup(user);
     }
 
-    private void updateCache(User user) {
-        CacheService.getInstance().addOrUpdateCacheUser(user);
-    }
+    private void createGroup(User user) {
 
-    private void updateServer(User user) {
         List<String> listUsername = new ArrayList<>();
         listUsername.add(Preferences.getCurrentUser().getUsername());
         listUsername.add(user.getUsername());
@@ -113,7 +106,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
                 if (response.isSuccessful()) {
                     ApiResponseData data = response.body();
                     if (data != null) {
-                        retrieveConversation(data.getConversationId());
+                        updateCacheData(data.getConversationId(), user);
                     }
 
                 } else {
@@ -136,16 +129,24 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         });
     }
 
-    private void retrieveConversation(String conversationId) {
+    private void updateCacheData(String conversationId, User user) {
+
         ApiService.getInstance().getConversation(conversationId).enqueue(new Callback<Conversation>() {
             @Override
             public void onResponse(@NonNull Call<Conversation> call, @NonNull Response<Conversation> response) {
                 if (response.isSuccessful()) {
 
                     Conversation c = response.body();
+
                     if (c != null) {
                         c.update();
                         CacheService.getInstance().addOrUpdateCacheConversation(c);
+
+                        user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+                        CacheService.getInstance().addOrUpdateCacheUser(user);
+
+                        mItems.remove(user);
+                        notifyDataSetChanged();
                     }
 
                 } else {

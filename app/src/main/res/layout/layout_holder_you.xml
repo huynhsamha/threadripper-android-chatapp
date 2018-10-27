@@ -50,10 +50,11 @@
             android:background="@drawable/bg_chat_you"
             android:maxWidth="@dimen/maxwidth"
             android:padding="@dimen/space10"
-            android:text="Hi, joe how are you, do you like to join our party in next week because you don't like party?"
             android:textAppearance="@style/Light"
             android:textColor="@color/colorTextBlack"
             android:textSize="@dimen/h3"
+            android:lineSpacingExtra="2sp"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
             />
 
         <com.makeramen.roundedimageview.RoundedImageView

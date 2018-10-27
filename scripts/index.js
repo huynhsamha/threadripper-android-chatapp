@@ -16,16 +16,30 @@ const fakeUser = () => {
 }
 
 const users = [
-// {
-//     username: 'ha',
-//     email: 'huynhha@gmail.com',
-//     password: '1',
-//     displayName: 'Huynh Ha',
-//     avatarUrl: 'https://abc.com/xyz.png'
-// }
+    {
+        username: 'huynhha',
+        email: 'huynhha12798@gmail.com',
+        password: '1',
+        displayName: 'Huỳnh Hà',
+        avatarUrl: 'https://abc.com/xyz.png'
+    },
+    {
+        username: 'ltsach',
+        email: 'ltsach@gmail.com',
+        password: '1',
+        displayName: 'Lê Thành Sách',
+        avatarUrl: 'https://abc.com/xyz.png'
+    },
+    {
+        username: 'nhphung',
+        email: 'nhphung@gmail.com',
+        password: '1',
+        displayName: 'Nguyễn Hứa Phùng',
+        avatarUrl: 'https://abc.com/xyz.png'
+    }
 ];
 
-for (let i=0;i<50;i++) {
+for (let i=0;i<100;i++) {
     users.push(fakeUser());
 }
 
