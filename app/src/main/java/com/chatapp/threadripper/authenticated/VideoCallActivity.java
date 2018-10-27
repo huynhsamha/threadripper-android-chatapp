@@ -20,6 +20,7 @@ import com.chatapp.threadripper.utils.ShowToast;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity {
+    public static final String EXTRA_CHANNEL_TOKEN = "com.chatapp.threadripper.VideoChatViewActivity.CHANNEL_TOKEN";
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
@@ -77,6 +78,7 @@ public class VideoCallActivity extends BaseMainActivity {
 
     void handleEndCalling() {
         // TODO
+        // ok
         if (callerSide) {
             finish();
         } else {
@@ -86,11 +88,14 @@ public class VideoCallActivity extends BaseMainActivity {
 
     void handleAcceptCalling() {
         // TODO
+        // Generate token to both size
+        // start VideoChatViewActivity with putExtra EXTRA_CHANNEL_TOKEN
         if (callerSide) {
 
         } else {
 
         }
+
     }
 
     private void changeStatusBarColor() {
@@ -105,5 +110,4 @@ public class VideoCallActivity extends BaseMainActivity {
     public void onBackPressed() {
         ShowToast.lengthShort(this, "Please click RED button to exit");
     }
-
 }

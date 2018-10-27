@@ -35,4 +35,8 @@
     <color name="text_color">#1b1b1b</color>
     <color name="trans_success_stroke_color">#8991f25a</color>
     <color name="warning_stroke_color">#ff9d48</color>
+
+    <!-- video call -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
 </resources>
