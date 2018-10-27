@@ -283,6 +283,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     void updateCache(Message message) {
         CacheService.getInstance().addOrUpdateCacheMessage(message);
+        markReadAllMessages();
     }
 
     void handleSendMessage() {

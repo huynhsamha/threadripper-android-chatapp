@@ -62,6 +62,7 @@ public class ModelUtils {
     public static boolean isOnlineGroup(Conversation conversation) {
         for (User user : conversation.getListUser()) {
             if (user == null) continue;
+            if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
             if (user.isOnline()) return true;
         }
         return false;

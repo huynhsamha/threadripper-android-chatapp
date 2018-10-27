@@ -143,7 +143,7 @@ public class CacheService {
 
     public RealmResults<Conversation> retrieveCacheConversationsByLastActiveTime() {
         return realm.where(Conversation.class)
-                .sort("lastMessage.dateTime", Sort.DESCENDING)
+                // .sort("lastMessage.dateTime", Sort.DESCENDING)
                 .findAll();
     }
 
