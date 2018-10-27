@@ -4,6 +4,7 @@ package com.chatapp.threadripper.authenticated;
 import android.util.Log;
 
 import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.models.Message;
 
@@ -29,20 +30,5 @@ public class BaseMainActivity extends BaseActivity  {
             e.printStackTrace();
         }
 
-    }
-
-    @Override
-    public void onDestroy() {
-
-        try {
-
-            // On Destroy (closing app), leave socket => status online = false
-            SocketManager.getInstance().leave();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        super.onDestroy();
     }
 }

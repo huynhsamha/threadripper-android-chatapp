@@ -27,19 +27,16 @@ public class ApiService {
         return new ApiService();
     }
 
-    Retrofit getRetrofitInstance() {
-        Retrofit retrofit = new Retrofit.Builder()
+    private Retrofit getRetrofitInstance() {
+        return new Retrofit.Builder()
                 .baseUrl(Config.API_ROUTE)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
-        return retrofit;
     }
 
-    ApiRoutes getApiInstance() {
-        ApiRoutes api = getRetrofitInstance().create(ApiRoutes.class);
-        return api;
+    private ApiRoutes getApiInstance() {
+        return getRetrofitInstance().create(ApiRoutes.class);
     }
 
 
@@ -65,6 +62,10 @@ public class ApiService {
 
     public Call<List<Conversation>> getConversations() {
         return getApiInstance().getConversations(Preferences.getChatAuthToken());
+    }
+
+    public Call<Conversation> getConversation(String conversationId) {
+        return getApiInstance().getConversation(Preferences.getChatAuthToken(), conversationId);
     }
 
     public Call<List<Message>> getMessagesInConversation(String conversationId) {

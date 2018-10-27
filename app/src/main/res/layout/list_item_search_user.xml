@@ -19,16 +19,6 @@
             android:layout_height="match_parent"
             android:src="@drawable/placeholder_user_avatar" />
 
-        <!--<View-->
-        <!--android:id="@+id/online_indicator"-->
-        <!--android:layout_width="16dp"-->
-        <!--android:layout_height="16dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginBottom="1dp"-->
-        <!--android:layout_marginRight="1dp"-->
-        <!--android:background="@drawable/bg_online" />-->
-
     </RelativeLayout>
 
     <LinearLayout
@@ -57,10 +47,10 @@
                     style="@style/h2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Laura Owens Laura Owens"
                     android:ellipsize="end"
+                    android:gravity="center"
                     android:lines="1"
+                    android:text="Laura Owens Laura Owens"
                     android:textAppearance="@style/Light" />
 
                 <TextView
@@ -68,10 +58,10 @@
                     style="@style/h2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="\@laura"
                     android:ellipsize="end"
+                    android:gravity="center"
                     android:lines="1"
+                    android:text="\@laura"
                     android:textAppearance="@style/ExtraLight"
                     android:textSize="15dp" />
 
@@ -93,25 +83,6 @@
                     android:drawablePadding="5dp"
                     android:text="Add Friend"
                     android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/btnChat"
-                    style="@style/ButtonFillAccentCorner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="5dp"
-                    android:text="Chat"
-                    android:visibility="gone" />
-
-
-                <Button
-                    android:id="@+id/btnSent"
-                    style="@style/ButtonOutlineGreyCorner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sent"
-                    android:visibility="gone"/>
-
 
             </LinearLayout>
         </RelativeLayout>

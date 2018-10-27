@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authentication.LoginActivity;
+import com.chatapp.threadripper.utils.Constants;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -31,19 +32,14 @@ public class Splash extends AppCompatActivity {
 
 
         // Realm init cache database
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .name("threadripper-realm.realm")
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
+        initConfigRealmCache();
 
 
         new Handler().postDelayed(() -> {
             if (CacheService.getInstance().isConnected()) {
 
                 // update session of user in preference running on RAM from cache.
-                CacheService.getInstance().updatePreferenceOnRAM();
+                CacheService.getInstance().syncPreferencesOnRAM();
 
                 // Don't need login, go to Main Screen
                 startActivity(new Intent(Splash.this, LayoutFragmentActivity.class));
@@ -53,6 +49,16 @@ public class Splash extends AppCompatActivity {
             }
             finish();
         }, 1 * 1000);
+    }
+
+    void initConfigRealmCache() {
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name(Constants.CACHE_REALM_FILENAME)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+
+        Realm.setDefaultConfiguration(config);
     }
 
     private void changeStatusBarColor() {

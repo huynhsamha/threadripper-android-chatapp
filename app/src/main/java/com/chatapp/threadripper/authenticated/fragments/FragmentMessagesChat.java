@@ -1,9 +1,9 @@
 package com.chatapp.threadripper.authenticated.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,42 +21,36 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.authenticated.ConversationActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
-import com.chatapp.threadripper.authenticated.adapters.SearchUsersAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
-import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.ModelUtils;
-import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class FragmentMessagesChat extends Fragment implements
-        MessagesChatAdapter.ViewHolder.ClickListener,
-        SocketReceiver.OnCallbackListener {
+public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnCallbackListener {
 
     String TAG = "FragmentMessagesChat";
 
-    private RecyclerView mRcvGroups, mRcvPeople;
-    private MessagesChatAdapter mAdapterGroups;
-    private SearchUsersAdapter mAdapterPeople;
-    private TextView tvNoAnyFriends, tvLoading;
+    private RecyclerView mRcvConversations;
+    private MessagesChatAdapter mAdapterConversations;
+    private TextView tvNoAnyConversations, tvNoAnyFriends, tvLoading;
     private SwipeRefreshLayout swipeContainer;
-    boolean isLoadingFriends, isLoadingPeople;
 
     IntentFilter mIntentFilter;
     SocketReceiver mSocketReceiver;
+
+    RealmResults<Conversation> conversations;
 
     public FragmentMessagesChat() {
         setHasOptionsMenu(true);
@@ -76,15 +70,8 @@ public class FragmentMessagesChat extends Fragment implements
 
         initViews(view);
 
-        setListener();
-
-        isLoading();
-        useCacheUser();
-        userCacheConversation();
         fetchConversations();
-        fetchPeople();
 
-        // setUpSocket();
         initSocketReceiver();
 
         return view;
@@ -95,6 +82,8 @@ public class FragmentMessagesChat extends Fragment implements
         super.onResume();
 
         getActivity().registerReceiver(mSocketReceiver, mIntentFilter);
+
+        mAdapterConversations.notifyDataSetChanged();
     }
 
     void initSocketReceiver() {
@@ -110,211 +99,79 @@ public class FragmentMessagesChat extends Fragment implements
         mSocketReceiver.setListener(this);
     }
 
-    void useCacheUser() {
-        ArrayList<User> cacheUsers = CacheService.getInstance().retrieveCacheNotFriends();
-        if (cacheUsers.isEmpty()) {
-
-        } else {
-            mAdapterPeople.setArrayList(cacheUsers);
-        }
-    }
-
-    void userCacheConversation() {
-        ArrayList<Conversation> cache = CacheService.getInstance().retrieveCacheConversations();
-        if (cache.isEmpty()) {
-            tvNoAnyFriends.setVisibility(View.VISIBLE);
-        } else {
-            tvNoAnyFriends.setVisibility(View.GONE);
-            mAdapterGroups.setArrayList(cache);
-        }
-    }
-
     void initViews(View view) {
+        tvNoAnyConversations = (TextView) view.findViewById(R.id.tvNoAnyConversations);
         tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
         tvLoading = (TextView) view.findViewById(R.id.tvLoading);
 
-        // Groups and Friends
-        mRcvGroups = (RecyclerView) view.findViewById(R.id.rcvGroups);
-        mRcvGroups.setHasFixedSize(true);
-        mRcvGroups.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapterGroups = new MessagesChatAdapter(getContext(), null, this);
-        mRcvGroups.setAdapter(mAdapterGroups);
+        // Friends Recycler View
+        mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvMessages);
+        mRcvConversations.setHasFixedSize(true);
+        mRcvConversations.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        conversations = CacheService.getInstance().retrieveCacheConversations();
+
+        mAdapterConversations = new MessagesChatAdapter(getContext(), conversations);
+        mRcvConversations.setAdapter(mAdapterConversations);
+
+        conversations.addChangeListener((conversations, changeSet) -> {
+            if (conversations.isEmpty()) {
+                tvNoAnyConversations.setVisibility(View.VISIBLE);
+            } else {
+                tvNoAnyConversations.setVisibility(View.GONE);
+            }
+        });
+
+        // Pull to refresh
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
-        // People
-        mRcvPeople = (RecyclerView) view.findViewById(R.id.rcvPeople);
-        mRcvPeople.setHasFixedSize(true);
-        mRcvPeople.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapterPeople = new SearchUsersAdapter(getContext(), null);
-        mRcvPeople.setAdapter(mAdapterPeople);
-
-
-        tvLoading.setVisibility(View.VISIBLE);
-
-        // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_blue_bright
         );
+
+        swipeContainer.setOnRefreshListener(this::fetchConversations);
     }
 
-    void setListener() {
-        swipeContainer.setOnRefreshListener(() -> {
-            isLoading();
-            fetchConversations();
-            fetchPeople();
-        });
-    }
-
-
-    void isLoading() {
-        // tvNoAnyFriends.setVisibility(View.GONE);
-        isLoadingFriends = true;
-        isLoadingPeople = true;
-    }
-
-    void endLoadingCallbackOne(int id) {
-        if (id == 1) isLoadingFriends = false;
-        if (id == 2) isLoadingPeople = false;
-        if (isLoadingPeople || isLoadingFriends) return;
-        // current is complete
+    void endFailLoading() {
         swipeContainer.setRefreshing(false);
         tvLoading.setVisibility(View.GONE);
     }
 
-    void endFailLoading(int id) {
-        if (id == 1) {
-            if (mAdapterGroups.getItemCount() == 0) // cache is empty
-                tvNoAnyFriends.setVisibility(View.VISIBLE);
-        }
-        endLoadingCallbackOne(id);
-    }
+    void endSuccessLoading() {
+        swipeContainer.setRefreshing(false);
+        tvLoading.setVisibility(View.GONE);
 
-    void endSuccessLoading(int id) {
-        if (id == 1) {
-            if (mAdapterGroups.getItemCount() == 0) // cache is empty
-                tvNoAnyFriends.setVisibility(View.GONE);
-        }
-        endLoadingCallbackOne(id);
-    }
-
-    void updateFriendsList(ArrayList<Conversation> conversations) {
-        ArrayList<User> friends = new ArrayList<>();
-        for (Conversation conversation : conversations) {
-            if (conversation.getListUser().size() == 2) { // Friend
-                User user = conversation.getListUser().get(0);
-                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
-                    user = conversation.getListUser().get(1); // 0th is me, 1st is friend
-                }
-                user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-                friends.add(user);
-            }
-        }
-        updateCacheUser(friends);
-        mAdapterPeople.removeItemsList(friends);
+        mAdapterConversations.notifyDataSetChanged();
     }
 
     void fetchConversations() {
         ApiService.getInstance().getConversations().enqueue(new Callback<List<Conversation>>() {
             @Override
-            public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
+            public void onResponse(@NonNull Call<List<Conversation>> call, @NonNull Response<List<Conversation>> response) {
                 if (response.isSuccessful()) {
-                    ArrayList<Conversation> conversations = (ArrayList<Conversation>) response.body();
-                    if (conversations.isEmpty()) {
-                        endFailLoading(1);
+                    ArrayList<Conversation> items = (ArrayList<Conversation>) response.body();
+                    if (items == null || items.isEmpty()) {
+                        endFailLoading();
                     } else {
-                        for (Conversation c : conversations) {
-                            c.setConversationName(ModelUtils.getConversationName(c));
-                            c.setPhotoUrl(ModelUtils.getConversationAvatar(c));
-                            if (c.getLastMessage() != null) {
-                                c.getLastMessage().updateDateTime();
-                            }
+                        for (Conversation c : items) {
+                            c.update();
+                            CacheService.getInstance().addOrUpdateCacheConversation(c);
                         }
-                        endSuccessLoading(1);
-                        mAdapterGroups.setArrayList(conversations);
-                        updateCacheConversation(conversations);
-                        updateFriendsList(conversations);
+                        endSuccessLoading();
                     }
                 } else {
-                    endFailLoading(1);
+                    endFailLoading();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Conversation>> call, Throwable t) {
-                endFailLoading(1);
+            public void onFailure(@NonNull Call<List<Conversation>> call, @NonNull Throwable t) {
+                endFailLoading();
             }
         });
-    }
-
-    void fetchPeople() {
-        ApiService.getInstance().searchUsers("").enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    ArrayList<User> users = (ArrayList<User>) response.body();
-                    if (users.isEmpty()) {
-                        endFailLoading(2);
-                    } else {
-                        endSuccessLoading(2);
-                        ArrayList<User> notFriends = new ArrayList<>();
-                        for (User user : users) {
-                            handleUserResponse(user);
-                            if (user.getRelationship().equals(Constants.RELATIONSHIP_FRIEND))
-                                continue;
-                            notFriends.add(user);
-                        }
-                        // Show not friends
-                        mAdapterPeople.setArrayList(notFriends);
-                        // update new data
-                        updateCacheUser(users);
-                    }
-                } else {
-                    endFailLoading(2);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                endFailLoading(2);
-            }
-        });
-    }
-
-    void updateCacheConversation(ArrayList<Conversation> conversations) {
-        new Thread(() -> {
-            for (Conversation c : conversations) {
-                CacheService.getInstance().addOrUpdateCacheConversation(c);
-            }
-        }).start();
-    }
-
-    void updateCacheUser(ArrayList<User> users) {
-        new Thread(() -> {
-            for (User user : users) {
-                if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
-                CacheService.getInstance().addOrUpdateCacheUser(user);
-            }
-        }).start();
-    }
-
-    void handleUserResponse(User user) {
-        if (CacheService.getInstance().checkRelationFriend(user)) {
-            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-        }
-    }
-
-    @Override
-    public void onItemClicked(int position) {
-        Conversation item = mAdapterGroups.getItem(position);
-        Intent intent = new Intent(getActivity(), ConversationActivity.class);
-        intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
-        intent.putExtra(Constants.CONVERSATION_NAME, ModelUtils.getConversationName(item));
-        intent.putExtra(Constants.CONVERSATION_PHOTO, ModelUtils.getConversationAvatar(item));
-        intent.putExtra(Constants.CONVERSATION_IS_ONLINE, ModelUtils.isOnlineGroup(item));
-        startActivity(intent);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

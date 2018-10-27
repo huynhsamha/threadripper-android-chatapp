@@ -2,35 +2,39 @@ package com.chatapp.threadripper.models;
 
 import android.graphics.Bitmap;
 
-import com.chatapp.threadripper.cacheRealm.MessageRealm;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Message implements Serializable {
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
-    String messageId;
-    String type;
-    String content;
-    Date dateTime;
-    String conversationId;
-    String username;
-    String token;
-    boolean read;
+public class Message extends RealmObject implements Serializable {
 
-    String datetime; // server send string format, parse to "dateTime" (Date())
+    @PrimaryKey
+    private long messageId;
+    private String type;
+    private String content;
+    private Date dateTime;
+    private String conversationId;
+    private String username;
+    private String token;
+    private boolean read;
+
+    private String datetime; // server send string format, parse to "dateTime" (Date())
 
     // Used for render image
     // bitmap for camera capture | url for server | uri for image in device
-    Bitmap bitmap;
-    boolean isBitmap = false;
+    // @Ignore
+    // private Bitmap bitmap;
+    // private boolean isBitmap = false;
 
     // Used for render View
-    boolean isYou = false;  // for you or me message
-    boolean isDate = false; // for a Date inline
-    String conversationAvatar; // Used for render Avatar message
-
+    private boolean isYou = false;  // for you or me message
+    private String conversationAvatar; // Used for render Avatar message
+    private boolean isLeadingBlock = false; // used for render time of message, which is first message in range time
 
     public static class MessageType {
         public static final String JOIN = "JOIN";
@@ -53,21 +57,6 @@ public class Message implements Serializable {
         }
     }
 
-    public Message(MessageRealm o) {
-        messageId = o.getMessageId();
-        type = o.getType();
-        content = o.getContent();
-        dateTime = o.getDatetime();
-        conversationId = o.getConversationId();
-        username = o.getUsername();
-        read = o.isRead();
-    }
-
-    public Message() {
-
-    }
-
-
     /**
      * Getters and Setters
      */
@@ -89,11 +78,11 @@ public class Message implements Serializable {
         this.read = read;
     }
 
-    public String getMessageId() {
+    public long getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(long messageId) {
         this.messageId = messageId;
     }
 
@@ -137,21 +126,21 @@ public class Message implements Serializable {
         this.username = username;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    public boolean isBitmap() {
-        return isBitmap;
-    }
-
-    public void setBitmap(boolean bitmap) {
-        isBitmap = bitmap;
-    }
+    // public Bitmap getBitmap() {
+    //     return bitmap;
+    // }
+    //
+    // public void setBitmap(Bitmap bitmap) {
+    //     this.bitmap = bitmap;
+    // }
+    //
+    // public boolean isBitmap() {
+    //     return isBitmap;
+    // }
+    //
+    // public void setBitmap(boolean bitmap) {
+    //     isBitmap = bitmap;
+    // }
 
     public boolean isYou() {
         return isYou;
@@ -159,14 +148,6 @@ public class Message implements Serializable {
 
     public void setYou(boolean you) {
         isYou = you;
-    }
-
-    public boolean isDate() {
-        return isDate;
-    }
-
-    public void setDate(boolean date) {
-        isDate = date;
     }
 
     public String getConversationAvatar() {
@@ -183,5 +164,13 @@ public class Message implements Serializable {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public boolean isLeadingBlock() {
+        return isLeadingBlock;
+    }
+
+    public void setLeadingBlock(boolean leadingBlock) {
+        isLeadingBlock = leadingBlock;
     }
 }

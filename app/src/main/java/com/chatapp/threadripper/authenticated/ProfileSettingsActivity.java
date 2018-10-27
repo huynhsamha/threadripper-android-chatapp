@@ -29,6 +29,7 @@ import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.chatapp.threadripper.utils.TargetPrompt;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -57,6 +58,61 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         initDetectNetworkStateChange();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkRunWalkThrough();
+    }
+
+    void checkRunWalkThrough() {
+        if (Preferences.isFirstUseProfileSettings()) {
+            showWalkThroughChangeAvatar(() -> showWalkThroughChangePassword(() -> {
+                Preferences.setFirstUseProfileSettings(false);
+                CacheService.getInstance().syncPreferencesInCache();
+            }));
+        }
+    }
+
+    interface SimpleCallback {
+        void onComplete();
+    }
+
+    void showWalkThroughChangeAvatar(SimpleCallback cb) {
+        TargetPrompt.prompt(this, R.id.wrapperAvatar,
+                "Change your avatar",
+                "Tap to select or capture image for change your avatar",
+                new TargetPrompt.OnCallbackListener() {
+                    @Override
+                    public void onAccepted() {
+                        cb.onComplete();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        cb.onComplete();
+                    }
+                });
+    }
+
+    void showWalkThroughChangePassword(SimpleCallback cb) {
+        TargetPrompt.prompt(this, R.id.btnChangePassword,
+                "Change password",
+                "You can change your current password with a new password",
+                new TargetPrompt.OnCallbackListener() {
+                    @Override
+                    public void onAccepted() {
+                        cb.onComplete();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        cb.onComplete();
+                    }
+                });
+
     }
 
     void initViews() {
@@ -130,7 +186,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
     void validateForm(String oldPassword, String password, String confirmPassword) throws Exception {
         if (oldPassword.isEmpty()) throw new Exception("Old password can't be empty");
         if (password.isEmpty()) throw new Exception("New password can't be empty");
-        if (confirmPassword.equals(password) == false)
+        if (!confirmPassword.equals(password))
             throw new Exception("Confirm password isn't match");
     }
 
@@ -330,7 +386,9 @@ public class ProfileSettingsActivity extends BaseMainActivity {
                     ApiResponseData data = response.body();
                     String newAvatarUrl = data.getAvatarUrl();
                     Preferences.getCurrentUser().setPhotoUrl(newAvatarUrl);
-                    CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser());
+
+                    // update cache
+                    CacheService.getInstance().syncPreferencesInCache();
                 } else {
                     Gson gson = new Gson();
                     try {

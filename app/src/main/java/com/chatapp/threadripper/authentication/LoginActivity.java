@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,10 +14,8 @@ import android.widget.TextView;
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
-import com.chatapp.threadripper.api.ApiRoutes;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.api.Config;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
@@ -27,16 +24,9 @@ import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.client.StompClient;
 
 public class LoginActivity extends BaseActivity {
@@ -99,7 +89,7 @@ public class LoginActivity extends BaseActivity {
                         Preferences.setChatAuthToken(chatAuthToken);
 
                         // Update cache
-                        CacheService.getInstance().updateCurrentUser(Preferences.getCurrentUser(), chatAuthToken);
+                        CacheService.getInstance().syncPreferencesInCache();
                     }
 
                     startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));

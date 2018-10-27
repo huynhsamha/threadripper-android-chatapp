@@ -21,7 +21,7 @@ import ua.naiksoftware.stomp.client.StompClient;
 
 public class SocketService extends Service {
 
-    String TAG = "SOCKET_LOG";
+    String TAG = "SocketService";
 
     public class SocketBinder extends Binder {
         // return instance of service for client use public methods
@@ -41,12 +41,6 @@ public class SocketService extends Service {
         super.onCreate();
         // run when service is created
         initSocket(); // init the StompClient socket for connective
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        // Don't use startService() -> don't use the onStartCommand()
-        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -105,6 +99,23 @@ public class SocketService extends Service {
     @SuppressLint("CheckResult")
     void initSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
+
+        client.lifecycle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(lifecycleEvent -> {
+                    switch (lifecycleEvent.getType()) {
+                        case OPENED:
+                            Log.d(TAG, "initSocket: OPENED" + lifecycleEvent.getMessage());
+                            break;
+                        case ERROR:
+                            Log.d(TAG, "initSocket: ERROR" + lifecycleEvent.getException());
+                            break;
+                        case CLOSED:
+                            Log.d(TAG, "initSocket: CLOSED" + lifecycleEvent.getMessage());
+                            break;
+                    }
+                });
 
         String username = Preferences.getCurrentUser().getUsername();
         String channel = "/topic/" + username;

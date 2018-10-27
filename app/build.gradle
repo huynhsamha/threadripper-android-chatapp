@@ -39,7 +39,9 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:24.2.1'
     implementation 'com.android.support:design:24.2.1'
     implementation 'com.android.support:support-v4:24.2.1'
-    testImplementation 'junit:junit:4.12'// Calligraphy: Fonts in Asset
+    testImplementation 'junit:junit:4.12'
+
+    // Calligraphy: Fonts in Asset
     implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
 
     // Picasso: Image loader with cache
@@ -76,4 +78,8 @@ dependencies {
     // Photo View
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
+    // MaterialTapTargetPrompt
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.13.0'
+
+    implementation 'io.realm:android-adapters:2.1.1'
 }

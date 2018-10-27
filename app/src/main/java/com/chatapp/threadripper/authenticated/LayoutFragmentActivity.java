@@ -22,6 +22,7 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.SweetDialog;
+import com.chatapp.threadripper.utils.TargetPrompt;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -36,6 +37,16 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_layout_fragment);
 
+        initDefaultFragment();
+
+        initViews();
+
+        initDetectNetworkStateChange();
+
+        checkRunWalkThrough();
+    }
+
+    void initDefaultFragment() {
         FragmentTransaction ft;
 
         // Default Fragment is Messages Chat Screen
@@ -44,8 +55,9 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
         ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.frameLayout, fragmentMessagesChat).commit();
+    }
 
-        // Drawer
+    void initViews() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,8 +69,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
         navigationViewBottom = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationViewBottom.setNavigationItemSelectedListener(this);
-
-        initDetectNetworkStateChange();
     }
 
     @Override
@@ -73,6 +83,38 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    void checkRunWalkThrough() {
+        drawer.openDrawer(GravityCompat.START);
+        showWalkThroughMenu(() -> {});
+        // if (AppState.isFirstUseApp()) {
+
+                // AppState.setFirstUseProfileSettings(false);
+                // CacheService.getInstance().syncPreferencesInCache();
+        // }
+    }
+
+    interface SimpleCallback {
+        void onComplete();
+    }
+
+    void showWalkThroughMenu(SimpleCallback cb) {
+        TargetPrompt.prompt(navigationView.getContext(), R.id.nav_chats,
+                "Your messages",
+                "Tap to view new messages from your friends and groups",
+                new TargetPrompt.OnCallbackListener() {
+                    @Override
+                    public void onAccepted() {
+                        cb.onComplete();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        cb.onComplete();
+                    }
+                });
     }
 
     @Override
@@ -175,10 +217,7 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     }
 
     void handleLogout() {
-        Preferences.setChatAuthToken("");
-        Preferences.setCurrentUser(new User());
-
-        // CacheService.getInstance().clearCacheTokenAndUser();
+        Preferences.resetAll();
         CacheService.getInstance().clearAllCache();
 
         startActivity(new Intent(this, LoginActivity.class));
