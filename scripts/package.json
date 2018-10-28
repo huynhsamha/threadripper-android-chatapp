@@ -6,6 +6,7 @@
     "querystring": "^0.2.0"
   },
   "scripts": {
+    "fake": "node fake",
     "start": "node index"
   }
 }
