@@ -3,6 +3,7 @@ package com.chatapp.threadripper.videocall;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
     private static final String[] REQUESTED_PERMISSIONS = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private RtcEngine mRtcEngine;
+
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
@@ -194,7 +197,6 @@ public class VideoChatViewActivity extends AppCompatActivity {
     private void setupVideoProfile() {
         mRtcEngine.enableVideo();
 
-//      mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_360P, false); // Earlier than 2.3.0
         mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_640x360, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
                 VideoEncoderConfiguration.STANDARD_BITRATE,
                 VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
@@ -245,13 +247,69 @@ public class VideoChatViewActivity extends AppCompatActivity {
             surfaceView.setVisibility(muted ? View.GONE : View.VISIBLE);
         }
     }
+//
+//    public void onLocalViewClick(View view) {
+//        // Toggle local view visibility
+//        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
+//        boolean isVisible = container.getVisibility() == View.VISIBLE;
+//        enableLocalView(!isVisible);
+//    }
 
-    public void onLocalViewClick(View view) {
+    private void enableLocalView(boolean enable) {
         FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
-        boolean isVisible = container.getVisibility() == View.VISIBLE;
-        container.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
 
+        int visibility = enable ? View.VISIBLE : View.INVISIBLE;
         SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
-        surfaceView.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+        container.setVisibility(visibility);
+        surfaceView.setVisibility(visibility);
+    }
+
+//    private void enableRemoteView(boolean enable) {
+//        FrameLayout container = (FrameLayout) findViewById(R.id.remote_video_view_container);
+//        int visibility = (enable ? View.VISIBLE : View.GONE);
+//        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
+//        surfaceView.setVisibility(visibility);
+//    }
+
+
+    public void onAudioVideoChangeClick(View view) {
+        ImageView iv = (ImageView) view;
+        iv.setSelected(!iv.isSelected());
+        boolean audioMode = iv.isSelected();
+
+        if (audioMode) {
+            // Disable all video streams
+            iv.setImageResource(R.drawable.audio_only);  // show video icon, if user want to change to video
+            mRtcEngine.muteLocalVideoStream(true);
+            mRtcEngine.muteAllRemoteVideoStreams(true);
+            this.enableLocalView(false);
+//            this.enableRemoteView(false);
+        } else {
+            iv.setImageResource(R.drawable.video);
+            mRtcEngine.muteLocalVideoStream(false);
+            mRtcEngine.muteAllRemoteVideoStreams(false);
+            this.enableLocalView(true);
+//            this.enableRemoteView(true);
+        }
+    }
+
+    public void onQualityButtonClick(View view) {
+        final String[] qualities = {"360p", "720p"};
+        Button button = (Button) view;
+        if (button.getText().toString().equals(qualities[0])) {
+            mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_1280x720, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                    VideoEncoderConfiguration.STANDARD_BITRATE,
+                    VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
+
+            button.setText(qualities[1]);
+        }
+        else if (button.getText().toString().equals(qualities[1]))  {
+            mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_640x360, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                    VideoEncoderConfiguration.STANDARD_BITRATE,
+                    VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
+
+            button.setText(qualities[0]);
+        }
+
     }
 }

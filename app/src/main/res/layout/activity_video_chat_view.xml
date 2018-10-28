@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_video_chat_view"
     android:layout_width="match_parent"
@@ -16,21 +17,20 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
-        android:onClick="onLocalViewClick"
         android:background="@android:color/white">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/local_video_view_container"
-        android:layout_width="160dp"
-        android:layout_height="284dp"
+        android:layout_width="156dp"
+        android:layout_height="269dp"
         android:layout_alignEnd="@+id/remote_video_view_container"
         android:layout_alignRight="@+id/remote_video_view_container"
-        android:layout_alignBottom="@+id/remote_video_view_container"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="91dp"
         android:background="@android:color/darker_gray">
 
     </FrameLayout>
@@ -46,6 +46,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
 
@@ -53,9 +60,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"
-                android:onClick="onLocalVideoMuteClicked"
+                android:onClick="onAudioVideoChangeClick"
                 android:scaleType="centerInside"
-                android:src="@drawable/btn_voice" />
+                android:src="@drawable/video" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -72,6 +79,13 @@
                 android:onClick="onSwitchCameraClicked"
                 android:scaleType="centerInside"
                 android:src="@drawable/btn_switch_camera" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onQualityButtonClick"
+                android:text="360p" />
 
             <ImageView
                 android:layout_width="0dp"
