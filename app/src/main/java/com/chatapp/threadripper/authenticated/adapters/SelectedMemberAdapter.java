@@ -57,12 +57,6 @@ public class SelectedMemberAdapter extends RealmRecyclerViewAdapter<User, Select
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-
     class ViewHolder extends RecyclerView.ViewHolder {
 
         View view;

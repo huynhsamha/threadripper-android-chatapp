@@ -73,7 +73,7 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
                 + Preferences.getCurrentUser().getUsername()
                 + this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO,false);
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
 
         this.mContext.startActivity(intent);
     }
@@ -89,11 +89,10 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
                 + Preferences.getCurrentUser().getUsername()
                 + this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO,true);
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, true);
 
         this.mContext.startActivity(intent);
     }
-
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

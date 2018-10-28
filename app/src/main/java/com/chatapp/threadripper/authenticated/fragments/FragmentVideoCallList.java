@@ -21,12 +21,14 @@ import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,8 +68,18 @@ public class FragmentVideoCallList extends Fragment {
         mAdapter = new VideoCallListAdapter(getContext(), friends);
         mRecyclerView.setAdapter(mAdapter);
 
-        tvNoAnyFriends.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
+        friends.addChangeListener(new RealmChangeListener<RealmResults<User>>() {
+            @Override
+            public void onChange(RealmResults<User> users) {
+                if (users.isEmpty()) {
+                    tvNoAnyFriends.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
+                } else {
+                    tvNoAnyFriends.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
             @Override
@@ -78,11 +90,9 @@ public class FragmentVideoCallList extends Fragment {
                         // no do anything
 
                     } else {
-                        tvNoAnyFriends.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
 
                         for (Conversation c : items) {
-                            parseConversationToFriend(c);
+                            ModelUtils.parseConversationToFriend(c);
                         }
                     }
 
@@ -110,27 +120,6 @@ public class FragmentVideoCallList extends Fragment {
 
     void showError(String msg) {
         ((LayoutFragmentActivity) getActivity()).ShowErrorDialog(msg);
-    }
-
-    void parseConversationToFriend(Conversation conversation) {
-        if (conversation == null) return;
-        if (conversation.getListUser() == null) return;
-        if (conversation.getListUser().size() != 2) return;
-        User user = null;
-        if (conversation.getListUser().get(0) != null) {
-            if (conversation.getListUser().get(0).getUsername().equals(
-                    Preferences.getCurrentUser().getUsername()
-            )) {
-                user = conversation.getListUser().get(1);
-            } else {
-                user = conversation.getListUser().get(0);
-            }
-        }
-
-        if (user != null) {
-            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-        }
-        CacheService.getInstance().addOrUpdateCacheUser(user);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

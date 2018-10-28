@@ -37,11 +37,6 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
     }
 
     @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         Message msg = mItems.get(position);
         if (msg.isYou()) return YOU;

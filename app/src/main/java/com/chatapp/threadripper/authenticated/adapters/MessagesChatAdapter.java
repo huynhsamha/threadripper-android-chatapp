@@ -47,15 +47,6 @@ public class MessagesChatAdapter extends RealmRecyclerViewAdapter<Conversation, 
         return new ViewHolder(itemLayoutView);
     }
 
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-    public Conversation getItem(int position) {
-        return mItems.get(position);
-    }
-
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {

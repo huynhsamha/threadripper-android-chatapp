@@ -28,11 +28,14 @@ import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.authenticated.adapters.HorizontalAvatarAdapter;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         initViews(view);
 
         fetchConversations();
+
+        fetchFriends();
 
         initSocketReceiver();
 
@@ -132,18 +137,23 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         // Horizontal Avatar Recycler View
         mRcvHorizontalAvatar = (RecyclerView) view.findViewById(R.id.rcvHorizontalAvatar);
         mRcvHorizontalAvatar.setHasFixedSize(true);
-        mRcvHorizontalAvatar.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRcvHorizontalAvatar.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         onlineFriends = CacheService.getInstance().retrieveCacheFriendsOnline();
 
         mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
         mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);
 
+        tvNoAnyFriends.setVisibility(View.VISIBLE);
+        mRcvHorizontalAvatar.setVisibility(View.GONE);
+
         onlineFriends.addChangeListener(users -> {
             if (users.isEmpty()) {
                 tvNoAnyFriends.setVisibility(View.VISIBLE);
+                mRcvHorizontalAvatar.setVisibility(View.GONE);
             } else {
                 tvNoAnyFriends.setVisibility(View.GONE);
+                mRcvHorizontalAvatar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -157,7 +167,47 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                 android.R.color.holo_blue_bright
         );
 
-        swipeContainer.setOnRefreshListener(this::fetchConversations);
+        swipeContainer.setOnRefreshListener(() -> {
+            fetchConversations();
+            fetchFriends();
+        });
+    }
+
+    void fetchFriends() {
+
+        ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
+            @Override
+            public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<Conversation> items = (ArrayList<Conversation>) response.body();
+                    if (items == null || items.isEmpty()) {
+                        // no do anything
+
+                    } else {
+                        for (Conversation c : items) {
+                            ModelUtils.parseConversationToFriend(c);
+                        }
+                    }
+
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        showError(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        showError(e.getMessage());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Conversation>> call, Throwable t) {
+                showError(t.getMessage());
+            }
+        });
+
     }
 
     void fetchConversations() {
@@ -254,4 +304,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         startActivity(intent);
     }
 
+
+    void showError(String msg) {
+        ((LayoutFragmentActivity) getActivity()).ShowErrorDialog(msg);
+    }
 }

@@ -2,6 +2,7 @@ package com.chatapp.threadripper.utils;
 
 import android.text.TextUtils;
 
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
@@ -66,6 +67,27 @@ public class ModelUtils {
             if (user.isOnline()) return true;
         }
         return false;
+    }
+
+    public static void parseConversationToFriend(Conversation conversation) {
+        if (conversation == null) return;
+        if (conversation.getListUser() == null) return;
+        if (conversation.getListUser().size() != 2) return;
+        User user = null;
+        if (conversation.getListUser().get(0) != null) {
+            if (conversation.getListUser().get(0).getUsername().equals(
+                    Preferences.getCurrentUser().getUsername()
+            )) {
+                user = conversation.getListUser().get(1);
+            } else {
+                user = conversation.getListUser().get(0);
+            }
+        }
+
+        if (user != null) {
+            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        }
+        CacheService.getInstance().addOrUpdateCacheUser(user);
     }
 
 }

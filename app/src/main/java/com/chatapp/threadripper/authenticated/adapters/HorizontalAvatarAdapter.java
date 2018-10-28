@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -26,10 +27,6 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
         mItems = items;
     }
 
-    public User getItem(int position) {
-        return mItems.get(position);
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
@@ -43,14 +40,11 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
         User user = getItem(position);
         holder.vOnline.setVisibility(user.isOnline() ? View.VISIBLE : View.GONE);
 
+        ImageLoader.loadUserAvatar(holder.cirImgUserAvatar, user.getPhotoUrl());
+
         holder.view.setOnClickListener(view -> {
             // TODO: start Conversation Chat
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
