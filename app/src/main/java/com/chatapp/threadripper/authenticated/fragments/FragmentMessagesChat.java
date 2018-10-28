@@ -21,8 +21,10 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.authenticated.CallingActivity;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
+import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.authenticated.adapters.HorizontalAvatarAdapter;
 import com.chatapp.threadripper.authenticated.adapters.MessagesChatAdapter;
 import com.chatapp.threadripper.models.Conversation;
@@ -99,6 +101,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
         // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_TYPING);
         // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_READ);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_CALL);
 
         mSocketReceiver.setListener(this);
     }
@@ -240,4 +243,15 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     public void onRead(String conversationId, String username) {
         // no receive broadcast
     }
+
+    @Override
+    public void onCall(User user) {
+        Intent intent = new Intent(getContext(), CallingActivity.class);
+        intent.putExtra(Constants.IS_CALLER_SIDE, false); // user who start a calling is a caller
+        intent.putExtra(Constants.USER_USERNAME, user.getUsername());
+        intent.putExtra(Constants.USER_DISPLAY_NAME, user.getDisplayName());
+        intent.putExtra(Constants.USER_PHOTO_URL, user.getPhotoUrl());
+        startActivity(intent);
+    }
+
 }

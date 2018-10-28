@@ -27,8 +27,8 @@ public class VideoCallActivity extends BaseMainActivity {
     LinearLayout linLayoutCall;
 
 
-    boolean callerSide; // me, caller or callee
-    String username, userAvatar, displayName; // not me, the caller or callee
+    boolean callerSide, callingAudioOrVideo; // me, caller or callee
+    String username, userAvatar, displayName, channelId; // not me, the caller or callee
 
 
     @Override
@@ -59,6 +59,8 @@ public class VideoCallActivity extends BaseMainActivity {
         username = intent.getStringExtra(Constants.USER_USERNAME);
         displayName = intent.getStringExtra(Constants.USER_DISPLAY_NAME);
         userAvatar = intent.getStringExtra(Constants.USER_PHOTO_URL);
+        channelId = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
+        callingAudioOrVideo = intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false); // default is call audio
 
         // Hide icon call (green) when is caller
         if (callerSide) {
@@ -77,10 +79,11 @@ public class VideoCallActivity extends BaseMainActivity {
 
     void handleEndCalling() {
         // TODO
-        // ok
         if (callerSide) {
+            setResult(RESULT_CANCELED);
             finish();
         } else {
+            setResult(RESULT_CANCELED);
             finish();
         }
     }
@@ -89,6 +92,12 @@ public class VideoCallActivity extends BaseMainActivity {
         // TODO
         // Generate token to both size
         // start VideoChatViewActivity with putExtra EXTRA_CHANNEL_TOKEN
+        Intent intent = new Intent(this, VideoChatViewActivity.class);
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, callingAudioOrVideo);
+        startActivity(intent);
+        finish();
+
         if (callerSide) {
 
         } else {

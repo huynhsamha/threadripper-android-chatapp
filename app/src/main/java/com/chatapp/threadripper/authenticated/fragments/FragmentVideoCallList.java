@@ -10,18 +10,35 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.TestApiService;
+import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.adapters.VideoCallListAdapter;
+import com.chatapp.threadripper.models.Conversation;
+import com.chatapp.threadripper.models.ErrorResponse;
+import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.Preferences;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class FragmentVideoCallList extends Fragment {
     private RecyclerView mRecyclerView;
     private VideoCallListAdapter mAdapter;
+    TextView tvNoAnyFriends;
+
+    private RealmResults<User> friends;
 
     public FragmentVideoCallList() {
         setHasOptionsMenu(true);
@@ -39,25 +56,81 @@ public class FragmentVideoCallList extends Fragment {
         getActivity().supportInvalidateOptionsMenu();
         ((LayoutFragmentActivity) getActivity()).changeTitle(R.id.toolbar, "Video Call");
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.rcvMessages);
+        tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rcvFriends);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new VideoCallListAdapter(getContext(), null);
+
+        friends = CacheService.getInstance().retrieveCacheFriends();
+        mAdapter = new VideoCallListAdapter(getContext(), friends);
         mRecyclerView.setAdapter(mAdapter);
 
-        TestApiService.getInstance().getUsersList(new TestApiService.OnCompleteListener() {
+        tvNoAnyFriends.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+
+        ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
             @Override
-            public void onSuccess(ArrayList list) {
-                mAdapter.setArrayList(list);
+            public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
+                if (response.isSuccessful()) {
+                    ArrayList<Conversation> items = (ArrayList<Conversation>) response.body();
+                    if (items == null || items.isEmpty()) {
+                        // no do anything
+
+                    } else {
+                        tvNoAnyFriends.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+
+                        for (Conversation c : items) {
+                            parseConversationToFriend(c);
+                        }
+                    }
+
+                } else {
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        showError(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        showError(e.getMessage());
+                    }
+                }
+
             }
 
             @Override
-            public void onFailure(String errorMessage) {
-
+            public void onFailure(Call<List<Conversation>> call, Throwable t) {
+                showError(t.getMessage());
             }
         });
 
         return view;
+    }
+
+    void showError(String msg) {
+        ((LayoutFragmentActivity) getActivity()).ShowErrorDialog(msg);
+    }
+
+    void parseConversationToFriend(Conversation conversation) {
+        if (conversation == null) return;
+        if (conversation.getListUser() == null) return;
+        if (conversation.getListUser().size() != 2) return;
+        User user = null;
+        if (conversation.getListUser().get(0) != null) {
+            if (conversation.getListUser().get(0).getUsername().equals(
+                    Preferences.getCurrentUser().getUsername()
+            )) {
+                user = conversation.getListUser().get(1);
+            } else {
+                user = conversation.getListUser().get(0);
+            }
+        }
+
+        if (user != null) {
+            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+        }
+        CacheService.getInstance().addOrUpdateCacheUser(user);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

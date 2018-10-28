@@ -14,10 +14,12 @@ import com.chatapp.threadripper.utils.ImageLoader;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
-public class SelectedMemberAdapter extends RecyclerView.Adapter<SelectedMemberAdapter.ViewHolder> {
+public class SelectedMemberAdapter extends RealmRecyclerViewAdapter<User, SelectedMemberAdapter.ViewHolder> {
 
-    private ArrayList<User> mItems;
+    private OrderedRealmCollection<User> mItems;
     private Context mContext;
     private OnClickRemoveListener listener;
 
@@ -25,31 +27,21 @@ public class SelectedMemberAdapter extends RecyclerView.Adapter<SelectedMemberAd
         void onClickRemove(int position);
     }
 
-    public SelectedMemberAdapter(Context context, ArrayList<User> data, OnClickRemoveListener listener) {
+    public SelectedMemberAdapter(Context context, OrderedRealmCollection<User> data, OnClickRemoveListener listener) {
+        super(data, true);
         mContext = context;
-        if (data == null) data = new ArrayList<>();
         mItems = data;
         this.listener = listener;
     }
 
-    public void addItem(User item) {
-        mItems.add(item);
-        notifyDataSetChanged();
-    }
-
-    public void removeItem(User item) {
-        mItems.remove(item);
-        notifyDataSetChanged();
-    }
-
-    public ArrayList<User> getAll() {
+    public OrderedRealmCollection<User> getAll() {
         return mItems;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.list_item_contact, null);
+                R.layout.list_selected_member, null);
 
         return new ViewHolder(itemLayoutView);
     }
@@ -67,12 +59,9 @@ public class SelectedMemberAdapter extends RecyclerView.Adapter<SelectedMemberAd
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mItems.size();
     }
 
-    public User getItem(int position) {
-        return mItems.get(position);
-    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 

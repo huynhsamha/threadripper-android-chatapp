@@ -6,10 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.authenticated.BaseMainActivity;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.models.Message;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SocketReceiver extends BroadcastReceiver {
 
@@ -17,10 +23,16 @@ public class SocketReceiver extends BroadcastReceiver {
 
     public interface OnCallbackListener {
         void onNewMessage(Message message);
+
         void onJoin(String username);
+
         void onLeave(String username);
+
         void onTyping(String conversationId, String username, boolean typing);
+
         void onRead(String conversationId, String username);
+
+        void onCall(User user);
     }
 
     @Override
@@ -41,6 +53,8 @@ public class SocketReceiver extends BroadcastReceiver {
                 break;
             case Constants.ACTION_STRING_RECEIVER_READ:
                 // handleRead(intent);
+            case Constants.ACTION_STRING_RECEIVER_CALL:
+                handleCall(intent);
                 break;
             default:
                 break;
@@ -89,8 +103,27 @@ public class SocketReceiver extends BroadcastReceiver {
     void handleRead(Intent intent) {
         String conversationId = intent.getStringExtra(Constants.CONVERSATION_ID);
         String username = intent.getStringExtra(Constants.USER_USERNAME);
-        if (listener !=null) {
+        if (listener != null) {
             listener.onRead(conversationId, username);
         }
+    }
+
+    void handleCall(Intent intent) {
+        String username = intent.getStringExtra(Constants.USER_USERNAME);
+        ApiService.getInstance().getUser(username).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (listener != null) {
+                    if (response.isSuccessful()) {
+                        listener.onCall(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }

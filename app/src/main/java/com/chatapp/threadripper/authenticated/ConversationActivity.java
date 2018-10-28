@@ -29,8 +29,10 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
+import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
+import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
@@ -140,6 +142,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_TYPING);
         mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_READ);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_CALL);
 
         mSocketReceiver.setListener(this);
     }
@@ -598,4 +601,15 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     public void onRead(String conversationId, String username) {
 
     }
+
+    @Override
+    public void onCall(User user) {
+        Intent intent = new Intent(ConversationActivity.this , CallingActivity.class);
+        intent.putExtra(Constants.IS_CALLER_SIDE, false); // user who start a calling is a caller
+        intent.putExtra(Constants.USER_USERNAME, user.getUsername());
+        intent.putExtra(Constants.USER_DISPLAY_NAME, user.getDisplayName());
+        intent.putExtra(Constants.USER_PHOTO_URL, user.getPhotoUrl());
+        startActivity(intent);
+    }
+
 }

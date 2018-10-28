@@ -104,6 +104,13 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
+    void sendBroadcastCall(Message message) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.ACTION_STRING_RECEIVER_CALL);
+        intent.putExtra(Constants.USER_USERNAME, message.getUsername());
+        sendBroadcast(intent);
+    }
+
     @SuppressLint("CheckResult")
     void initSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
@@ -160,6 +167,7 @@ public class SocketService extends Service {
 
                         case Message.MessageType.CALL:
                         case Message.MessageType.VIDEO:
+                            sendBroadcastCall(message);
                             break;
 
                         case Message.MessageType.READ:

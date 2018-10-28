@@ -71,6 +71,8 @@
                 android:id="@+id/lnButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:paddingRight="15dp"
+                android:paddingEnd="15dp"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical">
 

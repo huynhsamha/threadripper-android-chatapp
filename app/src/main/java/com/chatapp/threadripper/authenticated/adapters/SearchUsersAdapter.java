@@ -104,7 +104,9 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         holder.cbSelect.setChecked(user.isSelectedMember());
 
         holder.cbSelect.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            listener.onSelect(position, isChecked);
+            if (listener != null) {
+                listener.onSelect(position, isChecked);
+            }
         });
     }
 

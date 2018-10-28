@@ -81,7 +81,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".videocall.VideoChatViewActivity"></activity>
+        <activity android:name=".authenticated.VideoChatViewActivity"></activity>
     </application>
 
 </manifest>

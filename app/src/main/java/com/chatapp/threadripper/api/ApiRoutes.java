@@ -60,11 +60,24 @@ public interface ApiRoutes {
             @Header("Authorization") String authToken
     );
 
+    @GET("friend")
+    Call<List<Conversation>> getFriends(
+            @Header("Authorization") String authToken
+    );
+
+
     @GET("conversation/{conversationId}")
     Call<Conversation> getConversation(
             @Header("Authorization") String authToken,
             @Path("conversationId") String conversationId
     );
+
+    @GET("user/{username}")
+    Call<User> getUser(
+            @Header("Authorization") String authToken,
+            @Path("username") String username
+    );
+
 
     @GET("message/{conversationId}")
     Call<List<Message>> getMessagesInConversation(

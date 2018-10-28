@@ -1,4 +1,4 @@
-package com.chatapp.threadripper.videocall;
+package com.chatapp.threadripper.authenticated;
 
 import android.Manifest;
 import android.content.Intent;
@@ -92,6 +92,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
             // TODO: change to the correct one
             String channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
+            boolean callingAudioOrVideo = intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
 
             joinChannel(channel);
         }

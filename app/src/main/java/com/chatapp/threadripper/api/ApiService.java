@@ -64,8 +64,16 @@ public class ApiService {
         return getApiInstance().getConversations(Preferences.getChatAuthToken());
     }
 
+    public Call<List<Conversation>> getFriends() {
+        return getApiInstance().getFriends(Preferences.getChatAuthToken());
+    }
+
     public Call<Conversation> getConversation(String conversationId) {
         return getApiInstance().getConversation(Preferences.getChatAuthToken(), conversationId);
+    }
+
+    public Call<User> getUser(String username) {
+        return getApiInstance().getUser(Preferences.getChatAuthToken(), username);
     }
 
     public Call<List<Message>> getMessagesInConversation(String conversationId) {

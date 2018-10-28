@@ -49,5 +49,6 @@ public class Constants {
 
     public static final String PLACEHOLDER_GROUP_AVATAR = "PLACEHOLDER_GROUP_AVATAR";
 
-    public static final String EXTRA_VIDEO_CHANNEL_TOKEN = "com.chatapp.threadripper.VideoChatViewActivity.CHANNEL_TOKEN";
+    public static final String EXTRA_VIDEO_CHANNEL_TOKEN = "EXTRA_VIDEO_CHANNEL_TOKEN";
+    public static final String CALLING_VIDEO_OR_AUDIO = "CALLING_VIDEO_OR_AUDIO";
 }

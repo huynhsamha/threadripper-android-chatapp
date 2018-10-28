@@ -129,10 +129,20 @@ public class CacheService {
                 .findAll();
     }
 
+    public User retrieveCacheUser(String username) {
+        return realm.where(User.class).equalTo("username", username).findFirst();
+    }
+
     public RealmResults<User> retrieveCacheFriendsOnline() {
         return realm.where(User.class)
                 .equalTo("relationship", Constants.RELATIONSHIP_FRIEND)
                 // .sort("online", Sort.DESCENDING) // online first
+                .findAll();
+    }
+
+    public RealmResults<User> retrieveCacheSelectedMember() {
+        return realm.where(User.class)
+                .equalTo("isSelectedMember", true)
                 .findAll();
     }
 

@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,10 +42,14 @@ public class SearchUsersActivity extends BaseMainActivity implements
 
     RippleView rvSearch, rvBtnBack;
     EditText edtSearch;
+
     RecyclerView mRcvSearchUser, mRcvSelectedMember;
     SelectedMemberAdapter mAdapterSelectedMembers;
     SearchUsersAdapter mAdapterSearchUser;
+    RealmResults<User> selectedMembers;
+
     TextView tvNoAnyone, tvLoading;
+
     RelativeLayout vMembersSelected;
     Button btnCreateConversation;
 
@@ -63,6 +68,10 @@ public class SearchUsersActivity extends BaseMainActivity implements
     }
 
     void handleUserResponse(User user) {
+        User cacheUser =  CacheService.getInstance().retrieveCacheUser(user.getUsername());
+        if (cacheUser != null) {
+            user.setSelectedMember(cacheUser.isSelectedMember());
+        }
         CacheService.getInstance().addOrUpdateCacheUser(user);
         mAdapterSearchUser.addItem(user);
     }
@@ -120,12 +129,21 @@ public class SearchUsersActivity extends BaseMainActivity implements
         mRcvSearchUser.setAdapter(mAdapterSearchUser);
 
         // Selected Member Recycler View
+        vMembersSelected.setVisibility(View.GONE);
         mRcvSelectedMember = (RecyclerView) findViewById(R.id.rcvSelectedMember);
         mRcvSelectedMember.setHasFixedSize(true);
-        mRcvSelectedMember.setLayoutManager(new LinearLayoutManager(this));
+        mRcvSelectedMember.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        mAdapterSelectedMembers = new SelectedMemberAdapter(this, null, this);
-
+        selectedMembers = CacheService.getInstance().retrieveCacheSelectedMember();
+        mAdapterSelectedMembers = new SelectedMemberAdapter(this, selectedMembers, this);
+        mRcvSelectedMember.setAdapter(mAdapterSelectedMembers);
+        selectedMembers.addChangeListener(users -> {
+            if (users.isEmpty()) {
+                vMembersSelected.setVisibility(View.GONE);
+            } else {
+                vMembersSelected.setVisibility(View.VISIBLE);
+            }
+        });
 
         rvBtnBack.setOnRippleCompleteListener(rippleView -> onBackPressed());
         rvSearch.setOnRippleCompleteListener(view -> requestSearchUsers());
@@ -178,6 +196,7 @@ public class SearchUsersActivity extends BaseMainActivity implements
                     Gson gson = new Gson();
                     try {
                         ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        SweetDialog.hideLoading();
                         showError(err.getMessage());
 
                     } catch (Exception e) {
@@ -229,6 +248,7 @@ public class SearchUsersActivity extends BaseMainActivity implements
                     Gson gson = new Gson();
                     try {
                         ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        SweetDialog.hideLoading();
                         showError(err.getMessage());
 
                     } catch (Exception e) {
@@ -255,20 +275,16 @@ public class SearchUsersActivity extends BaseMainActivity implements
     @Override
     public void onSelect(int position, boolean isSelected) {
         User user = mAdapterSearchUser.getItem(position);
-
-        vMembersSelected.setVisibility(View.VISIBLE);
-        mAdapterSelectedMembers.addItem(user);
+        user.setSelectedMember(isSelected);
+        CacheService.getInstance().addOrUpdateCacheUser(user);
     }
 
     @Override
     public void onClickRemove(int position) {
         User user = mAdapterSelectedMembers.getItem(position);
+        user.setSelectedMember(false);
+        CacheService.getInstance().addOrUpdateCacheUser(user);
 
-        mAdapterSelectedMembers.removeItem(user);
         mAdapterSearchUser.unSelectItem(user);
-
-        if (mAdapterSelectedMembers.getAll().isEmpty()) {
-            vMembersSelected.setVisibility(View.GONE);
-        }
     }
 }

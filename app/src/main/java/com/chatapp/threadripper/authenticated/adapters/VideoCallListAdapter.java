@@ -15,44 +15,26 @@ import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 
-public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter.ViewHolder> {
+public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCallListAdapter.ViewHolder> {
 
-    private List<User> mArrayList;
+    private OrderedRealmCollection<User> mArrayList;
     private Context mContext;
 
 
-    public VideoCallListAdapter(Context context, List<User> arrayList) {
+    public VideoCallListAdapter(Context context, OrderedRealmCollection<User> arrayList) {
+        super(arrayList, true);
         this.mContext = context;
-
-        if (arrayList != null) this.mArrayList = arrayList;
-        else this.mArrayList = new ArrayList<>();
-    }
-
-    @Override
-    public int getItemCount() {
-        return mArrayList.size();
-    }
-
-    public void setArrayList(ArrayList<User> users) {
-        this.mArrayList.clear();
-        this.mArrayList.addAll(users);
-        this.notifyDataSetChanged();
-    }
-
-    public void addItem(User item) {
-        this.mArrayList.add(item);
-        this.notifyItemChanged(this.mArrayList.size()-1);
-    }
-
-    public User getItem(int position) {
-        return this.mArrayList.get(position);
+        this.mArrayList = arrayList;
     }
 
 
@@ -63,9 +45,7 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.list_item_video_call, null);
 
-        VideoCallListAdapter.ViewHolder viewHolder = new VideoCallListAdapter.ViewHolder(itemLayoutView);
-
-        return viewHolder;
+        return new ViewHolder(itemLayoutView);
     }
 
 
@@ -82,7 +62,7 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         viewHolder.rvCallVideo.setOnRippleCompleteListener(rippleView -> handleStartCallingVideo(position));
     }
 
-    void handleStartCalling(int position) {
+    private void handleStartCalling(int position) {
         // ShowToast.lengthShort(this.mContext, "Calling...");
 
         Intent intent = new Intent(this.mContext, CallingActivity.class);
@@ -90,11 +70,15 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
         intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
         intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
+                + Preferences.getCurrentUser().getUsername()
+                + this.mArrayList.get(position).getUsername());
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO,false);
 
         this.mContext.startActivity(intent);
     }
 
-    void handleStartCallingVideo(int position) {
+    private void handleStartCallingVideo(int position) {
         // ShowToast.lengthShort(this.mContext, "Calling Video...");
 
         Intent intent = new Intent(this.mContext, VideoCallActivity.class);
@@ -102,6 +86,10 @@ public class VideoCallListAdapter extends SelectableAdapter<VideoCallListAdapter
         intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
         intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
         intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
+                + Preferences.getCurrentUser().getUsername()
+                + this.mArrayList.get(position).getUsername());
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO,true);
 
         this.mContext.startActivity(intent);
     }
