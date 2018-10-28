@@ -9,17 +9,18 @@ import io.realm.annotations.PrimaryKey;
 public class User extends RealmObject {
 
     @PrimaryKey
-    String username;
-    String email;
-    String password;
-    String displayName;
+    private String username;
+    private String email;
+    private String password;
+    private String displayName;
 
-    @SerializedName("avatarUrl") // server use avatarUrl
-            String photoUrl;
+    // server use avatarUrl
+    @SerializedName("avatarUrl")
+    private String photoUrl;
 
-    boolean online;
+    private boolean online;
 
-    String relationship = Constants.RELATIONSHIP_NONE;
+    private String relationship = Constants.RELATIONSHIP_NONE;
     // relationship with current user
     // 3 type: friend | sent request | none
     // default is none
@@ -27,6 +28,9 @@ public class User extends RealmObject {
     public boolean isFriend() {
         return relationship.equals(Constants.RELATIONSHIP_FRIEND);
     }
+
+    private boolean isSelectedMember = false;
+    // used for selected member for creating conversation
 
     /**
      * Constructors
@@ -109,5 +113,13 @@ public class User extends RealmObject {
 
     public void setRelationship(String relationship) {
         this.relationship = relationship;
+    }
+
+    public boolean isSelectedMember() {
+        return isSelectedMember;
+    }
+
+    public void setSelectedMember(boolean selectedMember) {
+        isSelectedMember = selectedMember;
     }
 }

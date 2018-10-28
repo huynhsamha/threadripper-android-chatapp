@@ -96,6 +96,14 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
+    void sendBroadcastRead(Message message) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.ACTION_STRING_RECEIVER_READ);
+        intent.putExtra(Constants.CONVERSATION_ID, message.getConversationId());
+        intent.putExtra(Constants.USER_USERNAME, message.getUsername());
+        sendBroadcast(intent);
+    }
+
     @SuppressLint("CheckResult")
     void initSocket() {
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, Config.WEB_SOCKET_FULL_PATH);
@@ -155,6 +163,7 @@ public class SocketService extends Service {
                             break;
 
                         case Message.MessageType.READ:
+                            // sendBroadcastRead(message);
                             break;
 
                         case Message.MessageType.TYPING:

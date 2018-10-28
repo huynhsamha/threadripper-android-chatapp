@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
@@ -65,6 +66,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
     private RoundedImageView rivImageIsPickedOrCaptured;
     TextView tvUserTyping;
+    private RippleView rvOptionMenu;
 
     Set<String> typingUsername = new HashSet<>(); // use Set for unique username
 
@@ -91,6 +93,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         initViews();
 
+        initMoreSettings();
+
         setListeners();
 
         fetchMessages();
@@ -100,6 +104,14 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         initDetectNetworkStateChange();
 
         markReadAllMessages();
+    }
+
+    void initMoreSettings() {
+        rvOptionMenu = (RippleView) this.toolbar.findViewById(R.id.rvOptionMenu);
+        rvOptionMenu.setVisibility(View.VISIBLE);
+        rvOptionMenu.setOnRippleCompleteListener(view -> {
+            // TODO: show settings
+        });
     }
 
     void markReadAllMessages() {
@@ -558,12 +570,12 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     @Override
     public void onJoin(String username) {
-
+        // no receive broadcast
     }
 
     @Override
     public void onLeave(String username) {
-
+        // no receive broadcast
     }
 
     @SuppressLint("SetTextI18n")
@@ -580,5 +592,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         } else {
             tvUserTyping.setText(TextUtils.join(", ", typingUsername) + " is typing...");
         }
+    }
+
+    @Override
+    public void onRead(String conversationId, String username) {
+
     }
 }

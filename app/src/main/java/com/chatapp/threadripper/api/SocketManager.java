@@ -45,6 +45,8 @@ public class SocketManager {
 
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
+                mSocketService.disconnectSocket();
+
                 mBound = false; // mark currently is unbound
                 mSocketService = null; // delete instance
             }

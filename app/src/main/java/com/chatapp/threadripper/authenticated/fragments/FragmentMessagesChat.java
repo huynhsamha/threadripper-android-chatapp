@@ -235,4 +235,9 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     public void onTyping(String conversationId, String username, boolean typing) {
         // no receive broadcast
     }
+
+    @Override
+    public void onRead(String conversationId, String username) {
+        // no receive broadcast
+    }
 }

@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
@@ -35,13 +37,19 @@ import retrofit2.Response;
 
 public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.ViewHolder> {
 
+    public interface OnSelectListener {
+        void onSelect(int position, boolean isSelected);
+    }
+
     private List<User> mItems;
     private Context mContext;
+    private OnSelectListener listener;
 
-    public SearchUsersAdapter(Context context, List<User> data) {
+    public SearchUsersAdapter(Context context, List<User> data, OnSelectListener listener) {
         this.mContext = context;
         if (data == null) data = new ArrayList<>();
         this.mItems = data;
+        this.listener = listener;
     }
 
     @Override
@@ -49,7 +57,7 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         return mItems.size();
     }
 
-    private User getItem(int position) {
+    public User getItem(int position) {
         return this.mItems.get(position);
     }
 
@@ -67,6 +75,13 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         this.mItems.clear();
         notifyDataSetChanged();
     }
+
+    public void unSelectItem(User user) {
+        int position = mItems.indexOf(user);
+        mItems.get(position).setSelectedMember(false);
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public SearchUsersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -86,106 +101,29 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
         holder.tvDisplayName.setText(user.getDisplayName());
         ImageLoader.loadUserAvatar(holder.cirImgUserAvatar, user.getPhotoUrl());
 
-        holder.btnAddFriend.setOnClickListener(view -> handleAddFriend(position));
-    }
+        holder.cbSelect.setChecked(user.isSelectedMember());
 
-    private void handleAddFriend(int position) {
-        User user = getItem(position);
-        createGroup(user);
-    }
-
-    private void createGroup(User user) {
-
-        List<String> listUsername = new ArrayList<>();
-        listUsername.add(Preferences.getCurrentUser().getUsername());
-        listUsername.add(user.getUsername());
-
-        ApiService.getInstance().createConversation(listUsername).enqueue(new Callback<ApiResponseData>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiResponseData> call, @NonNull Response<ApiResponseData> response) {
-                if (response.isSuccessful()) {
-                    ApiResponseData data = response.body();
-                    if (data != null) {
-                        updateCacheData(data.getConversationId(), user);
-                    }
-
-                } else {
-                    Gson gson = new Gson();
-                    try {
-                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                        showError(err.getMessage());
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showError(e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiResponseData> call, @NonNull Throwable t) {
-                showError(t.getMessage());
-            }
+        holder.cbSelect.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            listener.onSelect(position, isChecked);
         });
-    }
-
-    private void updateCacheData(String conversationId, User user) {
-
-        ApiService.getInstance().getConversation(conversationId).enqueue(new Callback<Conversation>() {
-            @Override
-            public void onResponse(@NonNull Call<Conversation> call, @NonNull Response<Conversation> response) {
-                if (response.isSuccessful()) {
-
-                    Conversation c = response.body();
-
-                    if (c != null) {
-                        c.update();
-                        CacheService.getInstance().addOrUpdateCacheConversation(c);
-
-                        user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-                        CacheService.getInstance().addOrUpdateCacheUser(user);
-
-                        mItems.remove(user);
-                        notifyDataSetChanged();
-                    }
-
-                } else {
-                    Gson gson = new Gson();
-                    try {
-                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
-                        showError(err.getMessage());
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showError(e.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Conversation> call, @NonNull Throwable t) {
-                showError(t.getMessage());
-            }
-        });
-    }
-
-    private void showError(String msg) {
-        ((SearchUsersActivity) mContext).ShowErrorDialog(msg);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        public View view;
         public TextView tvUsername, tvDisplayName;
         public CircleImageView cirImgUserAvatar;
-        public Button btnAddFriend;
+        public CheckBox cbSelect;
 
         ViewHolder(final View itemLayoutView) {
             super(itemLayoutView);
 
+            view = itemLayoutView;
+
             tvUsername = (TextView) itemLayoutView.findViewById(R.id.tvUsername);
             tvDisplayName = (TextView) itemLayoutView.findViewById(R.id.tvDisplayName);
             cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
-            btnAddFriend = (Button) itemLayoutView.findViewById(R.id.btnAddFriend);
+            cbSelect = (CheckBox) itemLayoutView.findViewById(R.id.cbSelect);
         }
     }
 }

@@ -74,15 +74,10 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical">
 
-                <Button
-                    android:id="@+id/btnAddFriend"
-                    style="@style/ButtonOutlineAccentCorner"
+                <CheckBox
+                    android:id="@+id/cbSelect"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_action_plus_square_accent"
-                    android:drawablePadding="5dp"
-                    android:text="Add Friend"
-                    android:visibility="visible" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </RelativeLayout>

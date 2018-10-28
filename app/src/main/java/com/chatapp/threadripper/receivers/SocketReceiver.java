@@ -20,6 +20,7 @@ public class SocketReceiver extends BroadcastReceiver {
         void onJoin(String username);
         void onLeave(String username);
         void onTyping(String conversationId, String username, boolean typing);
+        void onRead(String conversationId, String username);
     }
 
     @Override
@@ -37,6 +38,9 @@ public class SocketReceiver extends BroadcastReceiver {
                 break;
             case Constants.ACTION_STRING_RECEIVER_TYPING:
                 handleTyping(intent);
+                break;
+            case Constants.ACTION_STRING_RECEIVER_READ:
+                // handleRead(intent);
                 break;
             default:
                 break;
@@ -79,6 +83,14 @@ public class SocketReceiver extends BroadcastReceiver {
         boolean typing = intent.getBooleanExtra(Constants.CHAT_IS_TYPING_BOOLEAN, false);
         if (listener != null) {
             listener.onTyping(conversationId, username, typing);
+        }
+    }
+
+    void handleRead(Intent intent) {
+        String conversationId = intent.getStringExtra(Constants.CONVERSATION_ID);
+        String username = intent.getStringExtra(Constants.USER_USERNAME);
+        if (listener !=null) {
+            listener.onRead(conversationId, username);
         }
     }
 }
