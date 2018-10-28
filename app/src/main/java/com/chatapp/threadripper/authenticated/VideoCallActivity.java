@@ -20,7 +20,6 @@ import com.chatapp.threadripper.utils.ShowToast;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity {
-    public static final String EXTRA_CHANNEL_TOKEN = "com.chatapp.threadripper.VideoChatViewActivity.CHANNEL_TOKEN";
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;

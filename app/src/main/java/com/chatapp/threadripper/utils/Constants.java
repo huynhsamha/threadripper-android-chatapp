@@ -48,4 +48,6 @@ public class Constants {
     public static final String FRAGMENT_TAG_VIDEO_CALL_LIST = "FRAGMENT_TAG_VIDEO_CALL_LIST";
 
     public static final String PLACEHOLDER_GROUP_AVATAR = "PLACEHOLDER_GROUP_AVATAR";
+
+    public static final String EXTRA_VIDEO_CHANNEL_TOKEN = "com.chatapp.threadripper.VideoChatViewActivity.CHANNEL_TOKEN";
 }
