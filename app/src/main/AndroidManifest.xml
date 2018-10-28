@@ -23,7 +23,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-
         <activity
             android:name=".Splash"
             android:theme="@style/AppThemeFull">
@@ -74,7 +73,6 @@
             android:name=".receivers.SocketReceiver"
             android:enabled="true"
             android:exported="true" />
-
         <receiver android:name=".receivers.NetworkChangeReceiver">
             <intent-filter>
                 <action
@@ -82,6 +80,8 @@
                     tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".videocall.VideoChatViewActivity"></activity>
     </application>
 
 </manifest>
