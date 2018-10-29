@@ -7,13 +7,16 @@
 
     <RelativeLayout
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="90dp"
         android:layout_centerInParent="true">
 
         <RelativeLayout
+            android:id="@+id/avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerInParent="true">
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            >
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/cirImgUserAvatar"
@@ -28,8 +31,20 @@
                 android:layout_height="16dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:background="@drawable/bg_online" />
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_below="@id/avatar"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="Ha" />
 
     </RelativeLayout>
 

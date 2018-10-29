@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.CacheService;
@@ -46,6 +47,8 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
         User user = getItem(position);
         holder.vOnline.setVisibility(user.isOnline() ? View.VISIBLE : View.GONE);
 
+        holder.tvName.setText(user.getDisplayName());
+
         ImageLoader.loadUserAvatar(holder.cirImgUserAvatar, user.getPhotoUrl());
 
         holder.view.setOnClickListener(view -> {
@@ -65,6 +68,7 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
         View view;
         CircleImageView cirImgUserAvatar;
         View vOnline;
+        TextView tvName;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -72,6 +76,7 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
             view = itemView;
             cirImgUserAvatar = (CircleImageView) itemView.findViewById(R.id.cirImgUserAvatar);
             vOnline = itemView.findViewById(R.id.vOnline);
+            tvName = (TextView) itemView.findViewById(R.id.tvName);
         }
     }
 
