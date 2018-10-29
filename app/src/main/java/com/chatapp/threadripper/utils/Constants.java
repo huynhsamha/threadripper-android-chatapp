@@ -4,11 +4,10 @@ public class Constants {
 
     public static final String CACHE_REALM_FILENAME = "threadripper.chatapp.db.cache.realm";
 
+    public static final String USER_MODEL = "USER_MODEL";
     public static final String USER_USERNAME = "USER_USERNAME";
     public static final String USER_PHOTO_URL = "USER_PHOTO_URL";
     public static final String USER_DISPLAY_NAME = "USER_DISPLAY_NAME";
-
-    public static final String IS_CALLER_SIDE = "IS_CALLER_SIDE";
 
     public static final String CHAT_IMAGE_URL = "CHAT_IMAGE_URL";
     public static final String CHAT_IMAGE_BITMAP = "CHAT_IMAGE_BITMAP";
@@ -51,4 +50,11 @@ public class Constants {
 
     public static final String EXTRA_VIDEO_CHANNEL_TOKEN = "EXTRA_VIDEO_CHANNEL_TOKEN";
     public static final String CALLING_VIDEO_OR_AUDIO = "CALLING_VIDEO_OR_AUDIO";
+    public static final String IS_CALLER_SIDE = "IS_CALLER_SIDE";
+
+    public static final String TYPE_CALLING = "TYPE_CALLING";
+    public static final String CALLER_REQUEST_CALLING = "CALLER_REQUEST_CALLING";
+    public static final String CALLER_CANCEL_REQUEST = "CALLER_CANCEL_REQUEST";
+    public static final String CALLEE_ACCEPT_REQUEST_CALL = "CALLEE_ACCEPT_REQUEST_CALL";
+    public static final String CALLEE_REJECT_REQUEST_CALL = "CALLEE_REJECT_REQUEST_CALL";
 }

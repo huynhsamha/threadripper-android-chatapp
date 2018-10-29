@@ -86,8 +86,13 @@ public class ModelUtils {
 
         if (user != null) {
             user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+            user.setPrivateConversationId(conversation.getConversationId());
         }
         CacheService.getInstance().addOrUpdateCacheUser(user);
+    }
+
+    public static String generateVideoChannelId(User caller, User callee) {
+        return "Threadripper_" + caller.getUsername() + callee.getUsername();
     }
 
 }

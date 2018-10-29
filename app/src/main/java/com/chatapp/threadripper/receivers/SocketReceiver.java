@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import com.chatapp.threadripper.BaseActivity;
 import com.chatapp.threadripper.api.ApiService;
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.BaseMainActivity;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.models.Message;
@@ -32,7 +33,7 @@ public class SocketReceiver extends BroadcastReceiver {
 
         void onRead(String conversationId, String username);
 
-        void onCall(User user);
+        void onCall(User targetUser, String typeCalling, String channelId);
     }
 
     @Override
@@ -110,20 +111,27 @@ public class SocketReceiver extends BroadcastReceiver {
 
     void handleCall(Intent intent) {
         String username = intent.getStringExtra(Constants.USER_USERNAME);
-        ApiService.getInstance().getUser(username).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (listener != null) {
-                    if (response.isSuccessful()) {
-                        listener.onCall(response.body());
-                    }
-                }
-            }
+        String typeCalling = intent.getStringExtra(Constants.TYPE_CALLING);
+        String channelId = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
+        User targetUser = CacheService.getInstance().retrieveCacheUser(username);
+        if (listener != null) {
+            listener.onCall(targetUser, typeCalling, channelId);
+        }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
+        // ApiService.getInstance().getUser(username).enqueue(new Callback<User>() {
+        //     @Override
+        //     public void onResponse(Call<User> call, Response<User> response) {
+        //         if (listener != null) {
+        //             if (response.isSuccessful()) {
+        //                 User targetUser = response.body();
+        //             }
+        //         }
+        //     }
+        //
+        //     @Override
+        //     public void onFailure(Call<User> call, Throwable t) {
+        //         t.printStackTrace();
+        //     }
+        // });
     }
 }

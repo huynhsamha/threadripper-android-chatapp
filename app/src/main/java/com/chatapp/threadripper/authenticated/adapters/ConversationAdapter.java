@@ -16,9 +16,6 @@ import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ViewUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
@@ -26,7 +23,6 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
 
     private Context mContext;
     private OrderedRealmCollection<Message> mItems;
-    private ContactAdapter.ViewHolder.ClickListener clickListener;
 
     private final int YOU = 1, ME = 2;
 

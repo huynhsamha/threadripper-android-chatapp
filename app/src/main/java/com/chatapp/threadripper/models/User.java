@@ -3,10 +3,12 @@ package com.chatapp.threadripper.models;
 import com.chatapp.threadripper.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class User extends RealmObject {
+public class User extends RealmObject implements Serializable {
 
     @PrimaryKey
     private String username;
@@ -28,6 +30,8 @@ public class User extends RealmObject {
     public boolean isFriend() {
         return relationship.equals(Constants.RELATIONSHIP_FRIEND);
     }
+
+    private String privateConversationId; // store conversation ID of 2 people
 
     private boolean isSelectedMember = false;
     // used for selected member for creating conversation
@@ -121,5 +125,13 @@ public class User extends RealmObject {
 
     public void setSelectedMember(boolean selectedMember) {
         isSelectedMember = selectedMember;
+    }
+
+    public String getPrivateConversationId() {
+        return privateConversationId;
+    }
+
+    public void setPrivateConversationId(String privateConversationId) {
+        this.privateConversationId = privateConversationId;
     }
 }

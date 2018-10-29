@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#dc000000"
-    tools:context="com.chatapp.threadripper.authenticated.CallingActivity">
+    tools:context="com.chatapp.threadripper.authenticated.PhotoViewActivity">
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoView"

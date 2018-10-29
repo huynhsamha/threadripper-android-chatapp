@@ -10,15 +10,11 @@ import android.widget.TextView;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.CallingActivity;
 import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.OrderedRealmCollection;
@@ -37,8 +33,6 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         this.mArrayList = arrayList;
     }
 
-
-    // Create new views
     @Override
     public VideoCallListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -57,41 +51,32 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         // load avatar
         ImageLoader.loadUserAvatar(viewHolder.cirImgUserAvatar, mArrayList.get(position).getPhotoUrl());
 
-        viewHolder.rvCall.setOnRippleCompleteListener(rippleView -> handleStartCalling(position));
+        viewHolder.rvCall.setOnRippleCompleteListener(rippleView -> handleStartCalling(position, false));
 
-        viewHolder.rvCallVideo.setOnRippleCompleteListener(rippleView -> handleStartCallingVideo(position));
+        viewHolder.rvCallVideo.setOnRippleCompleteListener(rippleView -> handleStartCalling(position, true));
     }
 
-    private void handleStartCalling(int position) {
-        // ShowToast.lengthShort(this.mContext, "Calling...");
+    private void handleStartCalling(int position, boolean callVideoOrAudio) {
+        Intent intent = new Intent(mContext, VideoCallActivity.class);
 
-        Intent intent = new Intent(this.mContext, CallingActivity.class);
-        intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
-        intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
-        intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
-        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
+        User userRealm = this.mArrayList.get(position);
+
+        User user = new User();
+        user.setUsername(userRealm.getUsername());
+        user.setPhotoUrl(userRealm.getPhotoUrl());
+        user.setDisplayName(userRealm.getDisplayName());
+        user.setPrivateConversationId(userRealm.getPrivateConversationId());
+
+        String channelId = "THREADRIPPER"
                 + Preferences.getCurrentUser().getUsername()
-                + this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
+                + user.getUsername();
 
-        this.mContext.startActivity(intent);
-    }
-
-    private void handleStartCallingVideo(int position) {
-        // ShowToast.lengthShort(this.mContext, "Calling Video...");
-
-        Intent intent = new Intent(this.mContext, VideoCallActivity.class);
         intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
-        intent.putExtra(Constants.USER_USERNAME, this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.USER_DISPLAY_NAME, this.mArrayList.get(position).getDisplayName());
-        intent.putExtra(Constants.USER_PHOTO_URL, this.mArrayList.get(position).getPhotoUrl());
-        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, "Threadripper_"
-                + Preferences.getCurrentUser().getUsername()
-                + this.mArrayList.get(position).getUsername());
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, true);
+        intent.putExtra(Constants.USER_MODEL, user);
+        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, callVideoOrAudio);
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
 
-        this.mContext.startActivity(intent);
+        mContext.startActivity(intent);
     }
 
 
