@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +27,7 @@ import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
+import com.chatapp.threadripper.authenticated.ProfileSettingsActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.authenticated.adapters.HorizontalAvatarAdapter;
@@ -36,6 +40,7 @@ import com.chatapp.threadripper.receivers.SocketReceiver;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
+import com.chatapp.threadripper.utils.TargetPrompt;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -92,6 +97,58 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         return view;
     }
 
+    void checkRunWalkThrough() {
+        // showWalkThroughSearch(() -> {
+        //     showWalkThroughMenu(() -> {
+        //
+        //     });
+        // });
+        if (Preferences.isFirstUseApp()) {
+            showWalkThroughSearch(() -> {
+                Preferences.setFirstUseApp(false);
+                CacheService.getInstance().syncPreferencesInCache();
+            });
+        }
+    }
+
+    interface SimpleCallback {
+        void onComplete();
+    }
+
+    void showWalkThroughSearch(SimpleCallback cb) {
+        TargetPrompt.promptTargetWhite(mContext, R.id.menuIconAdd,
+                "New Conversation",
+                "Tap to search your friends and create new conversations for a funny chat",
+                new TargetPrompt.OnCallbackListener() {
+                    @Override
+                    public void onAccepted() {
+                        cb.onComplete();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        cb.onComplete();
+                    }
+                });
+    }
+    // void showWalkThroughMenu(SimpleCallback cb) {
+    //     TargetPrompt.prompt(mContext, android.R.id.home,
+    //             "Change password",
+    //             "You can change your current password with a new password",
+    //             new TargetPrompt.OnCallbackListener() {
+    //                 @Override
+    //                 public void onAccepted() {
+    //                     cb.onComplete();
+    //                 }
+    //
+    //                 @Override
+    //                 public void onDenied() {
+    //                     cb.onComplete();
+    //                 }
+    //             });
+    //
+    // }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -121,6 +178,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     }
 
     void initViews(View view) {
+
         tvNoAnyConversations = (TextView) view.findViewById(R.id.tvNoAnyConversations);
         tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
 
@@ -269,6 +327,10 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_add, menu);
+
+        new Handler().post(() -> {
+            checkRunWalkThrough();
+        });
     }
 
     @Override

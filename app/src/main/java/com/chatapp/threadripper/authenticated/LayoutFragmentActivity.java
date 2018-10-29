@@ -41,8 +41,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         initViews();
 
         initDetectNetworkStateChange();
-
-        checkRunWalkThrough();
     }
 
     void initDefaultFragment() {
@@ -85,37 +83,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
     }
 
-    void checkRunWalkThrough() {
-        drawer.openDrawer(GravityCompat.START);
-        showWalkThroughMenu(() -> {
-        });
-        // if (AppState.isFirstUseApp()) {
-
-        // AppState.setFirstUseProfileSettings(false);
-        // CacheService.getInstance().syncPreferencesInCache();
-        // }
-    }
-
-    interface SimpleCallback {
-        void onComplete();
-    }
-
-    void showWalkThroughMenu(SimpleCallback cb) {
-        TargetPrompt.prompt(navigationView.getContext(), R.id.nav_chats,
-                "Your messages",
-                "Tap to view new messages from your friends and groups",
-                new TargetPrompt.OnCallbackListener() {
-                    @Override
-                    public void onAccepted() {
-                        cb.onComplete();
-                    }
-
-                    @Override
-                    public void onDenied() {
-                        cb.onComplete();
-                    }
-                });
-    }
 
     @Override
     protected void onPause() {
