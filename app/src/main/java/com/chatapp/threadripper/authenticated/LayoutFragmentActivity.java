@@ -2,8 +2,8 @@ package com.chatapp.threadripper.authenticated;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,7 +17,6 @@ import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
-import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
@@ -88,11 +87,12 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
     void checkRunWalkThrough() {
         drawer.openDrawer(GravityCompat.START);
-        showWalkThroughMenu(() -> {});
+        showWalkThroughMenu(() -> {
+        });
         // if (AppState.isFirstUseApp()) {
 
-                // AppState.setFirstUseProfileSettings(false);
-                // CacheService.getInstance().syncPreferencesInCache();
+        // AppState.setFirstUseProfileSettings(false);
+        // CacheService.getInstance().syncPreferencesInCache();
         // }
     }
 
@@ -174,21 +174,11 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         FragmentTransaction ft;
 
         switch (item.getItemId()) {
-            // case R.id.nav_contacts:
-            //     FragmentContacts fragmentContacts = new FragmentContacts();
-            //     ft = getSupportFragmentManager().beginTransaction();
-            //     ft.replace(R.id.frameLayout, fragmentContacts).addToBackStack(null).commit();
-            //     break;
             case R.id.nav_chats:
                 FragmentMessagesChat fragmentMessagesChat = new FragmentMessagesChat();
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.frameLayout, fragmentMessagesChat, Constants.FRAGMENT_TAG_MESSAGE_CHAT_LIST).commit();
                 break;
-            // case R.id.nav_groups:
-            //     FragmentGroups fragmentGroups = new FragmentGroups();
-            //     ft = getSupportFragmentManager().beginTransaction();
-            //     ft.replace(R.id.frameLayout, fragmentGroups).commit();
-            //     break;
             case R.id.nav_call:
                 FragmentVideoCallList fragmentVideoCallList = new FragmentVideoCallList();
                 ft = getSupportFragmentManager().beginTransaction();

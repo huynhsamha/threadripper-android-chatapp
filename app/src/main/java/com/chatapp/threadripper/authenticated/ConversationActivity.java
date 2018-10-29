@@ -29,7 +29,6 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.adapters.ConversationAdapter;
-import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
@@ -43,7 +42,6 @@ import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.google.gson.Gson;
 import com.makeramen.roundedimageview.RoundedImageView;
-
 
 import java.io.File;
 import java.util.ArrayList;
@@ -435,7 +433,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         if (messages.isEmpty()) {
             message.setLeadingBlock(true); // first message, it should be leading block
         } else {
-            Message lastMessage = messages.get(messages.size()-1); // get last message
+            Message lastMessage = messages.get(messages.size() - 1); // get last message
             compareDifferentTimeMessages(lastMessage, message);
         }
 
@@ -571,16 +569,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         scrollToBottom();
     }
 
-    @Override
-    public void onJoin(String username) {
-        // no receive broadcast
-    }
-
-    @Override
-    public void onLeave(String username) {
-        // no receive broadcast
-    }
-
     @SuppressLint("SetTextI18n")
     @Override
     public void onTyping(String _conversationId, String username, boolean typing) {
@@ -603,13 +591,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     @Override
-    public void onCall(User user) {
-        Intent intent = new Intent(ConversationActivity.this , CallingActivity.class);
-        intent.putExtra(Constants.IS_CALLER_SIDE, false); // user who start a calling is a caller
-        intent.putExtra(Constants.USER_USERNAME, user.getUsername());
-        intent.putExtra(Constants.USER_DISPLAY_NAME, user.getDisplayName());
-        intent.putExtra(Constants.USER_PHOTO_URL, user.getPhotoUrl());
-        startActivity(intent);
+    public void onCall(User targetUser, String typeCalling, String channelId) {
+        // TODO
     }
+
 
 }

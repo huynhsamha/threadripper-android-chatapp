@@ -157,6 +157,11 @@ public class CacheService {
                 .findAll();
     }
 
+    public Conversation retrieveCacheConversation(String conversationId) {
+        return realm.where(Conversation.class).equalTo("conversationId", conversationId).findFirst();
+    }
+
+
     public RealmResults<Message> retrieveCacheMessages(String conversationId) {
         return realm.where(Message.class)
                 .equalTo("conversationId", conversationId)

@@ -75,9 +75,7 @@ public class ModelUtils {
         if (conversation.getListUser().size() != 2) return;
         User user = null;
         if (conversation.getListUser().get(0) != null) {
-            if (conversation.getListUser().get(0).getUsername().equals(
-                    Preferences.getCurrentUser().getUsername()
-            )) {
+            if (conversation.getListUser().get(0).getUsername().equals(Preferences.getCurrentUser().getUsername())) {
                 user = conversation.getListUser().get(1);
             } else {
                 user = conversation.getListUser().get(0);
@@ -86,8 +84,13 @@ public class ModelUtils {
 
         if (user != null) {
             user.setRelationship(Constants.RELATIONSHIP_FRIEND);
+            user.setPrivateConversationId(conversation.getConversationId());
         }
         CacheService.getInstance().addOrUpdateCacheUser(user);
+    }
+
+    public static String generateVideoChannelId(User caller, User callee) {
+        return "Threadripper_" + caller.getUsername() + callee.getUsername();
     }
 
 }

@@ -1,14 +1,20 @@
 package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
+import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.authenticated.ConversationActivity;
+import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.ModelUtils;
 
 import java.util.ArrayList;
 
@@ -43,7 +49,14 @@ public class HorizontalAvatarAdapter extends RealmRecyclerViewAdapter<User, Hori
         ImageLoader.loadUserAvatar(holder.cirImgUserAvatar, user.getPhotoUrl());
 
         holder.view.setOnClickListener(view -> {
-            // TODO: start Conversation Chat
+            Conversation item = CacheService.getInstance().retrieveCacheConversation(user.getPrivateConversationId());
+
+            Intent intent = new Intent(mContext, ConversationActivity.class);
+            intent.putExtra(Constants.CONVERSATION_ID, item.getConversationId());
+            intent.putExtra(Constants.CONVERSATION_NAME, ModelUtils.getConversationName(item));
+            intent.putExtra(Constants.CONVERSATION_PHOTO, ModelUtils.getConversationAvatar(item));
+            intent.putExtra(Constants.CONVERSATION_IS_ONLINE, ModelUtils.isOnlineGroup(item));
+            mContext.startActivity(intent);
         });
     }
 
