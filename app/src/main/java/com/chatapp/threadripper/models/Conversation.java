@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.utils.ModelUtils;
 
 import io.realm.RealmList;
@@ -16,15 +17,20 @@ public class Conversation extends RealmObject {
     private RealmList<User> listUser = new RealmList<>();
     private int notiCount;
 
-    public void update() {
+    public void updateFromServer() {
         setConversationName(ModelUtils.getConversationName(this));
         setPhotoUrl(ModelUtils.getConversationAvatar(this));
         if (getLastMessage() != null) {
             getLastMessage().updateDateTime();
         }
+
+        for (User user : listUser) {
+            // user is not proxy user realm
+            user.safetyUserBeforeToCache();
+        }
     }
 
-    public void increaseNotificationCount()  {
+    public void increaseNotificationCount() {
         this.notiCount++;
     }
 

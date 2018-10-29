@@ -194,7 +194,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         String displayName = edtDisplayName.getText().toString();
         if (displayName.isEmpty()) return;
         Preferences.getCurrentUser().setDisplayName(displayName);
-        // TODO: Call API to update user profile
+        // TODO: Call API to updateFromServer user profile
     }
 
     void handleCancelChangeDisplayName() {
@@ -352,7 +352,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         Uri uri = data.getData();
         ImageLoader.loadImageChatMessage(cirImgUserAvatar, uri.toString());
 
-        // Call API to update avatar
+        // Call API to updateFromServer avatar
         try {
             String realFilePath = ImageFilePath.getPath(ProfileSettingsActivity.this, data.getData());
             File file = new File(realFilePath);
@@ -368,7 +368,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         Bitmap bitmapCaptureImage = (Bitmap) data.getExtras().get("data");
         cirImgUserAvatar.setImageBitmap(bitmapCaptureImage);
 
-        // Call API to update avatar
+        // Call API to updateFromServer avatar
         try {
             File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
             postAvatarToServerWithFile(file);
@@ -387,7 +387,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
                     String newAvatarUrl = data.getAvatarUrl();
                     Preferences.getCurrentUser().setPhotoUrl(newAvatarUrl);
 
-                    // update cache
+                    // updateFromServer cache
                     CacheService.getInstance().syncPreferencesInCache();
                 } else {
                     Gson gson = new Gson();

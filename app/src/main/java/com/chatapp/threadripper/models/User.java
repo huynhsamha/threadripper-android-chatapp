@@ -1,5 +1,6 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,15 +40,17 @@ public class User extends RealmObject implements Serializable {
 
 
     /**
-     * Keep fields server no use before update it to cache
-     * @param user: from server response
+     * Keep fields server no use before updateFromServer it to cache
      */
-    public void safetyUserBeforeToCache(User user) {
-        if (!username.equals(user.getUsername())) return;
+    public void safetyUserBeforeToCache() {
+        User cache = CacheService.getInstance().retrieveCacheUser(username);
 
-        user.setRelationship(relationship);
-        user.setPrivateConversationId(privateConversationId);
-        user.setSelectedMember(isSelectedMember);
+        if (cache != null) {
+            setPrivateConversationId(cache.getPrivateConversationId());
+            setRelationship(cache.getRelationship());
+            setSelectedMember(cache.isSelectedMember());
+            setMatched(cache.isMatched());
+        }
     }
 
     /**

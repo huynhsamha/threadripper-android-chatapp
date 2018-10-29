@@ -38,7 +38,7 @@ public class Splash extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             if (CacheService.getInstance().isConnected()) {
 
-                // update session of user in preference running on RAM from cache.
+                // updateFromServer session of user in preference running on RAM from cache.
                 CacheService.getInstance().syncPreferencesOnRAM();
 
                 // Don't need login, go to Main Screen

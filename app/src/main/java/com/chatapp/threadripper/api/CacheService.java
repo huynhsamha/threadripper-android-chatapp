@@ -74,7 +74,7 @@ public class CacheService {
     }
 
     /**
-     * On runtime, maybe update state of user to cache, via AppState on RAM
+     * On runtime, maybe updateFromServer state of user to cache, via AppState on RAM
      */
     public void syncPreferencesInCache() {
         realm.executeTransaction(realm -> {

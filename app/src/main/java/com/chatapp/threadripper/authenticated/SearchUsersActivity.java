@@ -230,16 +230,11 @@ public class SearchUsersActivity extends BaseMainActivity implements
 
                     if (c != null) {
 
-                        c.update();
+                        c.updateFromServer();
                         CacheService.getInstance().addOrUpdateCacheConversation(c);
 
                         for (User user : selectedMembers) {
                             CacheService.getInstance().setUserSelected(user.getUsername(), false);
-                        }
-
-                        // friend relationship
-                        if (c.getListUser().size() == 2) {
-                            ModelUtils.parseConversationToFriend(c);
                         }
 
                         SweetDialog.hideLoading();
