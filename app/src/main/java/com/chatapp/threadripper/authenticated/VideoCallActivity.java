@@ -66,9 +66,9 @@ public class VideoCallActivity extends BaseMainActivity {
         if (callerSide) {
             linLayoutCall.setVisibility(View.GONE);
         }
+        tvUsername.setText(displayName);
 
         // Change user info
-        tvUsername.setText(displayName);
         ImageLoader.loadUserAvatar(cirImgUserAvatar, userAvatar);
     }
 

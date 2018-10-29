@@ -26,11 +26,7 @@
         <activity
             android:name=".Splash"
             android:theme="@style/AppThemeFull">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".authenticated.ProfileSettingsActivity"
@@ -81,7 +77,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".authenticated.VideoChatViewActivity"></activity>
+        <activity android:name=".authenticated.VideoChatViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

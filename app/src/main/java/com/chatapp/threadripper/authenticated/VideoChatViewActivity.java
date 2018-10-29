@@ -32,18 +32,12 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQ_ID = 22;
 
-
-    // permission WRITE_EXTERNAL_STORAGE is not mandatory for Agora RTC SDK,
-    // just in case if you wanna save logs to external sdcard
-
-    private static final String[] REQUESTED_PERMISSIONS = {
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+    // permission WRITE_EXTERNAL_STORAGE is not mandatory for Agora RTC SDK, just incase if you wanna save logs to external sdcard
+    private static final String[] REQUESTED_PERMISSIONS = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private RtcEngine mRtcEngine;
 
+    private boolean videoMode;
 
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
@@ -82,26 +76,64 @@ public class VideoChatViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_chat_view);
 
-        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+        if (!(checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
                 checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
-                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)))
+            return;
 
-            initAgoraEngine();
+        initAgoraEngine();
 
-            Intent intent = getIntent();
+        Intent intent = getIntent();
+        String channel =
+                intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN); // production
+//                "channel"; // debug
 
-            // TODO: change to the correct one
-            String channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-            boolean callingAudioOrVideo = intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
+        this.videoMode =
+                !intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, true);
+//                true; // debug
 
-            joinChannel(channel);
+        if (!this.videoMode) {
+            enableVideoMode(false);
         }
+        else {
+            enableVideoMode(true);
+        }
+        joinChannel(channel);
+    }
+
+    private void enableVideoMode(boolean enable) {
+        int visibility = enable ? View.VISIBLE : View.GONE;
+
+        ImageView audioVideoImg = (ImageView) findViewById(R.id.audioVideoImg);
+        ImageView changeCameraImg = (ImageView) findViewById(R.id.changeCameraImg);
+        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
+        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
+
+        changeCameraImg.setVisibility(visibility);
+        surfaceView.setVisibility(visibility);
+        container.setVisibility(visibility);
+
+        if (enable) {
+            mRtcEngine.enableVideo();
+            audioVideoImg.setImageResource(R.drawable.video);
+
+        }
+        else {
+            mRtcEngine.disableVideo();
+            audioVideoImg.setImageResource(R.drawable.audio_only);
+            changeCameraImg.setVisibility(View.GONE);
+        }
+
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
         Log.i(LOG_TAG, "checkSelfPermission " + permission + " " + requestCode);
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode);
+        if (ContextCompat.checkSelfPermission(this, permission)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    REQUESTED_PERMISSIONS,
+                    requestCode);
             return false;
         }
         return true;
@@ -114,20 +146,14 @@ public class VideoChatViewActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         Log.i(LOG_TAG, "onRequestPermissionsResult " + grantResults[0] + " " + requestCode);
 
         switch (requestCode) {
             case PERMISSION_REQ_ID: {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED ||
-                        grantResults[1] != PackageManager.PERMISSION_GRANTED ||
-                        grantResults[2] != PackageManager.PERMISSION_GRANTED) {
-
-                    showLongToast("Need permissions " +
-                            Manifest.permission.RECORD_AUDIO + "/" +
-                            Manifest.permission.CAMERA + "/" +
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED || grantResults[2] != PackageManager.PERMISSION_GRANTED) {
+                    showLongToast("Need permissions " + Manifest.permission.RECORD_AUDIO + "/" + Manifest.permission.CAMERA + "/" + Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     finish();
                     break;
                 }
@@ -208,13 +234,9 @@ public class VideoChatViewActivity extends AppCompatActivity {
     private void setupVideoProfile() {
         mRtcEngine.enableVideo();
 
-        // mRtcEngine.setVideoProfile(Constants.VIDEO_PROFILE_360P, false); // Earlier than 2.3.0
-        mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(
-                VideoEncoderConfiguration.VD_640x360,
-                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+        mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_640x360, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
                 VideoEncoderConfiguration.STANDARD_BITRATE,
-                VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT)
-        );
+                VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
     }
 
     private void setupLocalVideo() {
@@ -222,13 +244,11 @@ public class VideoChatViewActivity extends AppCompatActivity {
         final SurfaceView surfaceView = RtcEngine.CreateRendererView(getBaseContext());
         surfaceView.setZOrderMediaOverlay(true);
         container.addView(surfaceView);
-
         mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
     }
 
     private void joinChannel(String channel) {
-        mRtcEngine.joinChannel(null, channel, "Extra Optional Data", 0);
-        // if you do not specify the uid, we will generate the uid for you
+        mRtcEngine.joinChannel(null, channel, "Extra Optional Data", 0); // if you do not specify the uid, we will generate the uid for you
     }
 
     private void setupRemoteVideo(int uid) {
@@ -265,12 +285,8 @@ public class VideoChatViewActivity extends AppCompatActivity {
         }
     }
 
-    public void onLocalViewClick(View view) {
-        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
-        boolean isVisible = container.getVisibility() == View.VISIBLE;
-        container.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
-
-        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
-        surfaceView.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+    public void onAudioVideoChangeClick(View view) {
+        this.videoMode = !this.videoMode;
+        this.enableVideoMode(this.videoMode);
     }
 }

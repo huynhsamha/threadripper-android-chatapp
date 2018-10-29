@@ -61,6 +61,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/audioVideoImg"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"
@@ -77,19 +78,13 @@
                 android:src="@drawable/btn_mute" />
 
             <ImageView
+                android:id="@+id/changeCameraImg"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"
                 android:onClick="onSwitchCameraClicked"
                 android:scaleType="centerInside"
                 android:src="@drawable/btn_switch_camera" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="onQualityButtonClick"
-                android:text="360p" />
 
             <ImageView
                 android:layout_width="0dp"
