@@ -2,6 +2,7 @@ package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,6 +125,16 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                     this.mContext.startActivity(intent);
                 });
                 // }
+                break;
+
+            case Message.MessageType.FILE:
+                vh.getFileImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+
+                vh.getFileImage().setOnClickListener(view -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(msg.getContent()));
+                    this.mContext.startActivity(intent);
+                });
                 break;
 
             default:

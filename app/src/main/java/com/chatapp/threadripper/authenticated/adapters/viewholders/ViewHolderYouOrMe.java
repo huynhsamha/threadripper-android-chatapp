@@ -16,13 +16,14 @@ public class ViewHolderYouOrMe extends RecyclerView.ViewHolder {
     private TextView time, chatText;
     private CircleImageView cirImgUserAvatar;
     private RoundedImageView rivChatImage;
+    private RoundedImageView fileContent;
 
     public ViewHolderYouOrMe(View v, boolean isYou) {
         super(v);
         time = (TextView) v.findViewById(R.id.tv_time);
         chatText = (TextView) v.findViewById(R.id.tv_chat_text);
         rivChatImage = (RoundedImageView) v.findViewById(R.id.rivChatImage);
-
+        fileContent = (RoundedImageView) v.findViewById(R.id.fileContent);
         if (isYou) {
             cirImgUserAvatar = (CircleImageView) v.findViewById(R.id.cirImgUserAvatar);
         }
@@ -56,7 +57,12 @@ public class ViewHolderYouOrMe extends RecyclerView.ViewHolder {
         return rivChatImage;
     }
 
+    public RoundedImageView getFileImage() {
+        return fileContent;
+    }
+
     public void setRivChatImage(RoundedImageView rivChatImage) {
         this.rivChatImage = rivChatImage;
     }
+    public void setFileImage(RoundedImageView fileContent) { this.fileContent = fileContent; }
 }
