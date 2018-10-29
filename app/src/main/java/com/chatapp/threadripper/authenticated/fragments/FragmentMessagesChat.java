@@ -210,7 +210,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         mRcvHorizontalAvatar.setHasFixedSize(true);
         mRcvHorizontalAvatar.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        onlineFriends = CacheService.getInstance().retrieveCacheFriends();
+        onlineFriends = CacheService.getInstance().retrieveCacheFriendsOnline();
 
         mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
         mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);

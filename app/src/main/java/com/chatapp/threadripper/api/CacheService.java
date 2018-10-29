@@ -136,7 +136,7 @@ public class CacheService {
     public RealmResults<User> retrieveCacheFriendsOnline() {
         return realm.where(User.class)
                 .equalTo("relationship", Constants.RELATIONSHIP_FRIEND)
-                // .sort("online", Sort.DESCENDING) // online first
+                .sort("online", Sort.DESCENDING) // online first
                 .findAll();
     }
 
