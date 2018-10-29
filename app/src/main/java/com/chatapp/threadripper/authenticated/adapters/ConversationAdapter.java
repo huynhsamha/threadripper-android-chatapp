@@ -107,7 +107,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.IMAGE:
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
-
+                vh.getFileImage().setVisibility(View.GONE);
                 // if (msg.isBitmap()) {
                 //     // bitmap when use camera capture
                 //     vh.getRivChatImage().setImageBitmap(msg.getBitmap());
@@ -129,8 +129,10 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                 break;
 
             case Message.MessageType.FILE:
+                //TODO: Fix intent to download file (Fatal Error)
                 vh.getFileImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
+                vh.getRivChatImage().setVisibility(View.GONE);
 
                 vh.getFileImage().setOnClickListener(view -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(msg.getContent()));
