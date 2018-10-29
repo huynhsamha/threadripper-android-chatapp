@@ -53,7 +53,7 @@
             android:textAppearance="@style/Light"
             android:textColor="@color/colorTextBlack"
             android:textSize="@dimen/h3"
-            android:lineSpacingExtra="2sp"
+            android:lineSpacingMultiplier="1.5"
             android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
             />
 

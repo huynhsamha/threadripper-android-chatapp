@@ -596,4 +596,11 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
 
+    @Override
+    public void onDestroy() {
+
+        messages.removeAllChangeListeners();
+
+        super.onDestroy();
+    }
 }

@@ -39,7 +39,7 @@
         android:textAppearance="@style/Light"
         android:textColor="@android:color/white"
         android:textSize="@dimen/h3"
-        android:lineSpacingExtra="2sp"
+        android:lineSpacingMultiplier="1.5"
         tools:ignore="RtlHardcoded" />
 
     <com.makeramen.roundedimageview.RoundedImageView

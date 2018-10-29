@@ -111,6 +111,7 @@
                 android:textAppearance="@style/Light"
                 android:textColor="@color/colorTextBlack"
                 android:textColorHint="@color/colorTextHint"
+                android:lineSpacingMultiplier="1.5"
                 android:textSize="@dimen/h3" />
 
             <com.makeramen.roundedimageview.RoundedImageView
