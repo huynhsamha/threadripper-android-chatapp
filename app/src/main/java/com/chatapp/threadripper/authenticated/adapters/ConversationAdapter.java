@@ -95,6 +95,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.TEXT:
                 vh.getChatText().setText(msg.getContent());
                 vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getFileImage().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.VISIBLE);
                 if (!msg.isLeadingBlock()) {
                     vh.getChatText().setOnClickListener(view -> {

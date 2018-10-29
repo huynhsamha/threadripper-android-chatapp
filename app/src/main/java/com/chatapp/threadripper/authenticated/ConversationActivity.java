@@ -259,9 +259,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 handleSendAttachImage();
             } else if (bitmapCaptureImage != null) { // image is captured - use bitmap
                 handleSendCaptureImage();
-            } else if (filePicked.getVisibility() == View.VISIBLE) { //send a file
-                handleSendAttachFile();
             }
+        } else if (filePicked.getVisibility() == View.VISIBLE) { //send a file
+            handleSendAttachFile();
         }
     }
 
