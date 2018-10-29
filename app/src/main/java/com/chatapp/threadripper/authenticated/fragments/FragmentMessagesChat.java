@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -151,7 +152,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         mRcvHorizontalAvatar.setHasFixedSize(true);
         mRcvHorizontalAvatar.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        onlineFriends = CacheService.getInstance().retrieveCacheFriendsOnline();
+        onlineFriends = CacheService.getInstance().retrieveCacheFriends();
 
         mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
         mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);
@@ -234,6 +235,11 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     } else {
                         for (Conversation c : items) {
                             c.update();
+
+                            if (c.getListUser().size() == 2) {
+                                ModelUtils.parseConversationToFriend(c);
+                            }
+
                             CacheService.getInstance().addOrUpdateCacheConversation(c);
                         }
                     }
@@ -313,7 +319,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
             case Constants.CALLER_REQUEST_CALLING:
 
-                if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) break;
+                if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername()))
+                    break;
 
                 onCallComing(targetUser, channelId);
 
@@ -343,5 +350,14 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
     void showError(String msg) {
         ((LayoutFragmentActivity) getActivity()).ShowErrorDialog(msg);
+    }
+
+    @Override
+    public void onDestroy() {
+
+        conversations.removeAllChangeListeners();
+        onlineFriends.removeAllChangeListeners();
+
+        super.onDestroy();
     }
 }

@@ -133,4 +133,12 @@ public class FragmentVideoCallList extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+
+        friends.removeAllChangeListeners();
+
+        super.onDestroy();
+    }
 }
