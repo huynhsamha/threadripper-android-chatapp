@@ -14,7 +14,7 @@ public class Preferences {
      * It is sync with Cache via PreferencesRealm
      */
 
-    private static User currentUser = new User();
+    private static User currentUser = new User(); // this user is not managed by Realm Cache
     private static String chatAuthToken = "";
 
     private static boolean firstUseApp = true;

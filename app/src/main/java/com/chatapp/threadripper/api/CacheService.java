@@ -46,8 +46,8 @@ public class CacheService {
     private String getCacheAuthToken() {
         AppState state = realm.where(AppState.class).findFirst();
         if (state == null) return null;
-        if (state.getCurrentUser().getUsername() == null ||
-                state.getCurrentUser().getUsername().isEmpty()) return null;
+        if (state.getUsername() == null ||
+                state.getUsername().isEmpty()) return null;
         if (state.getChatAuthToken().isEmpty()) return null;
         return state.getChatAuthToken();
     }
@@ -64,8 +64,14 @@ public class CacheService {
         AppState state = realm.where(AppState.class).findFirst();
 
         if (state != null) {
-            Preferences.setCurrentUser(state.getCurrentUser());
+            Preferences.setCurrentUser(new User(
+                            state.getUsername(), state.getEmail(),
+                            state.getDisplayName(), state.getPhotoUrl()
+                    )
+            );
+
             Preferences.setChatAuthToken(state.getChatAuthToken());
+
             Preferences.setFirstUseApp(state.isFirstUseApp());
             Preferences.setFirstUseProfileSettings(state.isFirstUseProfileSettings());
             Preferences.setFirstUseChatting(state.isFirstUseChatting());
@@ -84,8 +90,13 @@ public class CacheService {
                 state = new AppState();
             }
 
-            state.setCurrentUser(Preferences.getCurrentUser());
+            state.setUsername(Preferences.getCurrentUser().getUsername());
+            state.setDisplayName(Preferences.getCurrentUser().getDisplayName());
+            state.setEmail(Preferences.getCurrentUser().getEmail());
+            state.setPhotoUrl(Preferences.getCurrentUser().getPhotoUrl());
+
             state.setChatAuthToken(Preferences.getChatAuthToken());
+
             state.setFirstUseApp(Preferences.isFirstUseApp());
             state.setFirstUseProfileSettings(Preferences.isFirstUseProfileSettings());
             state.setFirstUseChatting(Preferences.isFirstUseChatting());

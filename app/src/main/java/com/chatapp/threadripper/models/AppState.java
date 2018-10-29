@@ -1,5 +1,8 @@
 package com.chatapp.threadripper.models;
 
+import com.chatapp.threadripper.utils.Constants;
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -13,7 +16,7 @@ public class AppState extends RealmObject {
     @PrimaryKey
     private String id = "ID_ONLY_ONCE_OBJECT";
 
-    private User currentUser = new User();
+    // private User currentUser = new User(); // don't store as Realm Object
     private String chatAuthToken = "";
 
     private boolean firstUseApp = true;
@@ -21,6 +24,15 @@ public class AppState extends RealmObject {
     private boolean firstUseChatting = true;
     private boolean firstUseVideoCall = true;
 
+    /**
+     * Current User
+     * Store as Strings, not use Realm Object
+     */
+    private String username;
+    private String email;
+    private String password;
+    private String displayName;
+    private String photoUrl;
 
 
     public String getChatAuthToken() {
@@ -71,11 +83,43 @@ public class AppState extends RealmObject {
         this.firstUseVideoCall = firstUseVideoCall;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

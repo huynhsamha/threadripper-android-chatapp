@@ -23,21 +23,18 @@ public class User extends RealmObject implements Serializable {
 
     private boolean online;
 
+    /**
+     * Relationship with current user
+     * friend | sent request | none
+     */
     private String relationship = Constants.RELATIONSHIP_NONE;
-    // relationship with current user
-    // 3 type: friend | sent request | none
-    // default is none
 
-    public boolean isFriend() {
-        return relationship.equals(Constants.RELATIONSHIP_FRIEND);
-    }
+    // store conversation ID of 2 people
+    private String privateConversationId;
 
-    private String privateConversationId; // store conversation ID of 2 people
-
-    private boolean isSelectedMember = false;
-    private boolean isMatched = false; // default everyone is matched
     // used for selected member for creating conversation
-
+    private boolean isSelectedMember = false;
+    private boolean isMatched = false;
 
     /**
      * Keep fields server no use before updateFromServer it to cache
@@ -53,12 +50,35 @@ public class User extends RealmObject implements Serializable {
         }
     }
 
+    public boolean isFriend() {
+        return relationship.equals(Constants.RELATIONSHIP_FRIEND);
+    }
+
+
     /**
      * Constructors
      */
 
     public User() {
 
+    }
+
+    /**
+     * Clone the user from cache to new User
+     * This is clone a new user which is not a proxy of Realm
+     * @param cache: User from cache
+     */
+    public User(User cache) {
+        username = cache.getUsername();
+        email = cache.getEmail();
+        password = cache.getPassword();
+        displayName = cache.getDisplayName();
+        photoUrl = cache.getPhotoUrl();
+        online = cache.isOnline();
+        relationship = cache.getRelationship();
+        privateConversationId = cache.getPrivateConversationId();
+        isSelectedMember = cache.isSelectedMember();
+        isMatched = cache.isMatched();
     }
 
     public User(String username, String email, String password, String displayName) {
