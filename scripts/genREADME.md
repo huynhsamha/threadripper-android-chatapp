@@ -1,24 +1,3 @@
-# Threadripper Chat App
-
-Assignment 1 Computer Network
-
-
-Server: https://github.com/ititandev/threadripper-chat-api
-
-
-## BUGs:
-
-+ Lần đầu login vào chưa có conversation nào hết thì bị crash.
-+ Lúc tạo conversation mới có nhiều hơn 2 người thì ngoài màn hình bên ngoài ko nhận được, phải refresh nhiều lần mới có.
-
-## TODO:
-
-+ Video Call
-+ Upload File
-
-
-## Snapshots:
-
 <img src="snapshots/Screenshot_1540834380.png" width="30%">
 <img src="snapshots/Screenshot_1540834387.png" width="30%">
 <img src="snapshots/Screenshot_1540834400.png" width="30%">
