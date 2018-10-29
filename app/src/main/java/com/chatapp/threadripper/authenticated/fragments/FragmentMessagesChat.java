@@ -55,7 +55,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     private RecyclerView mRcvConversations, mRcvHorizontalAvatar;
     private MessagesChatAdapter mAdapterConversations;
     private HorizontalAvatarAdapter mAdapterHorizontalAvatar;
-    private TextView tvNoAnyConversations, tvNoAnyFriends, tvLoading;
+    private TextView tvNoAnyConversations, tvNoAnyFriends;
     private SwipeRefreshLayout swipeContainer;
 
     IntentFilter mIntentFilter;
@@ -122,7 +122,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     void initViews(View view) {
         tvNoAnyConversations = (TextView) view.findViewById(R.id.tvNoAnyConversations);
         tvNoAnyFriends = (TextView) view.findViewById(R.id.tvNoAnyFriends);
-        // tvLoading = (TextView) view.findViewById(R.id.tvLoading);
 
         // Friends Recycler View
         mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvMessages);
@@ -137,10 +136,15 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         conversations.addChangeListener(conversations -> {
             if (conversations.isEmpty()) {
                 tvNoAnyConversations.setVisibility(View.VISIBLE);
+                mRcvConversations.setVisibility(View.GONE);
             } else {
                 tvNoAnyConversations.setVisibility(View.GONE);
+                mRcvConversations.setVisibility(View.VISIBLE);
             }
         });
+
+        tvNoAnyConversations.setVisibility(View.VISIBLE);
+        mRcvConversations.setVisibility(View.GONE);
 
         // Horizontal Avatar Recycler View
         mRcvHorizontalAvatar = (RecyclerView) view.findViewById(R.id.rcvHorizontalAvatar);
@@ -176,8 +180,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         );
 
         swipeContainer.setOnRefreshListener(() -> {
-            fetchConversations();
             fetchFriends();
+            fetchConversations();
         });
     }
 
@@ -190,7 +194,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     ArrayList<Conversation> items = (ArrayList<Conversation>) response.body();
                     if (items == null || items.isEmpty()) {
                         // no do anything
-
                     } else {
                         for (Conversation c : items) {
                             ModelUtils.parseConversationToFriend(c);
@@ -208,11 +211,13 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
                 }
 
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Conversation>> call, Throwable t) {
                 showError(t.getMessage());
+                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -234,13 +239,14 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
 
                 } else {
-                    // no do anything
-                }
-
-                if (conversations.isEmpty()) {
-                    tvNoAnyConversations.setVisibility(View.VISIBLE);
-                } else {
-                    tvNoAnyConversations.setVisibility(View.GONE);
+                    Gson gson = new Gson();
+                    try {
+                        ErrorResponse err = gson.fromJson(response.errorBody().string(), ErrorResponse.class);
+                        showError(err.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        showError(e.getMessage());
+                    }
                 }
 
                 swipeContainer.setRefreshing(false);
@@ -248,6 +254,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
             @Override
             public void onFailure(@NonNull Call<List<Conversation>> call, @NonNull Throwable t) {
+                showError(t.getMessage());
                 swipeContainer.setRefreshing(false);
             }
         });
@@ -280,16 +287,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         // handle and add conversation to Realm
         String conversationId = message.getConversationId();
         CacheService.getInstance().updateLastMessageConversation(conversationId, message.getMessageId());
-    }
-
-    @Override
-    public void onJoin(String username) {
-        CacheService.getInstance().setUserOnlineOrOffline(username, true);
-    }
-
-    @Override
-    public void onLeave(String username) {
-        CacheService.getInstance().setUserOnlineOrOffline(username, false);
     }
 
     @Override

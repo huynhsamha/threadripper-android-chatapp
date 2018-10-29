@@ -170,16 +170,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
     }
 
     @Override
-    public void onJoin(String username) {
-
-    }
-
-    @Override
-    public void onLeave(String username) {
-
-    }
-
-    @Override
     public void onTyping(String conversationId, String username, boolean typing) {
 
     }

@@ -75,9 +75,7 @@ public class ModelUtils {
         if (conversation.getListUser().size() != 2) return;
         User user = null;
         if (conversation.getListUser().get(0) != null) {
-            if (conversation.getListUser().get(0).getUsername().equals(
-                    Preferences.getCurrentUser().getUsername()
-            )) {
+            if (conversation.getListUser().get(0).getUsername().equals(Preferences.getCurrentUser().getUsername())) {
                 user = conversation.getListUser().get(1);
             } else {
                 user = conversation.getListUser().get(0);

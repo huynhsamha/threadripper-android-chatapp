@@ -23,11 +23,8 @@ public class SocketReceiver extends BroadcastReceiver {
     OnCallbackListener listener;
 
     public interface OnCallbackListener {
+
         void onNewMessage(Message message);
-
-        void onJoin(String username);
-
-        void onLeave(String username);
 
         void onTyping(String conversationId, String username, boolean typing);
 
@@ -80,16 +77,12 @@ public class SocketReceiver extends BroadcastReceiver {
 
     void handleJoin(Intent intent) {
         String username = intent.getStringExtra(Constants.USER_USERNAME);
-        if (listener != null) {
-            listener.onJoin(username);
-        }
+        CacheService.getInstance().setUserOnlineOrOffline(username, true);
     }
 
     void handleLeave(Intent intent) {
         String username = intent.getStringExtra(Constants.USER_USERNAME);
-        if (listener != null) {
-            listener.onLeave(username);
-        }
+        CacheService.getInstance().setUserOnlineOrOffline(username, false);
     }
 
     void handleTyping(Intent intent) {

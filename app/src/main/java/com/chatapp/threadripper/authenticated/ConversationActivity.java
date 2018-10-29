@@ -569,16 +569,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         scrollToBottom();
     }
 
-    @Override
-    public void onJoin(String username) {
-        // no receive broadcast
-    }
-
-    @Override
-    public void onLeave(String username) {
-        // no receive broadcast
-    }
-
     @SuppressLint("SetTextI18n")
     @Override
     public void onTyping(String _conversationId, String username, boolean typing) {
