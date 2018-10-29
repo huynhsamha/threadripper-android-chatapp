@@ -22,7 +22,7 @@ import com.chatapp.threadripper.authenticated.adapters.SelectedMemberAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;
@@ -30,7 +30,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +46,7 @@ public class SearchUsersActivity extends BaseMainActivity implements
     SelectedMemberAdapter mAdapterSelectedMembers;
     SearchUsersAdapter mAdapterSearchUser;
     RealmResults<User> selectedMembers;
+    RealmResults<User> matchedUsers;
 
     TextView tvNoAnyone, tvLoading;
 
@@ -68,39 +68,35 @@ public class SearchUsersActivity extends BaseMainActivity implements
     }
 
     void handleUserResponse(User user) {
-        User cacheUser =  CacheService.getInstance().retrieveCacheUser(user.getUsername());
-        if (cacheUser != null) {
-            user.setSelectedMember(cacheUser.isSelectedMember());
+        String username = user.getUsername();
+        User cacheUser = CacheService.getInstance().retrieveCacheUser(username);
+        if (cacheUser == null) {
+            user.setMatched(true);
+            CacheService.getInstance().addOrUpdateCacheUser(user);
+        } else {
+            CacheService.getInstance().setUserMatchedInSearching(username, true);
         }
-        CacheService.getInstance().addOrUpdateCacheUser(user);
-        mAdapterSearchUser.addItem(user);
     }
 
     void requestSearchUsers() {
-        String keywords = edtSearch.getText().toString();
+        String keyword = edtSearch.getText().toString();
 
-        ApiService.getInstance().searchUsers(keywords).enqueue(new Callback<List<User>>() {
+        ApiService.getInstance().searchUsers(keyword).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(@NonNull Call<List<User>> call, @NonNull Response<List<User>> response) {
+
+                for (User user : matchedUsers) {
+                    CacheService.getInstance().setUserMatchedInSearching(user.getUsername(), false);
+                }
 
                 if (response.isSuccessful()) {
                     ArrayList<User> users = (ArrayList<User>) response.body();
 
-                    if (users != null && users.isEmpty()) {
-                        tvNoAnyone.setVisibility(View.VISIBLE);
-                    } else {
-                        tvNoAnyone.setVisibility(View.GONE);
-                        mAdapterSearchUser.clearAllItems();
-                        if (users != null) {
-                            for (User user : users) handleUserResponse(user);
-                        }
-                        if (mAdapterSearchUser.getItemCount() == 0) {
-                            tvNoAnyone.setVisibility(View.VISIBLE);
-                        }
-                    }
+                    if (users == null || users.isEmpty()) {
 
-                } else {
-                    tvNoAnyone.setVisibility(View.VISIBLE);
+                    } else {
+                        for (User user : users) handleUserResponse(user);
+                    }
                 }
             }
 
@@ -125,8 +121,17 @@ public class SearchUsersActivity extends BaseMainActivity implements
         mRcvSearchUser.setHasFixedSize(true);
         mRcvSearchUser.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapterSearchUser = new SearchUsersAdapter(this, null, this);
+        matchedUsers = CacheService.getInstance().retrieveCacheMatchedUsers();
+        mAdapterSearchUser = new SearchUsersAdapter(this, matchedUsers, this);
         mRcvSearchUser.setAdapter(mAdapterSearchUser);
+
+        matchedUsers.addChangeListener(users -> {
+            if (users.isEmpty()) {
+                tvNoAnyone.setVisibility(View.VISIBLE);
+            } else {
+                tvNoAnyone.setVisibility(View.GONE);
+            }
+        });
 
         // Selected Member Recycler View
         vMembersSelected.setVisibility(View.GONE);
@@ -137,6 +142,7 @@ public class SearchUsersActivity extends BaseMainActivity implements
         selectedMembers = CacheService.getInstance().retrieveCacheSelectedMember();
         mAdapterSelectedMembers = new SelectedMemberAdapter(this, selectedMembers, this);
         mRcvSelectedMember.setAdapter(mAdapterSelectedMembers);
+
         selectedMembers.addChangeListener(users -> {
             if (users.isEmpty()) {
                 vMembersSelected.setVisibility(View.GONE);
@@ -171,7 +177,7 @@ public class SearchUsersActivity extends BaseMainActivity implements
 
         List<String> listUsername = new ArrayList<>();
         listUsername.add(Preferences.getCurrentUser().getUsername());
-        for (User user : mAdapterSelectedMembers.getAll()) {
+        for (User user : selectedMembers) {
             listUsername.add(user.getUsername());
         }
 
@@ -190,8 +196,6 @@ public class SearchUsersActivity extends BaseMainActivity implements
                         SweetDialog.hideLoading();
                         showError("An error occurred, please try again");
                     }
-
-
                 } else {
                     Gson gson = new Gson();
                     try {
@@ -225,24 +229,27 @@ public class SearchUsersActivity extends BaseMainActivity implements
                     Conversation c = response.body();
 
                     if (c != null) {
-                        SweetDialog.hideLoading();
 
                         c.update();
                         CacheService.getInstance().addOrUpdateCacheConversation(c);
 
-                        for (User user : mAdapterSelectedMembers.getAll()) {
-                            user.setRelationship(Constants.RELATIONSHIP_FRIEND);
-                            user.setSelectedMember(false); // reset to not selected
-                            CacheService.getInstance().addOrUpdateCacheUser(user);
+                        for (User user : selectedMembers) {
+                            CacheService.getInstance().setUserSelected(user.getUsername(), false);
                         }
 
-                        mAdapterSelectedMembers.notifyDataSetChanged();
+                        // friend relationship
+                        if (c.getListUser().size() == 2) {
+                            ModelUtils.parseConversationToFriend(c);
+                        }
+
+                        SweetDialog.hideLoading();
+
+                        SweetDialog.showSuccessMessage(SearchUsersActivity.this, "Successful", "Conversation is created.");
 
                     } else {
                         SweetDialog.hideLoading();
                         showError("An error occurred, please try again");
                     }
-
 
                 } else {
                     Gson gson = new Gson();
@@ -273,18 +280,25 @@ public class SearchUsersActivity extends BaseMainActivity implements
 
 
     @Override
-    public void onSelect(int position, boolean isSelected) {
-        User user = mAdapterSearchUser.getItem(position);
-        user.setSelectedMember(isSelected);
-        CacheService.getInstance().addOrUpdateCacheUser(user);
+    public void onSelectUser(User user, boolean isSelected) {
+        if (user != null) {
+            CacheService.getInstance().setUserSelectedAsync(user.getUsername(), isSelected);
+        }
     }
 
     @Override
-    public void onClickRemove(int position) {
-        User user = mAdapterSelectedMembers.getItem(position);
-        user.setSelectedMember(false);
-        CacheService.getInstance().addOrUpdateCacheUser(user);
+    public void onClickRemove(User user) {
+        if (user != null) {
+            CacheService.getInstance().setUserSelectedAsync(user.getUsername(), false);
+        }
+    }
 
-        mAdapterSearchUser.unSelectItem(user);
+    @Override
+    public void onDestroy() {
+
+        matchedUsers.removeAllChangeListeners();
+        selectedMembers.removeAllChangeListeners();
+
+        super.onDestroy();
     }
 }

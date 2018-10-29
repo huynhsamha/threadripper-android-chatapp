@@ -146,6 +146,12 @@ public class CacheService {
                 .findAll();
     }
 
+    public RealmResults<User> retrieveCacheMatchedUsers() {
+        return realm.where(User.class)
+                .equalTo("isMatched", true)
+                .limit(20)
+                .findAll();
+    }
 
     public RealmResults<Conversation> retrieveCacheConversations() {
         return realm.where(Conversation.class).findAll();
@@ -172,29 +178,65 @@ public class CacheService {
     public void setUserOnlineOrOffline(String username, boolean isOnline) {
         realm.executeTransaction(realm -> {
             User user = realm.where(User.class).equalTo("username", username).findFirst();
-            user.setOnline(isOnline);
+            if (user != null) {
+                user.setOnline(isOnline);
+                realm.copyToRealmOrUpdate(user);
+            }
+        });
+    }
 
-            realm.copyToRealmOrUpdate(user);
+    public void setUserMatchedInSearching(String username, boolean isMatched) {
+        realm.executeTransaction(realm -> {
+            User user = realm.where(User.class).equalTo("username", username).findFirst();
+            if (user != null) {
+                user.setMatched(isMatched);
+                realm.copyToRealmOrUpdate(user);
+            }
+        });
+    }
+
+    public void setUserSelected(String username, boolean isSelected) {
+        realm.executeTransaction(realm -> {
+            User user = realm.where(User.class).equalTo("username", username).findFirst();
+            if (user != null) {
+                user.setSelectedMember(isSelected);
+                realm.copyToRealmOrUpdate(user);
+            }
+        });
+    }
+
+    public void setUserSelectedAsync(String username, boolean isSelected) {
+        realm.executeTransactionAsync(realm -> {
+            User user = realm.where(User.class).equalTo("username", username).findFirst();
+            if (user != null) {
+                user.setSelectedMember(isSelected);
+                realm.copyToRealmOrUpdate(user);
+            }
         });
     }
 
     public void updateLastMessageConversation(String conversationId, long lastMessageId) {
         realm.executeTransaction(realm -> {
             Conversation conversation = realm.where(Conversation.class).equalTo("conversationId", conversationId).findFirst();
-            Message message = realm.where(Message.class).equalTo("messageId", lastMessageId).findFirst();
-            conversation.setLastMessage(message);
-            conversation.increaseNotificationCount();
+            if (conversation != null) {
+                Message message = realm.where(Message.class).equalTo("messageId", lastMessageId).findFirst();
+                conversation.setLastMessage(message);
+                conversation.increaseNotificationCount();
 
-            realm.copyToRealmOrUpdate(conversation);
+                realm.copyToRealmOrUpdate(conversation);
+            }
         });
     }
 
     public void setReadAllMessagesConversation(String conversationId) {
         realm.executeTransaction(realm -> {
             Conversation conversation = realm.where(Conversation.class).equalTo("conversationId", conversationId).findFirst();
-            conversation.setNotiCount(0);
-
-            realm.copyToRealmOrUpdate(conversation);
+            if (conversation != null) {
+                conversation.setNotiCount(0);
+                realm.copyToRealmOrUpdate(conversation);
+            }
         });
     }
+
+
 }

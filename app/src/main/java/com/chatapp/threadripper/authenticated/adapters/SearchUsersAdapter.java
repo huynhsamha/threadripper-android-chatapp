@@ -2,86 +2,35 @@ package com.chatapp.threadripper.authenticated.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.api.ApiResponseData;
-import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.authenticated.SearchUsersActivity;
-import com.chatapp.threadripper.authentication.LoginActivity;
-import com.chatapp.threadripper.models.Conversation;
-import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
-import com.chatapp.threadripper.utils.Preferences;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 
-public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.ViewHolder> {
+public class SearchUsersAdapter extends RealmRecyclerViewAdapter<User, SearchUsersAdapter.ViewHolder> {
 
     public interface OnSelectListener {
-        void onSelect(int position, boolean isSelected);
+        void onSelectUser(User user, boolean isSelected);
     }
 
-    private List<User> mItems;
-    private Context mContext;
     private OnSelectListener listener;
 
-    public SearchUsersAdapter(Context context, List<User> data, OnSelectListener listener) {
-        this.mContext = context;
-        if (data == null) data = new ArrayList<>();
-        this.mItems = data;
+    public SearchUsersAdapter(Context context, OrderedRealmCollection<User> data, OnSelectListener listener) {
+        super(data, true);
         this.listener = listener;
     }
-
-    @Override
-    public int getItemCount() {
-        return mItems.size();
-    }
-
-    public User getItem(int position) {
-        return this.mItems.get(position);
-    }
-
-    public void addAllItems(List<User> items) {
-        this.mItems.addAll(items);
-        notifyDataSetChanged();
-    }
-
-    public void addItem(User item) {
-        this.mItems.add(item);
-        notifyDataSetChanged();
-    }
-
-    public void clearAllItems() {
-        this.mItems.clear();
-        notifyDataSetChanged();
-    }
-
-    public void unSelectItem(User user) {
-        int position = mItems.indexOf(user);
-        mItems.get(position).setSelectedMember(false);
-        notifyDataSetChanged();
-    }
-
 
     @Override
     public SearchUsersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -103,19 +52,27 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
 
         holder.cbSelect.setChecked(user.isSelectedMember());
 
-        holder.cbSelect.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (listener != null) {
-                listener.onSelect(position, isChecked);
-            }
+        holder.addListener(() -> {
+            listener.onSelectUser(user, !user.isSelectedMember());
         });
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public View view;
         public TextView tvUsername, tvDisplayName;
         public CircleImageView cirImgUserAvatar;
         public CheckBox cbSelect;
+
+        OnClickListener listener;
+
+        interface OnClickListener {
+            void onClick();
+        }
+
+        void addListener(OnClickListener listener) {
+            this.listener = listener;
+        }
 
         ViewHolder(final View itemLayoutView) {
             super(itemLayoutView);
@@ -126,6 +83,14 @@ public class SearchUsersAdapter extends RecyclerView.Adapter<SearchUsersAdapter.
             tvDisplayName = (TextView) itemLayoutView.findViewById(R.id.tvDisplayName);
             cirImgUserAvatar = (CircleImageView) itemLayoutView.findViewById(R.id.cirImgUserAvatar);
             cbSelect = (CheckBox) itemLayoutView.findViewById(R.id.cbSelect);
+
+            view.setOnClickListener(this);
+            cbSelect.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            listener.onClick();
         }
     }
 }

@@ -24,7 +24,7 @@ public class SelectedMemberAdapter extends RealmRecyclerViewAdapter<User, Select
     private OnClickRemoveListener listener;
 
     public interface OnClickRemoveListener {
-        void onClickRemove(int position);
+        void onClickRemove(User user);
     }
 
     public SelectedMemberAdapter(Context context, OrderedRealmCollection<User> data, OnClickRemoveListener listener) {
@@ -32,10 +32,6 @@ public class SelectedMemberAdapter extends RealmRecyclerViewAdapter<User, Select
         mContext = context;
         mItems = data;
         this.listener = listener;
-    }
-
-    public OrderedRealmCollection<User> getAll() {
-        return mItems;
     }
 
     @Override
@@ -53,7 +49,7 @@ public class SelectedMemberAdapter extends RealmRecyclerViewAdapter<User, Select
         ImageLoader.loadUserAvatar(holder.cirImgUserAvatar, user.getPhotoUrl());
 
         holder.view.setOnClickListener(view -> {
-            if (listener != null) listener.onClickRemove(position);
+            if (listener != null) listener.onClickRemove(user);
         });
     }
 

@@ -34,7 +34,21 @@ public class User extends RealmObject implements Serializable {
     private String privateConversationId; // store conversation ID of 2 people
 
     private boolean isSelectedMember = false;
+    private boolean isMatched = false; // default everyone is matched
     // used for selected member for creating conversation
+
+
+    /**
+     * Keep fields server no use before update it to cache
+     * @param user: from server response
+     */
+    public void safetyUserBeforeToCache(User user) {
+        if (!username.equals(user.getUsername())) return;
+
+        user.setRelationship(relationship);
+        user.setPrivateConversationId(privateConversationId);
+        user.setSelectedMember(isSelectedMember);
+    }
 
     /**
      * Constructors
@@ -133,5 +147,13 @@ public class User extends RealmObject implements Serializable {
 
     public void setPrivateConversationId(String privateConversationId) {
         this.privateConversationId = privateConversationId;
+    }
+
+    public boolean isMatched() {
+        return isMatched;
+    }
+
+    public void setMatched(boolean matched) {
+        isMatched = matched;
     }
 }
