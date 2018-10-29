@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
@@ -200,6 +201,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 hideButtonsBar();
                 SocketManager.getInstance().isTyping(conversationId, true);
+                new Handler().postDelayed(() ->
+                                SocketManager.getInstance().isTyping(conversationId, false),
+                        2000
+                );
             }
 
             @Override
@@ -209,7 +214,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
             @Override
             public void afterTextChanged(Editable editable) {
-                SocketManager.getInstance().isTyping(conversationId, false);
             }
         });
 
