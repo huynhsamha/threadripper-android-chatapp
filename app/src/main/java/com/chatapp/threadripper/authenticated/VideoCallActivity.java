@@ -98,10 +98,10 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         if (callerSide) {
             linLayoutCall.setVisibility(View.GONE);
         }
-        tvUsername.setText(displayName);
 
         // Change user info
-        ImageLoader.loadUserAvatar(cirImgUserAvatar, userAvatar);
+        tvUsername.setText(targetUser.getDisplayName());
+        ImageLoader.loadUserAvatar(cirImgUserAvatar, targetUser.getPhotoUrl());
     }
 
     void setListener() {
