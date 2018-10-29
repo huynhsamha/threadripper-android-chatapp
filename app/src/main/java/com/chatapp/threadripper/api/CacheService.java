@@ -65,7 +65,7 @@ public class CacheService {
 
         if (state != null) {
             Preferences.setCurrentUser(new User(
-                            state.getUsername(), state.getEmail(),
+                            state.getUsername(), state.getEmail(), state.getPassword(),
                             state.getDisplayName(), state.getPhotoUrl()
                     )
             );
