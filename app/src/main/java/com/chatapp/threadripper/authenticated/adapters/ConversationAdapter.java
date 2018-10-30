@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,7 +137,9 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
 
                 vh.getFileImage().setOnClickListener(view -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(msg.getContent()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     this.mContext.startActivity(intent);
+
                 });
                 break;
 

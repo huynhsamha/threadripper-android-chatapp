@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,6 +37,7 @@ import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
+import com.chatapp.threadripper.utils.PathUtil;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.google.gson.Gson;
@@ -385,8 +387,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         filePicked.setVisibility(View.GONE);
 
         try {
-            String realFilePath = ImageFilePath.getPath(ConversationActivity.this, uriAttachFile);
+            String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
             File file = new File(realFilePath);
+            Log.d("File path:",realFilePath);
 
             postFileToServer(file, new OnCompletePostFile() {
                 @Override
@@ -456,7 +459,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                     ApiResponseData data = response.body();
                     String url = null;
                     if (data != null) {
-                        url = data.getImageUrl();
+                        url = data.getFileUrl();
                     }
                     listener.onSuccess(url);
                 } else {
@@ -682,5 +685,12 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         } else {
             tvUserTyping.setText(TextUtils.join(", ", typingUsername) + " is typing...");
         }
+    }
+
+    public static String getPathFromFile(Uri uri) {
+        File file = new File(uri.getPath());
+        final String[] split = file.getPath().split(":");
+        final String filepath = split[1];
+        return filepath;
     }
 }
