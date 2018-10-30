@@ -389,7 +389,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         try {
             String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
             File file = new File(realFilePath);
-            Log.d("File path:",realFilePath);
 
             postFileToServer(file, new OnCompletePostFile() {
                 @Override

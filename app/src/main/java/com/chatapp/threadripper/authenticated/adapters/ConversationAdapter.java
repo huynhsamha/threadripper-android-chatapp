@@ -130,7 +130,6 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                 break;
 
             case Message.MessageType.FILE:
-                //TODO: Fix intent to download file (Fatal Error)
                 vh.getFileImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
                 vh.getRivChatImage().setVisibility(View.GONE);
