@@ -133,6 +133,15 @@ public class SocketManager {
         return pushMessage(message);
     }
 
+    public boolean sendFile(String conversationId, String url) {
+        Message message = new Message();
+        message.setType(Message.MessageType.FILE);
+        message.setConversationId(conversationId);
+        message.setContent(url);
+
+        return pushMessage(message);
+    }
+
     public boolean sendReadMessages(String conversationId, long messageId) {
         Message message = new Message();
         message.setType(Message.MessageType.READ);

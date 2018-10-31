@@ -46,4 +46,5 @@ public class FileUtils {
         }
         return type;
     }
+
 }

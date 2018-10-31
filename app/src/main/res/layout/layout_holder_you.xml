@@ -71,6 +71,20 @@
             app:riv_border_color="#E9ECEC"
             app:riv_border_width="1dp"
             app:riv_corner_radius="20dp" />
-
     </LinearLayout>
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/fileContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:maxHeight="400dp"
+        android:minHeight="220dp"
+        android:minWidth="220dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_attached_file"
+        app:riv_border_color="#E9ECEC"
+        app:riv_border_width="1dp"
+        app:riv_corner_radius="20dp" />
 </LinearLayout>

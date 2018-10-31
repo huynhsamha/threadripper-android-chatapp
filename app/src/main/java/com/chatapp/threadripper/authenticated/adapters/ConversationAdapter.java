@@ -2,7 +2,9 @@ package com.chatapp.threadripper.authenticated.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +87,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.TEXT:
                 vh.getChatText().setText(msg.getContent());
                 vh.getRivChatImage().setVisibility(View.GONE);
+                vh.getFileImage().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.VISIBLE);
                 if (!msg.isLeadingBlock()) {
                     vh.getChatText().setOnClickListener(view -> {
@@ -96,7 +99,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.IMAGE:
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
-
+                vh.getFileImage().setVisibility(View.GONE);
                 // if (msg.isBitmap()) {
                 //     // bitmap when use camera capture
                 //     vh.getRivChatImage().setImageBitmap(msg.getBitmap());
@@ -115,6 +118,19 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                     this.mContext.startActivity(intent);
                 });
                 // }
+                break;
+
+            case Message.MessageType.FILE:
+                vh.getFileImage().setVisibility(View.VISIBLE);
+                vh.getChatText().setVisibility(View.GONE);
+                vh.getRivChatImage().setVisibility(View.GONE);
+
+                vh.getFileImage().setOnClickListener(view -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(msg.getContent()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    this.mContext.startActivity(intent);
+
+                });
                 break;
 
             default:

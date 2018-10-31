@@ -126,6 +126,19 @@
                 android:visibility="gone"
                 app:riv_border_width="1dp"
                 app:riv_corner_radius="20dp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/filePicked"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="@dimen/space5"
+                android:layout_toRightOf="@id/lnButtons"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_attached_file"
+                app:riv_border_color="#E9ECEC"
+                android:visibility="gone"
+                app:riv_border_width="1dp"
+                app:riv_corner_radius="20dp" />
         </RelativeLayout>
     </RelativeLayout>
 
