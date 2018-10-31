@@ -36,6 +36,7 @@ public class CacheService {
         realm.deleteAll();
         realm.commitTransaction();
         realm.close();
+        instance = null;
     }
 
     /**
