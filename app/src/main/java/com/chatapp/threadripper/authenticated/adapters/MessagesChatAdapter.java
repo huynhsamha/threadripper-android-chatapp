@@ -30,12 +30,10 @@ import io.realm.RealmRecyclerViewAdapter;
 public class MessagesChatAdapter extends RealmRecyclerViewAdapter<Conversation, MessagesChatAdapter.ViewHolder> {
 
     private Context mContext;
-    private OrderedRealmCollection<Conversation> mItems;
 
     public MessagesChatAdapter(Context context, OrderedRealmCollection<Conversation> data) {
         super(data, true);
         this.mContext = context;
-        this.mItems = data;
     }
 
     @Override

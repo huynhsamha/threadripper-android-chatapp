@@ -179,7 +179,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
         // Friends Recycler View
         mRcvConversations = (RecyclerView) view.findViewById(R.id.rcvMessages);
-        mRcvConversations.setHasFixedSize(true);
+        mRcvConversations.setHasFixedSize(false);
         mRcvConversations.setLayoutManager(new LinearLayoutManager(getContext()));
 
         conversations = CacheService.getInstance().retrieveCacheConversationsByLastActiveTime();
