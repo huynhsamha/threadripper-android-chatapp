@@ -346,8 +346,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     void handleSendCaptureImage() {
-        Message message = makeNewMessage(Message.MessageType.IMAGE);
-
         edtMessage.setVisibility(View.VISIBLE);
         rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
         rivImageIsPickedOrCaptured.setVisibility(View.GONE);
@@ -357,7 +355,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             postImageToServerWithFile(file, new CallbackListener.Callback() {
                 @Override
                 public void onSuccess(String url) {
-                    message.setContent(url);
                     SocketManager.getInstance().sendImage(conversationId, url);
                 }
 
@@ -374,8 +371,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void handleSendAttachImage() {
-        Message message = makeNewMessage(Message.MessageType.IMAGE);
-
         edtMessage.setVisibility(View.VISIBLE);
         rivImageIsPickedOrCaptured.setImageResource(R.drawable.placeholder_image_chat);
         rivImageIsPickedOrCaptured.setVisibility(View.GONE);
@@ -402,8 +397,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     void handleSendAttachFile() {
-        Message message = makeNewMessage(Message.MessageType.IMAGE);
-
         edtMessage.setVisibility(View.VISIBLE);
         filePicked.setText("[default_filename]");
         filePicked.setVisibility(View.GONE);
@@ -523,7 +516,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             message.setLeadingBlock(true); // first message, it should be leading block
         } else {
             Message lastMessage = messages.get(messages.size() - 1); // get last message
-            compareDifferentTimeMessages(lastMessage, message);
+            if (lastMessage.getMessageId() < message.getMessageId()) {
+                // handle new message for a leading block message
+                compareDifferentTimeMessages(lastMessage, message);
+            }
         }
 
         updateCache(message); // push it to "messages"
@@ -537,6 +533,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
                     ArrayList<Message> messages = (ArrayList<Message>) response.body();
                     handleReceivedMessagesList(messages);
+                    // update messages list for leading block time
+                    CacheService.getInstance().updateDateTimeMessagesListAsync(conversationId);
 
                 } else {
                     Gson gson = new Gson();

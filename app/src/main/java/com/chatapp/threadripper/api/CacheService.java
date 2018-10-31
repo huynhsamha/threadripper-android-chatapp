@@ -5,6 +5,7 @@ import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.Preferences;
 
 
@@ -253,5 +254,26 @@ public class CacheService {
         });
     }
 
-
+    public void updateDateTimeMessagesListAsync(String conversationId) {
+        realm.executeTransactionAsync(realm -> {
+            RealmResults<Message> messages = realm.where(Message.class)
+                    .equalTo("conversationId", conversationId)
+                    .sort("messageId", Sort.ASCENDING)
+                    .findAll();
+            Message lastMessage = null;
+            for (Message message: messages) {
+                if (lastMessage == null) message.setLeadingBlock(true);
+                else {
+                    int diffInMinutes = DateTimeUtils.differentInMinutes(lastMessage.getDateTime(), message.getDateTime());
+                    if (diffInMinutes > 30) { // later 30 minutes
+                        message.setLeadingBlock(true);
+                    } else {
+                        message.setLeadingBlock(false);
+                    }
+                }
+                lastMessage = message;
+                realm.copyToRealmOrUpdate(message);
+            }
+        });
+    }
 }
