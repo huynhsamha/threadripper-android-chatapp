@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class FragmentVideoCallList extends Fragment {
     private RecyclerView mRecyclerView;
     private VideoCallListAdapter mAdapter;
     TextView tvNoAnyFriends;
+    private SwipeRefreshLayout swipeContainer;
 
     private RealmResults<User> friends;
 
@@ -78,6 +80,26 @@ public class FragmentVideoCallList extends Fragment {
             }
         });
 
+        // Pull to refresh
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
+        swipeContainer.setColorSchemeResources(
+                android.R.color.holo_red_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_green_light,
+                android.R.color.holo_blue_bright
+        );
+
+        swipeContainer.setOnRefreshListener(() -> {
+            fetchFriends();
+        });
+
+        fetchFriends();
+
+        return view;
+    }
+
+    void fetchFriends() {
         ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
             @Override
             public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
@@ -104,15 +126,16 @@ public class FragmentVideoCallList extends Fragment {
                     }
                 }
 
+                swipeContainer.setRefreshing(false);
+
             }
 
             @Override
             public void onFailure(Call<List<Conversation>> call, Throwable t) {
                 showError(t.getMessage());
+                swipeContainer.setRefreshing(false);
             }
         });
-
-        return view;
     }
 
     void showError(String msg) {

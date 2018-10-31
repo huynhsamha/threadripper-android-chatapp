@@ -6,18 +6,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvFriends"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvNoAnyFriends"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="You have no any friend. \nPlease add friends for chatting and group chats." />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvFriends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
 
+        <TextView
+            android:id="@+id/tvNoAnyFriends"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="You have no any friend. \nPlease add friends for chatting and group chats." />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

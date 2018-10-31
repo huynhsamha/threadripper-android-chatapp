@@ -166,17 +166,17 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
 
     @Override
     public void onNewMessage(Message message) {
-
+        // no receiver
     }
 
     @Override
     public void onTyping(String conversationId, String username, boolean typing) {
-
+        // no receiver
     }
 
     @Override
     public void onRead(String conversationId, String username) {
-
+        // no receiver
     }
 
     @Override

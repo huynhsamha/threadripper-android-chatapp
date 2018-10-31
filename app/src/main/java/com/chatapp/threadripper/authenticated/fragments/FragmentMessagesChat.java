@@ -93,11 +93,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     }
 
     void checkRunWalkThrough() {
-        // showWalkThroughSearch(() -> {
-        //     showWalkThroughMenu(() -> {
-        //
-        //     });
-        // });
         if (Preferences.isFirstUseApp()) {
             showWalkThroughSearch(() -> {
                 Preferences.setFirstUseApp(false);
@@ -126,23 +121,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
                 });
     }
-    // void showWalkThroughMenu(SimpleCallback cb) {
-    //     TargetPrompt.prompt(mContext, android.R.id.home,
-    //             "Change password",
-    //             "You can change your current password with a new password",
-    //             new TargetPrompt.OnCallbackListener() {
-    //                 @Override
-    //                 public void onAccepted() {
-    //                     cb.onComplete();
-    //                 }
-    //
-    //                 @Override
-    //                 public void onDenied() {
-    //                     cb.onComplete();
-    //                 }
-    //             });
-    //
-    // }
 
     @Override
     public void onAttach(Context context) {
