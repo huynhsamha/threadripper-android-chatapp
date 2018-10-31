@@ -147,6 +147,7 @@ public class CacheService {
 
     public RealmResults<User> retrieveCacheFriendsOnline() {
         return realm.where(User.class)
+                .not().equalTo("username", Preferences.getCurrentUser().getUsername())
                 .equalTo("relationship", Constants.RELATIONSHIP_FRIEND)
                 .sort("online", Sort.DESCENDING) // online first
                 .findAll();
@@ -154,6 +155,7 @@ public class CacheService {
 
     public RealmResults<User> retrieveCacheSelectedMember() {
         return realm.where(User.class)
+                .not().equalTo("username", Preferences.getCurrentUser().getUsername())
                 .equalTo("isSelectedMember", true)
                 .findAll();
     }
@@ -161,6 +163,7 @@ public class CacheService {
     public RealmResults<User> retrieveCacheMatchedUsers() {
         return realm.where(User.class)
                 .equalTo("isMatched", true)
+                .not().equalTo("username", Preferences.getCurrentUser().getUsername())
                 .limit(20)
                 .findAll();
     }
