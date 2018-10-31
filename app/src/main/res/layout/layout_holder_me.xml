@@ -4,42 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1dp"
+    android:orientation="vertical"
     android:paddingBottom="1dp"
-    android:orientation="vertical">
+    android:paddingTop="1dp">
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/space5"
         android:drawablePadding="@dimen/space5"
         android:drawableRight="@drawable/ic_clock"
         android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/space5"
+        android:paddingBottom="@dimen/space5"
+        android:paddingTop="@dimen/space10"
         android:text="5:04pm"
         android:textAppearance="@style/ExtraLight"
         android:textColor="@color/colorTextInfo"
-        android:paddingTop="@dimen/space10"
-        android:paddingBottom="@dimen/space5"
         android:textSize="@dimen/h4" />
 
     <TextView
         android:id="@+id/tv_chat_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:layout_marginEnd="@dimen/space15"
         android:layout_marginLeft="40dp"
-        android:layout_gravity="right"
         android:layout_marginRight="@dimen/space15"
         android:layout_marginStart="40dp"
         android:background="@drawable/bg_chat_me"
+        android:lineSpacingMultiplier="1.5"
         android:padding="@dimen/space10"
         android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         android:textAppearance="@style/Light"
         android:textColor="@android:color/white"
         android:textSize="@dimen/h3"
-        android:lineSpacingMultiplier="1.5"
         tools:ignore="RtlHardcoded" />
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -52,8 +52,8 @@
         android:layout_marginRight="@dimen/space15"
         android:layout_marginStart="90dp"
         android:maxHeight="400dp"
-        android:minWidth="220dp"
         android:minHeight="220dp"
+        android:minWidth="220dp"
         android:scaleType="centerCrop"
         android:src="@drawable/placeholder_image_chat"
         app:riv_border_color="#E9ECEC"
@@ -61,23 +61,24 @@
         app:riv_corner_radius="20dp"
         tools:ignore="RtlHardcoded" />
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <TextView
         android:id="@+id/fileContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginEnd="15dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginStart="90dp"
-        android:maxHeight="200dp"
-        android:minWidth="220dp"
-        android:minHeight="220dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder_attached_file"
-        app:riv_border_color="#E9ECEC"
-        app:riv_border_width="1dp"
-        app:riv_corner_radius="20dp"
-        tools:ignore="RtlHardcoded" />
+        android:layout_marginEnd="@dimen/space15"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="@dimen/space15"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="@dimen/space5"
+        android:drawableLeft="@drawable/ic_action_attachment_horizontal"
+        android:drawablePadding="5dp"
+        android:drawableStart="@drawable/ic_action_attachment_horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/space10"
+        android:textAppearance="@style/Light"
+        android:textSize="@dimen/h3"
+        android:text="filename.pdf"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -51,10 +51,10 @@
                     android:id="@+id/btnAttachChatImage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:background="@drawable/btn_transparent_circle"
                     android:foregroundGravity="center"
                     android:src="@drawable/ic_action_add_photo_alternate" />
@@ -86,8 +86,8 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/btn_accent_circle"
                     android:foregroundGravity="center"
@@ -104,6 +104,7 @@
                 android:background="@android:color/transparent"
                 android:hint="Enter your message"
                 android:inputType="textMultiLine"
+                android:lineSpacingMultiplier="1.5"
                 android:maxLines="6"
                 android:minHeight="40dp"
                 android:padding="@dimen/space5"
@@ -111,7 +112,6 @@
                 android:textAppearance="@style/Light"
                 android:textColor="@color/colorTextBlack"
                 android:textColorHint="@color/colorTextHint"
-                android:lineSpacingMultiplier="1.5"
                 android:textSize="@dimen/h3" />
 
             <com.makeramen.roundedimageview.RoundedImageView
@@ -119,26 +119,30 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_margin="@dimen/space5"
+                android:layout_toEndOf="@id/lnButtons"
                 android:layout_toRightOf="@id/lnButtons"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder_image_chat"
-                app:riv_border_color="#E9ECEC"
                 android:visibility="gone"
+                app:riv_border_color="#E9ECEC"
                 app:riv_border_width="1dp"
                 app:riv_corner_radius="20dp" />
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <TextView
                 android:id="@+id/filePicked"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_margin="@dimen/space5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/lnButtons"
                 android:layout_toRightOf="@id/lnButtons"
-                android:scaleType="centerCrop"
-                android:src="@drawable/placeholder_attached_file"
-                app:riv_border_color="#E9ECEC"
-                android:visibility="gone"
-                app:riv_border_width="1dp"
-                app:riv_corner_radius="20dp" />
+                android:drawableLeft="@drawable/ic_action_attachment_horizontal"
+                android:drawableStart="@drawable/ic_action_attachment_horizontal"
+                android:drawablePadding="5dp"
+                android:textStyle="bold"
+                android:textAppearance="@style/Light"
+                android:textSize="@dimen/h3"
+                android:text="filename.pdf"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1dp"
+    android:orientation="vertical"
     android:paddingBottom="1dp"
-    android:orientation="vertical">
+    android:paddingTop="1dp">
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:drawableEnd="@drawable/ic_clock"
         android:drawablePadding="@dimen/space5"
         android:drawableRight="@drawable/ic_clock"
-        android:drawableEnd="@drawable/ic_clock"
         android:gravity="center_vertical"
-        android:paddingTop="@dimen/space20"
         android:paddingBottom="@dimen/space15"
+        android:paddingTop="@dimen/space20"
         android:text="5:04pm"
         android:textAppearance="@style/ExtraLight"
         android:textColor="@color/colorTextInfo"
@@ -48,14 +48,13 @@
             android:layout_marginEnd="@dimen/space20"
             android:layout_marginRight="@dimen/space20"
             android:background="@drawable/bg_chat_you"
+            android:lineSpacingMultiplier="1.5"
             android:maxWidth="@dimen/maxwidth"
             android:padding="@dimen/space10"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
             android:textAppearance="@style/Light"
             android:textColor="@color/colorTextBlack"
-            android:textSize="@dimen/h3"
-            android:lineSpacingMultiplier="1.5"
-            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
-            />
+            android:textSize="@dimen/h3" />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/rivChatImage"
@@ -64,27 +63,32 @@
             android:layout_marginEnd="50dp"
             android:layout_marginRight="50dp"
             android:maxHeight="400dp"
-            android:minWidth="220dp"
             android:minHeight="220dp"
+            android:minWidth="220dp"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder_image_chat"
             app:riv_border_color="#E9ECEC"
             app:riv_border_width="1dp"
             app:riv_corner_radius="20dp" />
+
+
+        <TextView
+            android:id="@+id/fileContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space20"
+            android:layout_marginRight="@dimen/space20"
+            android:drawableLeft="@drawable/ic_action_attachment_horizontal"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_action_attachment_horizontal"
+            android:maxWidth="@dimen/maxwidth"
+            android:padding="@dimen/space10"
+            android:text="filename.pdf"
+            android:textAppearance="@style/Light"
+            android:textSize="@dimen/h3"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/fileContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:layout_marginRight="50dp"
-        android:maxHeight="400dp"
-        android:minHeight="220dp"
-        android:minWidth="220dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder_attached_file"
-        app:riv_border_color="#E9ECEC"
-        app:riv_border_width="1dp"
-        app:riv_corner_radius="20dp" />
+
 </LinearLayout>

@@ -16,12 +16,22 @@ public class Message extends RealmObject implements Serializable {
     @PrimaryKey
     private long messageId;
     private String type;
+
+    /**
+     * Cases:
+     * + TEXT: raw message
+     * + IMAGE: url
+     * + FILE: { "filename", "url" }
+     */
     private String content;
+
+
     private Date dateTime;
     private String conversationId;
     private String username;
     private String token;
     private boolean read;
+    String payload; // used for extended fields
 
     private String datetime; // server send string format, parse to "dateTime" (Date())
 
@@ -172,5 +182,13 @@ public class Message extends RealmObject implements Serializable {
 
     public void setLeadingBlock(boolean leadingBlock) {
         isLeadingBlock = leadingBlock;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 }

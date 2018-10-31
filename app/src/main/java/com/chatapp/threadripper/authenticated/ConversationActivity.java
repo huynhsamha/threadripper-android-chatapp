@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,6 +35,7 @@ import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.receivers.SocketReceiver;
+import com.chatapp.threadripper.utils.CallbackListener;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
@@ -44,14 +45,19 @@ import com.chatapp.threadripper.utils.PathUtil;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
 import io.realm.RealmResults;
 import retrofit2.Call;
@@ -68,7 +74,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     private EditText edtMessage;
     private ImageButton imgBtnSend, btnAttachChatImage, btnCaptureImage, btnAttachFile, btnShowButtons;
     private RoundedImageView rivImageIsPickedOrCaptured;
-    private RoundedImageView filePicked;
+    private TextView filePicked;
     TextView tvUserTyping;
     private RippleView rvOptionMenu;
 
@@ -168,7 +174,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         btnShowButtons = (ImageButton) findViewById(R.id.btnShowButtons);
 
         rivImageIsPickedOrCaptured = (RoundedImageView) findViewById(R.id.rivImageIsPickedOrCaptured);
-        filePicked = (RoundedImageView) findViewById(R.id.filePicked);
+        filePicked = (TextView) findViewById(R.id.filePicked);
 
         tvUserTyping.setText("");
         btnShowButtons.setVisibility(View.GONE);
@@ -348,7 +354,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         try {
             File file = FileUtils.bitmap2File(this, bitmapCaptureImage);
-            postImageToServerWithFile(file, new OnCompletePostImage() {
+            postImageToServerWithFile(file, new CallbackListener.Callback() {
                 @Override
                 public void onSuccess(String url) {
                     message.setContent(url);
@@ -378,10 +384,9 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             String realFilePath = ImageFilePath.getPath(ConversationActivity.this, uriAttachImage);
             File file = new File(realFilePath);
 
-            postImageToServerWithFile(file, new OnCompletePostImage() {
+            postImageToServerWithFile(file, new CallbackListener.Callback() {
                 @Override
                 public void onSuccess(String url) {
-                    message.setContent(url);
                     SocketManager.getInstance().sendImage(conversationId, url);
                 }
 
@@ -400,18 +405,21 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         Message message = makeNewMessage(Message.MessageType.IMAGE);
 
         edtMessage.setVisibility(View.VISIBLE);
-        filePicked.setImageResource(R.drawable.placeholder_attached_file);
+        filePicked.setText("[default_filename]");
         filePicked.setVisibility(View.GONE);
 
         try {
             String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
             File file = new File(realFilePath);
 
-            postFileToServer(file, new OnCompletePostFile() {
+            postFileToServer(file, new CallbackListener.Callback() {
                 @Override
                 public void onSuccess(String url) {
-                    message.setContent(url);
-                    SocketManager.getInstance().sendFile(conversationId, url);
+                    JsonObject json = new JsonObject();
+                    json.addProperty("filename", PathUtil.getFilename(realFilePath));
+                    json.addProperty("url", url);
+
+                    SocketManager.getInstance().sendFile(conversationId, json.toString());
                 }
 
                 @Override
@@ -425,19 +433,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         }
     }
 
-    interface OnCompletePostImage {
-        void onSuccess(String url);
-
-        void onFailure(String errMessage);
-    }
-
-    interface OnCompletePostFile {
-        void onSuccess(String url);
-
-        void onFailure(String errMessage);
-    }
-
-    void postImageToServerWithFile(File file, OnCompletePostImage listener) {
+    void postImageToServerWithFile(File file, CallbackListener.Callback listener) {
         ApiService.getInstance().uploadImageInChat(file).enqueue(new Callback<ApiResponseData>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponseData> call, @NonNull Response<ApiResponseData> response) {
@@ -467,7 +463,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         });
     }
 
-    void postFileToServer(File file, OnCompletePostFile listener) {
+    void postFileToServer(File file, CallbackListener.Callback listener) {
         ApiService.getInstance().uploadFileInChat(file).enqueue(new Callback<ApiResponseData>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponseData> call, @NonNull Response<ApiResponseData> response) {
@@ -583,11 +579,12 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
                 handleCaptureImageSuccess(data);
             }
             btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
+
         } else if (requestCode == Constants.REQUEST_CODE_PICK_FILE) {
             if (resultCode == RESULT_OK && data != null) {
                 handlePickFileSuccess(data);
             }
-            btnCaptureImage.setImageResource(R.drawable.ic_action_linked_camera);
+            btnAttachFile.setImageResource(R.drawable.ic_action_attach_file);
         }
     }
 
@@ -602,6 +599,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         }
         ImageLoader.loadImageChatMessage(rivImageIsPickedOrCaptured, uriAttachImageString);
         bitmapCaptureImage = null; // reset method capture image, current image is picked
+        uriAttachFile = null; // reset attach file
 
         // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachImageString);
         // example: content://com.android.providers.media.documents/document/image%3A14109
@@ -610,11 +608,24 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     void handlePickFileSuccess(Intent data) {
         edtMessage.setVisibility(View.GONE);
         filePicked.setVisibility(View.VISIBLE);
+        filePicked.setText("...");
 
         Uri uri = data.getData();
         uriAttachFile = uri;
-        // Log.d("LogImage", "handlePickImageFromMedia: " + uriAttachImageString);
-        // example: content://com.android.providers.media.documents/document/image%3A14109
+
+        try {
+            String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
+            String filename = PathUtil.getFilename(realFilePath);
+
+            filePicked.setText(filename);
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        uriAttachImage = null; // reset attach image
+        uriAttachImageString = null;
+        bitmapCaptureImage = null; // reset capture image
     }
 
     void handleCaptureImageSuccess(Intent data) {
@@ -625,6 +636,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         rivImageIsPickedOrCaptured.setImageBitmap(bitmapCaptureImage);
         uriAttachImageString = null; // reset method pick image, current image is captured
         uriAttachImage = null;
+        uriAttachFile = null; // reset attach file
 
         // Log.d("LogImage", "handleCaptureImageSuccess: " + photo.toString());
         // example: android.graphics.Bitmap@312c4eb
@@ -691,13 +703,6 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         } else {
             tvUserTyping.setText(TextUtils.join(", ", typingUsername) + " is typing...");
         }
-    }
-
-    public static String getPathFromFile(Uri uri) {
-        File file = new File(uri.getPath());
-        final String[] split = file.getPath().split(":");
-        final String filepath = split[1];
-        return filepath;
     }
 
     @Override

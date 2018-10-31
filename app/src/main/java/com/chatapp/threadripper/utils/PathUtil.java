@@ -17,6 +17,11 @@ import java.net.URISyntaxException;
  */
 
 public class PathUtil {
+
+    public static String getFilename(String realFilePath) {
+        return  realFilePath.substring(realFilePath.lastIndexOf("/")+1);
+    }
+
     /*
      * Gets the file path of the given Uri.
      */

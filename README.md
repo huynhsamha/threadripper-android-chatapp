@@ -10,6 +10,7 @@ Server: https://github.com/ititandev/threadripper-chat-api
 
 + Lần đầu login vào chưa có conversation nào hết thì bị crash.
 + Lúc tạo conversation mới có nhiều hơn 2 người thì ngoài màn hình bên ngoài ko nhận được, phải refresh nhiều lần mới có.
++ Lúc logout rồi vào lại bị crash (Realm closed, unusable)
 
 ## TODO:
 

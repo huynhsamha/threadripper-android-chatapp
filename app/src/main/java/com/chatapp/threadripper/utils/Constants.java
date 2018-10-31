@@ -27,10 +27,6 @@ public class Constants {
     public static final int REQUEST_CODE_PERMISSION_WRITE_EXTERNAL = 40005;
     public static final int REQUEST_CODE_PICK_FILE = 40006;
 
-    public static final String CHAT_CONTENT_TYPE_TEXT = "text";
-    public static final String CHAT_CONTENT_TYPE_URI = "uri";
-    public static final String CHAT_CONTENT_TYPE_BITMAP = "bitmap";
-
     public static final String RELATIONSHIP_FRIEND = "FRIEND";
     public static final String RELATIONSHIP_SENT = "SENT";
     public static final String RELATIONSHIP_NONE = "NONE";

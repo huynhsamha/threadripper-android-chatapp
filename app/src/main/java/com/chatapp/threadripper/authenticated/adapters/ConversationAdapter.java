@@ -17,6 +17,10 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.ViewUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
@@ -87,7 +91,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.TEXT:
                 vh.getChatText().setText(msg.getContent());
                 vh.getRivChatImage().setVisibility(View.GONE);
-                vh.getFileImage().setVisibility(View.GONE);
+                vh.getFileContent().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.VISIBLE);
                 if (!msg.isLeadingBlock()) {
                     vh.getChatText().setOnClickListener(view -> {
@@ -99,7 +103,7 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
             case Message.MessageType.IMAGE:
                 vh.getRivChatImage().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
-                vh.getFileImage().setVisibility(View.GONE);
+                vh.getFileContent().setVisibility(View.GONE);
                 // if (msg.isBitmap()) {
                 //     // bitmap when use camera capture
                 //     vh.getRivChatImage().setImageBitmap(msg.getBitmap());
@@ -121,22 +125,37 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                 break;
 
             case Message.MessageType.FILE:
-                vh.getFileImage().setVisibility(View.VISIBLE);
+                vh.getFileContent().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
                 vh.getRivChatImage().setVisibility(View.GONE);
 
-                vh.getFileImage().setOnClickListener(view -> {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(msg.getContent()));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    this.mContext.startActivity(intent);
+                if (msg.getContent() == null) {
+                    vh.getFileContent().setText("[Error file]");
+                } else {
+                    try {
+                        JsonObject json = (new JsonParser()).parse(msg.getContent()).getAsJsonObject();
+                        final String filename = json.has("filename") ? json.get("filename").getAsString() : "";
+                        final String url = json.has("url") ? json.get("url").getAsString() : "";
 
-                });
+                        vh.getFileContent().setText(filename);
+
+                        vh.getFileContent().setOnClickListener(view -> {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            this.mContext.startActivity(intent);
+                        });
+                    } catch (Exception e) {
+                        vh.getFileContent().setText("[Error format file]");
+                    }
+                }
+
                 break;
 
             default:
                 // oh, no man!, what the fucking message!!!
                 vh.getRivChatImage().setVisibility(View.GONE);
                 vh.getChatText().setVisibility(View.GONE);
+                vh.getFileContent().setVisibility(View.GONE);
                 break;
         }
 

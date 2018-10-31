@@ -133,11 +133,11 @@ public class SocketManager {
         return pushMessage(message);
     }
 
-    public boolean sendFile(String conversationId, String url) {
+    public boolean sendFile(String conversationId, String jsonContent) {
         Message message = new Message();
         message.setType(Message.MessageType.FILE);
         message.setConversationId(conversationId);
-        message.setContent(url);
+        message.setContent(jsonContent);
 
         return pushMessage(message);
     }
