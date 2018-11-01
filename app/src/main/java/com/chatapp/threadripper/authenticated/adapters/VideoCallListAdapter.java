@@ -69,8 +69,8 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         user.setDisplayName(userRealm.getDisplayName());
         user.setPrivateConversationId(userRealm.getPrivateConversationId());
 
-        String channelId = "THREADRIPPER"
-                + Preferences.getCurrentUser().getUsername()
+        String channelId = "THREADRIPPER_CALL_"
+                + Preferences.getCurrentUser().getUsername() + "_"
                 + user.getUsername();
 
         intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller

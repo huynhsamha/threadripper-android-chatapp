@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
 import com.chatapp.threadripper.authenticated.VideoCallActivity;
@@ -343,26 +344,29 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     @Override
     public void onCall(User targetUser, String typeCalling, String channelId) {
 
+        if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            // targetUser cannot be the current user
+            return;
+        }
+
         switch (typeCalling) {
             case Constants.CALLEE_ACCEPT_REQUEST_CALL:
-
+                // don't have this case
                 break;
 
             case Constants.CALLEE_REJECT_REQUEST_CALL:
-
+                // don't have this case
                 break;
 
             case Constants.CALLER_REQUEST_CALLING:
-
-                if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername()))
-                    break;
+                // callee receive a calling request
 
                 onCallComing(targetUser, channelId);
 
                 break;
 
             case Constants.CALLER_CANCEL_REQUEST:
-
+                // callee receive a cancel for calling request
                 break;
         }
     }

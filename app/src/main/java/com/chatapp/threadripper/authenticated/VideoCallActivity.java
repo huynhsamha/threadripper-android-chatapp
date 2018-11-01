@@ -27,6 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity implements SocketReceiver.OnCallbackListener {
 
+    /**
+     * Screen for waiting 2 sides accept calling
+     */
+
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
     TextView tvUsername, tvStatus;
@@ -53,8 +57,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
 
         initViews();
 
-        setListener();
-
         initSocketReceiver();
 
         if (callerSide) {
@@ -62,6 +64,13 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         } else {
             // waiting the callee accept or not by send socket
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        registerReceiver(mSocketReceiver, mIntentFilter);
     }
 
     void getIntentData() {
@@ -102,9 +111,7 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         // Change user info
         tvUsername.setText(targetUser.getDisplayName());
         ImageLoader.loadUserAvatar(cirImgUserAvatar, targetUser.getPhotoUrl());
-    }
 
-    void setListener() {
         rvCallEnd.setOnRippleCompleteListener(rippleView -> handleEndCalling());
         rvCall.setOnRippleCompleteListener(rippleView -> handleAcceptCalling());
     }
@@ -132,16 +139,15 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
             callingSuccessful();
             finish();
         }
-
     }
 
     void callingSuccessful() {
-        String channelId;
-        if (callerSide) {
-            channelId = ModelUtils.generateVideoChannelId(Preferences.getCurrentUser(), targetUser);
-        } else {
-            channelId = ModelUtils.generateVideoChannelId(targetUser, Preferences.getCurrentUser());
-        }
+        // String channelId;
+        // if (callerSide) {
+        //     channelId = ModelUtils.generateVideoChannelId(Preferences.getCurrentUser(), targetUser);
+        // } else {
+        //     channelId = ModelUtils.generateVideoChannelId(targetUser, Preferences.getCurrentUser());
+        // }
 
         Intent intent = new Intent(this, VideoChatViewActivity.class);
         intent.putExtra(Constants.USER_MODEL, targetUser);
@@ -182,25 +188,33 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
     @Override
     public void onCall(User targetUser, String typeCalling, String channelId) {
 
+        if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            // targetUser cannot be the current user
+            return;
+        }
+
         switch (typeCalling) {
             case Constants.CALLEE_ACCEPT_REQUEST_CALL:
-                if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
-                    callingSuccessful();
-                }
+                callingSuccessful();
 
                 break;
+
             case Constants.CALLEE_REJECT_REQUEST_CALL:
-                if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
-                    setResult(RESULT_CANCELED);
-                    finish();
-                }
-
-                break;
-            case Constants.CALLER_REQUEST_CALLING:
-                break;
-            case Constants.CALLER_CANCEL_REQUEST:
+                // this is for caller receive the signal
                 setResult(RESULT_CANCELED);
                 finish();
+
+                break;
+
+            case Constants.CALLER_REQUEST_CALLING:
+                // don't have this case when start this activity
+                break;
+
+            case Constants.CALLER_CANCEL_REQUEST:
+                // callee received signal cancel calling from caller
+                setResult(RESULT_CANCELED);
+                finish();
+
                 break;
         }
 

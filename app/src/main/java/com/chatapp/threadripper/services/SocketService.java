@@ -109,7 +109,7 @@ public class SocketService extends Service {
         intent.setAction(Constants.ACTION_STRING_RECEIVER_CALL);
         intent.putExtra(Constants.USER_USERNAME, message.getUsername());
         intent.putExtra(Constants.TYPE_CALLING, message.getContent());
-        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, message.getUsername());
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, message.getPayload());
         sendBroadcast(intent);
     }
 

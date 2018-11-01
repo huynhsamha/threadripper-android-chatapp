@@ -157,7 +157,7 @@ public class SocketManager {
         message.setType(Message.MessageType.CALL);
         message.setConversationId(targetUser.getPrivateConversationId());
         message.setContent(typeCalling);
-        message.setUsername(channelId);
+        message.setPayload(channelId);
 
         return pushMessage(message);
     }
