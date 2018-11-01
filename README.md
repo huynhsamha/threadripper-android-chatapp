@@ -20,6 +20,7 @@ Server: https://github.com/ititandev/threadripper-chat-api
 
 ## Snapshots:
 
+<img src="snapshots/Screenshot_1540834370.png" width="30%">
 <img src="snapshots/Screenshot_1540834380.png" width="30%">
 <img src="snapshots/Screenshot_1540834387.png" width="30%">
 <img src="snapshots/Screenshot_1540834400.png" width="30%">
@@ -42,6 +43,7 @@ Server: https://github.com/ititandev/threadripper-chat-api
 <img src="snapshots/Screenshot_1540835204.png" width="30%">
 <img src="snapshots/Screenshot_1540835281.png" width="30%">
 <img src="snapshots/Screenshot_1540835637.png" width="30%">
+<img src="snapshots/Screenshot_1540835640.png" width="30%">
 <img src="snapshots/Screenshot_1540835668.png" width="30%">
 <img src="snapshots/Screenshot_1540835675.png" width="30%">
 <img src="snapshots/Screenshot_1540835686.png" width="30%">
