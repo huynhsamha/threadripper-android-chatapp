@@ -22,7 +22,6 @@ import com.chatapp.threadripper.authenticated.adapters.SelectedMemberAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
-import com.chatapp.threadripper.utils.ModelUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.SweetDialog;
 import com.google.gson.Gson;

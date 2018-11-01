@@ -1,6 +1,5 @@
 package com.chatapp.threadripper.models;
 
-import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.utils.ModelUtils;
 
 import io.realm.RealmList;

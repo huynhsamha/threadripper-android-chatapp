@@ -9,11 +9,13 @@ public class SweetDialog {
 
     public interface OnCallbackListener {
         void onConfirm();
+
         void onCancel();
     }
 
     public interface OnCallbackOptionsListener {
         void onSelectOption1();
+
         void onSelectOption2();
     }
 

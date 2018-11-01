@@ -11,9 +11,9 @@ import android.widget.EditText;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.BaseActivity;
+import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.ApiResponseData;
 import com.chatapp.threadripper.api.ApiService;
-import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.chatapp.threadripper.utils.SweetDialog;

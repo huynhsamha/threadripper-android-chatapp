@@ -1,23 +1,15 @@
 package com.chatapp.threadripper.receivers;
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.chatapp.threadripper.BaseActivity;
-import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.authenticated.BaseMainActivity;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SocketReceiver extends BroadcastReceiver {
 

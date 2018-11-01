@@ -7,11 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chatapp.threadripper.R;
-import com.chatapp.threadripper.authenticated.models.Contact;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.ImageLoader;
-
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.OrderedRealmCollection;

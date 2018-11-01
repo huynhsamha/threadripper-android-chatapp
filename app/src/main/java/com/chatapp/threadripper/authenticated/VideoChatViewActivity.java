@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ShowToast;
@@ -25,8 +24,7 @@ import com.chatapp.threadripper.utils.ShowToast;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
-
-import io.agora.rtc.video.VideoEncoderConfiguration; // 2.3.0 and later
+import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class VideoChatViewActivity extends AppCompatActivity {
 

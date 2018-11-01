@@ -608,18 +608,13 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
         uriAttachFile = data.getData();
 
-        try {
-            String realFilePath = PathUtils.getPath(ConversationActivity.this, uriAttachFile);
-            String filename = "";
-            if (realFilePath != null) {
-                filename = PathUtils.getFilename(realFilePath);
-            }
-
-            filePicked.setText(filename);
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        String realFilePath = PathUtils.getPath(ConversationActivity.this, uriAttachFile);
+        String filename = "";
+        if (realFilePath != null) {
+            filename = PathUtils.getFilename(realFilePath);
         }
+
+        filePicked.setText(filename);
 
         uriAttachImage = null; // reset attach image
         uriAttachImageString = null;

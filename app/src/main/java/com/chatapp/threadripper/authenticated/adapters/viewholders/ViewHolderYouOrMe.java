@@ -2,7 +2,6 @@ package com.chatapp.threadripper.authenticated.adapters.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chatapp.threadripper.R;

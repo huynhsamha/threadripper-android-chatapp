@@ -66,6 +66,7 @@ public class User extends RealmObject implements Serializable {
     /**
      * Clone the user from cache to new User
      * This is clone a new user which is not a proxy of Realm
+     *
      * @param cache: User from cache
      */
     public User(User cache) {

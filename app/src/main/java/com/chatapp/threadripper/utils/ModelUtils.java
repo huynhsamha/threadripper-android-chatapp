@@ -4,13 +4,9 @@ import android.text.TextUtils;
 
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.models.Conversation;
-import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 

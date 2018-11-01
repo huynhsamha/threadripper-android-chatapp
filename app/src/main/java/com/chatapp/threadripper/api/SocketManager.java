@@ -9,7 +9,6 @@ import android.os.IBinder;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.services.SocketService;
-import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.Preferences;
 
 public class SocketManager {

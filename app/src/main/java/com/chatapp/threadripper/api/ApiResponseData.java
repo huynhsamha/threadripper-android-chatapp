@@ -3,8 +3,6 @@ package com.chatapp.threadripper.api;
 import com.chatapp.threadripper.models.ErrorResponse;
 import com.chatapp.threadripper.models.User;
 
-import java.util.ArrayList;
-
 public class ApiResponseData {
 
     /**

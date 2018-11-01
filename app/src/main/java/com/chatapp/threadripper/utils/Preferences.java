@@ -1,10 +1,7 @@
 package com.chatapp.threadripper.utils;
 
 
-import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.User;
-
-import java.util.List;
 
 public class Preferences {
 

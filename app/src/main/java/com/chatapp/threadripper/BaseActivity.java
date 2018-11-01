@@ -1,15 +1,12 @@
 package com.chatapp.threadripper;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
@@ -19,8 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.chatapp.threadripper.api.CacheService;
-import com.chatapp.threadripper.authentication.SignUpActivity;
 import com.chatapp.threadripper.receivers.NetworkChangeReceiver;
 import com.chatapp.threadripper.utils.KeyboardUtils;
 import com.chatapp.threadripper.utils.ShowToast;
@@ -38,9 +33,6 @@ public class BaseActivity extends AppCompatActivity {
     private BroadcastReceiver mNetworkReceiver;
 
     private static TextView tvCheckConnection;
-
-
-
 
 
     // Utils for Network detect
@@ -84,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public static void dialogStateConnectionChanged(boolean value){
+    public static void dialogStateConnectionChanged(boolean value) {
         if (value) {
             tvCheckConnection.setText("Connection is established");
             tvCheckConnection.setBackgroundColor(Color.rgb(83, 185, 15));
@@ -101,8 +93,6 @@ public class BaseActivity extends AppCompatActivity {
             tvCheckConnection.setTextColor(Color.WHITE);
         }
     }
-
-
 
 
     // Utils for Toolbars
@@ -134,15 +124,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-
-
-
     // Utils for Fonts
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
-
 
 
     // Utils for back press
@@ -164,8 +150,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
-
 
 
     // Utils for Keyboards
@@ -193,7 +177,6 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     // Utils for error action

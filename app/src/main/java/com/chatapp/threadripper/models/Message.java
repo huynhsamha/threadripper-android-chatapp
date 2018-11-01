@@ -1,14 +1,11 @@
 package com.chatapp.threadripper.models;
 
-import android.graphics.Bitmap;
-
 import com.chatapp.threadripper.utils.DateTimeUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 public class Message extends RealmObject implements Serializable {

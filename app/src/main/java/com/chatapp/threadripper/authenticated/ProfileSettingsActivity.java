@@ -273,7 +273,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         }
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select picture"), Constants.REQUEST_CODE_PICK_IMAGE);
     }
 

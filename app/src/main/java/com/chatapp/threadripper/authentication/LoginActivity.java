@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ua.naiksoftware.stomp.client.StompClient;
 
 public class LoginActivity extends BaseActivity {
 

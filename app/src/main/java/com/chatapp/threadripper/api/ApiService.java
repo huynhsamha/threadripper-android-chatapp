@@ -9,7 +9,6 @@ import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-
 import java.io.File;
 import java.util.List;
 

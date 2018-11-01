@@ -21,7 +21,6 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ImageLoader;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.SweetDialog;
-import com.chatapp.threadripper.utils.TargetPrompt;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

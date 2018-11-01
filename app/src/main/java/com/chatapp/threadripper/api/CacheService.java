@@ -8,7 +8,6 @@ import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.Preferences;
 
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -261,7 +260,7 @@ public class CacheService {
                     .sort("messageId", Sort.ASCENDING)
                     .findAll();
             Message lastMessage = null;
-            for (Message message: messages) {
+            for (Message message : messages) {
                 if (lastMessage == null) message.setLeadingBlock(true);
                 else {
                     int diffInMinutes = DateTimeUtils.differentInMinutes(lastMessage.getDateTime(), message.getDateTime());
