@@ -10,6 +10,7 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.BaseMainActivity;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
+import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
 import com.chatapp.threadripper.utils.Constants;
@@ -65,6 +66,10 @@ public class SocketReceiver extends BroadcastReceiver {
     }
 
     public void setListener(FragmentMessagesChat fragment) {
+        this.listener = fragment;
+    }
+
+    public void setListener(FragmentVideoCallList fragment) {
         this.listener = fragment;
     }
 

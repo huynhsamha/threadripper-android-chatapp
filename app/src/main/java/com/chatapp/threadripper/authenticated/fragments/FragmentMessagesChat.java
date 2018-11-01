@@ -321,7 +321,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     public void onNewMessage(Message message) {
         // handle and add message to Realm
         message.updateDateTime();
-        if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+        String username = message.getUsername();
+        if (username != null && !username.equals(Preferences.getCurrentUser().getUsername())) {
             message.setYou(true);
         }
         CacheService.getInstance().addOrUpdateCacheMessage(message);

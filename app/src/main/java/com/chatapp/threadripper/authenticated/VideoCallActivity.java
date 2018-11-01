@@ -142,13 +142,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
     }
 
     void callingSuccessful() {
-        // String channelId;
-        // if (callerSide) {
-        //     channelId = ModelUtils.generateVideoChannelId(Preferences.getCurrentUser(), targetUser);
-        // } else {
-        //     channelId = ModelUtils.generateVideoChannelId(targetUser, Preferences.getCurrentUser());
-        // }
-
         Intent intent = new Intent(this, VideoChatViewActivity.class);
         intent.putExtra(Constants.USER_MODEL, targetUser);
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);

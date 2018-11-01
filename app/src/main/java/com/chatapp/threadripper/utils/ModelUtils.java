@@ -25,7 +25,7 @@ public class ModelUtils {
         List<String> users = new ArrayList<>();
         for (User user : conversation.getListUser()) {
             if (user == null) continue;
-            if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) continue;
+            if (Preferences.getCurrentUser().getUsername().equals(user.getUsername())) continue;
             users.add(user.getDisplayName());
         }
 
@@ -41,18 +41,22 @@ public class ModelUtils {
         if (conversation.getListUser().size() < 2) {
             // fucking conversation !!!
             if (conversation.getListUser().size() == 1) {
-                return conversation.getListUser().get(0).getPhotoUrl();
+                if (conversation.getListUser().get(0) != null) {
+                    return conversation.getListUser().get(0).getPhotoUrl();
+                }
             }
             return "";
         }
 
         if (conversation.getListUser().size() == 2) {
             User user = conversation.getListUser().get(0);
-            if (user.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            if (Preferences.getCurrentUser().getUsername().equals(user != null ? user.getUsername() : null)) {
                 // this is me, so return the other
-                return conversation.getListUser().get(1).getPhotoUrl();
+                if (conversation.getListUser().get(1) != null) {
+                    return conversation.getListUser().get(1).getPhotoUrl();
+                }
             }
-            return user.getPhotoUrl();
+            return user != null ? user.getPhotoUrl() : null;
         }
 
 
@@ -75,7 +79,7 @@ public class ModelUtils {
         if (conversation.getListUser().size() != 2) return;
         User user = null;
         if (conversation.getListUser().get(0) != null) {
-            if (conversation.getListUser().get(0).getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            if (Preferences.getCurrentUser().getUsername().equals(conversation.getListUser().get(0) != null ? conversation.getListUser().get(0).getUsername() : null)) {
                 user = conversation.getListUser().get(1);
             } else {
                 user = conversation.getListUser().get(0);
@@ -87,10 +91,6 @@ public class ModelUtils {
             user.setPrivateConversationId(conversation.getConversationId());
         }
         CacheService.getInstance().addOrUpdateCacheUser(user);
-    }
-
-    public static String generateVideoChannelId(User caller, User callee) {
-        return "Threadripper_" + caller.getUsername() + callee.getUsername();
     }
 
 }

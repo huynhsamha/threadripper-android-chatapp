@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,14 +40,12 @@ import com.chatapp.threadripper.utils.DateTimeUtils;
 import com.chatapp.threadripper.utils.FileUtils;
 import com.chatapp.threadripper.utils.ImageFilePath;
 import com.chatapp.threadripper.utils.ImageLoader;
-import com.chatapp.threadripper.utils.PathUtil;
+import com.chatapp.threadripper.utils.PathUtils;
 import com.chatapp.threadripper.utils.Preferences;
 import com.chatapp.threadripper.utils.ShowToast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.RoundedImageView;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -57,7 +54,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.zip.GZIPOutputStream;
 
 import io.realm.RealmResults;
 import retrofit2.Call;
@@ -402,14 +398,14 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         filePicked.setVisibility(View.GONE);
 
         try {
-            String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
+            String realFilePath = PathUtils.getPath(ConversationActivity.this, uriAttachFile);
             File file = new File(realFilePath);
 
             postFileToServer(file, new CallbackListener.Callback() {
                 @Override
                 public void onSuccess(String url) {
                     JsonObject json = new JsonObject();
-                    json.addProperty("filename", PathUtil.getFilename(realFilePath));
+                    json.addProperty("filename", PathUtils.getFilename(realFilePath));
                     json.addProperty("url", url);
 
                     SocketManager.getInstance().sendFile(conversationId, json.toString());
@@ -506,8 +502,10 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     void handleReceivedMessage(Message message) {
         message.updateDateTime();
-        message.setConversationAvatar(avatar);
-        if (!message.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+        String username = message.getUsername();
+        User user = CacheService.getInstance().retrieveCacheUser(username != null ? username : "");
+        message.setConversationAvatar(user != null ? user.getPhotoUrl() : "");
+        if (username != null && !username.equals(Preferences.getCurrentUser().getUsername())) {
             message.setYou(true);
         }
 
@@ -516,7 +514,7 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
             message.setLeadingBlock(true); // first message, it should be leading block
         } else {
             Message lastMessage = messages.get(messages.size() - 1); // get last message
-            if (lastMessage.getMessageId() < message.getMessageId()) {
+            if (lastMessage != null && lastMessage.getMessageId() < message.getMessageId()) {
                 // handle new message for a leading block message
                 compareDifferentTimeMessages(lastMessage, message);
             }
@@ -608,12 +606,14 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
         filePicked.setVisibility(View.VISIBLE);
         filePicked.setText("...");
 
-        Uri uri = data.getData();
-        uriAttachFile = uri;
+        uriAttachFile = data.getData();
 
         try {
-            String realFilePath = PathUtil.getPath(ConversationActivity.this, uriAttachFile);
-            String filename = PathUtil.getFilename(realFilePath);
+            String realFilePath = PathUtils.getPath(ConversationActivity.this, uriAttachFile);
+            String filename = "";
+            if (realFilePath != null) {
+                filename = PathUtils.getFilename(realFilePath);
+            }
 
             filePicked.setText(filename);
 
@@ -710,7 +710,47 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
 
     @Override
     public void onCall(User targetUser, String typeCalling, String channelId) {
-        // TODO
+        if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            // targetUser cannot be the current user
+            return;
+        }
+
+        switch (typeCalling) {
+            case Constants.CALLEE_ACCEPT_REQUEST_CALL:
+                // don't have this case
+                break;
+
+            case Constants.CALLEE_REJECT_REQUEST_CALL:
+                // don't have this case
+                break;
+
+            case Constants.CALLER_REQUEST_CALLING:
+                // callee receive a calling request
+
+                onCallComing(targetUser, channelId);
+
+                break;
+
+            case Constants.CALLER_CANCEL_REQUEST:
+                // callee receive a cancel for calling request
+                break;
+        }
+    }
+
+    void onCallComing(User targetUser, String channelId) {
+        Intent intent = new Intent(this, VideoCallActivity.class);
+
+        User user = new User();
+        user.setUsername(targetUser.getUsername());
+        user.setPhotoUrl(targetUser.getPhotoUrl());
+        user.setDisplayName(targetUser.getDisplayName());
+        user.setPrivateConversationId(targetUser.getPrivateConversationId());
+
+        intent.putExtra(Constants.IS_CALLER_SIDE, false); // user who start a calling is a caller
+        intent.putExtra(Constants.USER_MODEL, user);
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
+
+        this.startActivity(intent);
     }
 
 

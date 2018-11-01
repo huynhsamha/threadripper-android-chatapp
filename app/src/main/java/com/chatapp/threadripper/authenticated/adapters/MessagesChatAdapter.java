@@ -75,7 +75,10 @@ public class MessagesChatAdapter extends RealmRecyclerViewAdapter<Conversation, 
             }
 
             String username = lastMessage.getUsername();
-            if (username.equals(Preferences.getCurrentUser().getUsername())) username = "You";
+            if (username == null) username = "";
+            else {
+                if (username.equals(Preferences.getCurrentUser().getUsername())) username = "You";
+            }
 
             switch (lastMessage.getType()) {
                 case Message.MessageType.TEXT:

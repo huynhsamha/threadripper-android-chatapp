@@ -1,6 +1,8 @@
 package com.chatapp.threadripper.authenticated.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,11 +22,16 @@ import com.chatapp.threadripper.api.ApiService;
 import com.chatapp.threadripper.api.CacheService;
 import com.chatapp.threadripper.authenticated.LayoutFragmentActivity;
 import com.chatapp.threadripper.authenticated.SearchUsersActivity;
+import com.chatapp.threadripper.authenticated.VideoCallActivity;
 import com.chatapp.threadripper.authenticated.adapters.VideoCallListAdapter;
 import com.chatapp.threadripper.models.Conversation;
 import com.chatapp.threadripper.models.ErrorResponse;
+import com.chatapp.threadripper.models.Message;
 import com.chatapp.threadripper.models.User;
+import com.chatapp.threadripper.receivers.SocketReceiver;
+import com.chatapp.threadripper.utils.Constants;
 import com.chatapp.threadripper.utils.ModelUtils;
+import com.chatapp.threadripper.utils.Preferences;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -36,13 +43,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class FragmentVideoCallList extends Fragment {
+public class FragmentVideoCallList extends Fragment implements SocketReceiver.OnCallbackListener {
+
+    Context mContext;
+
     private RecyclerView mRecyclerView;
     private VideoCallListAdapter mAdapter;
     TextView tvNoAnyFriends;
     private SwipeRefreshLayout swipeContainer;
 
     private RealmResults<User> friends;
+
+    IntentFilter mIntentFilter;
+    SocketReceiver mSocketReceiver;
 
     public FragmentVideoCallList() {
         setHasOptionsMenu(true);
@@ -96,6 +109,8 @@ public class FragmentVideoCallList extends Fragment {
 
         fetchFriends();
 
+        initSocketReceiver();
+
         return view;
     }
 
@@ -138,6 +153,34 @@ public class FragmentVideoCallList extends Fragment {
         });
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mContext = context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().registerReceiver(mSocketReceiver, mIntentFilter);
+    }
+
+    void initSocketReceiver() {
+        mSocketReceiver = new SocketReceiver();
+
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_NEW_MESSAGE);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_JOIN);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_LEAVE);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_TYPING);
+        // mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_READ);
+        mIntentFilter.addAction(Constants.ACTION_STRING_RECEIVER_CALL);
+
+        mSocketReceiver.setListener(this);
+    }
+
     void showError(String msg) {
         ((LayoutFragmentActivity) getActivity()).ShowErrorDialog(msg);
     }
@@ -164,4 +207,66 @@ public class FragmentVideoCallList extends Fragment {
 
         super.onDestroy();
     }
+
+    @Override
+    public void onNewMessage(Message message) {
+        // no handle
+    }
+
+    @Override
+    public void onTyping(String conversationId, String username, boolean typing) {
+        // no handle
+    }
+
+    @Override
+    public void onRead(String conversationId, String username) {
+        // no handle
+    }
+
+    @Override
+    public void onCall(User targetUser, String typeCalling, String channelId) {
+
+        if (targetUser.getUsername().equals(Preferences.getCurrentUser().getUsername())) {
+            // targetUser cannot be the current user
+            return;
+        }
+
+        switch (typeCalling) {
+            case Constants.CALLEE_ACCEPT_REQUEST_CALL:
+                // don't have this case
+                break;
+
+            case Constants.CALLEE_REJECT_REQUEST_CALL:
+                // don't have this case
+                break;
+
+            case Constants.CALLER_REQUEST_CALLING:
+                // callee receive a calling request
+
+                onCallComing(targetUser, channelId);
+
+                break;
+
+            case Constants.CALLER_CANCEL_REQUEST:
+                // callee receive a cancel for calling request
+                break;
+        }
+    }
+
+    void onCallComing(User targetUser, String channelId) {
+        Intent intent = new Intent(mContext, VideoCallActivity.class);
+
+        User user = new User();
+        user.setUsername(targetUser.getUsername());
+        user.setPhotoUrl(targetUser.getPhotoUrl());
+        user.setDisplayName(targetUser.getDisplayName());
+        user.setPrivateConversationId(targetUser.getPrivateConversationId());
+
+        intent.putExtra(Constants.IS_CALLER_SIDE, false); // user who start a calling is a caller
+        intent.putExtra(Constants.USER_MODEL, user);
+        intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
+
+        mContext.startActivity(intent);
+    }
+
 }
