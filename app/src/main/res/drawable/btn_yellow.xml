@@ -6,7 +6,7 @@
     tools:targetApi="lollipop">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="80dp"/>
+            <corners android:radius="80dp" />
             <solid android:color="@color/colorYellow" />
         </shape>
     </item>

@@ -73,31 +73,6 @@
         <item name="android:textAppearance">@style/Light</item>
     </style>
 
-    <style name="h3Info">
-        <item name="android:textSize">@dimen/h3</item>
-        <item name="android:textColor">@color/colorTextInfo</item>
-    </style>
-
-    <style name="ButtonPink">
-        <item name="android:textSize">@dimen/h3</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:background">@drawable/btn_pink</item>
-        <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:padding">@dimen/space15</item>
-    </style>
-
-    <style name="ButtonGrey">
-        <item name="android:textSize">@dimen/h3</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:background">@drawable/btn_grey</item>
-        <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:padding">@dimen/space15</item>
-    </style>
-
     <style name="ButtonYellow">
         <item name="android:textSize">@dimen/h3</item>
         <item name="android:textColor">@android:color/white</item>
@@ -106,32 +81,6 @@
         <item name="android:gravity">center</item>
         <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
         <item name="android:padding">@dimen/space15</item>
-    </style>
-
-    <style name="ButtonOutlineAccentCorner">
-        <item name="android:textSize">@dimen/h5</item>
-        <item name="android:textColor">@color/colorYellow</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:background">@drawable/btn_accent_outline</item>
-        <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:paddingTop">@dimen/space5</item>
-        <item name="android:paddingBottom">@dimen/space5</item>
-        <item name="android:paddingLeft">@dimen/space20</item>
-        <item name="android:paddingRight">@dimen/space20</item>
-    </style>
-
-    <style name="ButtonOutlineGreyCorner">
-        <item name="android:textSize">@dimen/h5</item>
-        <item name="android:textColor">@color/colorTextHint</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:background">@drawable/btn_grey_outline</item>
-        <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:paddingTop">@dimen/space5</item>
-        <item name="android:paddingBottom">@dimen/space5</item>
-        <item name="android:paddingLeft">@dimen/space20</item>
-        <item name="android:paddingRight">@dimen/space20</item>
     </style>
 
 
@@ -148,22 +97,7 @@
         <item name="android:paddingRight">@dimen/space20</item>
     </style>
 
-    <style name="ButtonTransparent">
-        <item name="android:textSize">@dimen/h3</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:background">@drawable/btn_transparent</item>
-        <item name="android:gravity">center</item>
-        <item name="android:stateListAnimator" tools:targetApi="LOLLIPOP">@null</item>
-        <item name="android:padding">@dimen/space15</item>
-    </style>
-
     <style name="Light" parent="android:TextAppearance">
-        <item name="fontPath">font/Nunito-Regular.ttf</item>
-    </style>
-
-    <style name="LightNav" parent="android:TextAppearance">
-        <item name="android:textSize">@dimen/h3</item>
         <item name="fontPath">font/Nunito-Regular.ttf</item>
     </style>
 
@@ -179,7 +113,4 @@
         <item name="fontPath">font/Quicksand-Medium.ttf</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

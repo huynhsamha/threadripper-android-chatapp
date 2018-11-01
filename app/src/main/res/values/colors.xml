@@ -7,14 +7,12 @@
     <color name="colorTextHint">#cacaca</color>
     <color name="colorTextInfo">#9b9b9b</color>
     <color name="colorGreen">#56c203</color>
-    <color name="navColor">#80FFFFFF</color>
     <color name="colorTextWhite">#ffffff</color>
     <color name="colorYellow">#ff9a5f</color>
     <color name="colorWhiteDark">#fdfdfd</color>
     <color name="colorRippleView">#ff7f09</color>
     <color name="colorTargetPrompt">#dee10101</color>
     <color name="colorTargetPromptFocal">#1278d7</color>
-
 
 
     <!--Override Sweet Alert Confirm -->
@@ -40,5 +38,4 @@
 
     <!-- video call -->
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
 </resources>
