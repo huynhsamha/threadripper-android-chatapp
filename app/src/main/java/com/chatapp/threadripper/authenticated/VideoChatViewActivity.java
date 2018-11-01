@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.utils.Constants;
+import com.chatapp.threadripper.utils.ShowToast;
 
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
@@ -90,9 +91,17 @@ public class VideoChatViewActivity extends AppCompatActivity {
     }
 
     private void initAgoraEngine() {
-        initializeAgoraEngine();
-        setupVideoProfile();
-        setupLocalVideo();
+        try {
+
+            // TODO: try/catch to avoid crashing with Agoda :((
+
+            initializeAgoraEngine();
+            setupVideoProfile();
+            setupLocalVideo();
+
+        } catch (Exception e) {
+            ShowToast.lengthShort(this, e.getMessage());
+        }
     }
 
     @Override
@@ -179,7 +188,9 @@ public class VideoChatViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
 
-            throw new RuntimeException("NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(e));
+            // TODO: avoid crashing :((
+            ShowToast.lengthShort(this, e.getMessage());
+            // throw new RuntimeException("NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(e));
         }
     }
 

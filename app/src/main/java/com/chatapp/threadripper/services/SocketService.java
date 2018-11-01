@@ -32,6 +32,7 @@ public class SocketService extends Service {
 
     private StompClient client;
     private SocketBinder binder = new SocketBinder();
+    private boolean closeSocket = false;
 
     public SocketService() {
     }
@@ -130,6 +131,10 @@ public class SocketService extends Service {
                             break;
                         case CLOSED:
                             Log.d(TAG, "initSocket: CLOSED" + lifecycleEvent.getMessage());
+                            if (!closeSocket) {
+                                // not force close socket, try reconnect socket
+                                initSocket();
+                            }
                             break;
                     }
                 });
@@ -198,7 +203,8 @@ public class SocketService extends Service {
         }
     }
 
-    public void disconnectSocket() {
+    public void disconnectSocket() { // force close socket
+        closeSocket = true;
         try {
             client.disconnect();
 

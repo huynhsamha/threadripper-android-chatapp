@@ -3,6 +3,7 @@ package com.chatapp.threadripper.authenticated.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -125,10 +126,21 @@ public class ConversationAdapter extends RealmRecyclerViewAdapter<Message, Recyc
                 break;
 
             case Message.MessageType.FILE:
+            case Message.MessageType.CALL:
                 vh.getFileContent().setVisibility(View.VISIBLE);
                 vh.getChatText().setVisibility(View.GONE);
                 vh.getRivChatImage().setVisibility(View.GONE);
 
+                // Case CALL
+                if (msg.getType().equals(Message.MessageType.CALL)) {
+                    vh.getFileContent().setText("A call ended");
+                    vh.getFileContent().setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.ic_action_missed_video_call_accent), null, null, null);
+                    break;
+                }
+
+                vh.getFileContent().setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.ic_action_attachment_horizontal), null, null, null);
+
+                // Case FILE
                 if (msg.getContent() == null) {
                     vh.getFileContent().setText("[Error file]");
                 } else {
