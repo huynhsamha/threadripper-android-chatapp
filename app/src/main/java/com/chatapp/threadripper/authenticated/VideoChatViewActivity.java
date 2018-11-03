@@ -17,14 +17,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.utils.Constants;
-import com.chatapp.threadripper.utils.ShowToast;
 
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
-import io.agora.rtc.video.VideoEncoderConfiguration;
+
+import io.agora.rtc.video.VideoEncoderConfiguration; // 2.3.0 and later
 
 public class VideoChatViewActivity extends AppCompatActivity {
 
@@ -32,104 +33,145 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQ_ID = 22;
 
-    // permission WRITE_EXTERNAL_STORAGE is not mandatory for Agora RTC SDK,
-    // just in case if you wanna save logs to external sdcard
-
-    private static final String[] REQUESTED_PERMISSIONS = {
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+    // permission WRITE_EXTERNAL_STORAGE is not mandatory for Agora RTC SDK, just incase if you wanna save logs to external sdcard
+    private static final String[] REQUESTED_PERMISSIONS = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private RtcEngine mRtcEngine;
+
+    private boolean videoMode;
 
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
-            runOnUiThread(() -> setupRemoteVideo(uid));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupRemoteVideo(uid);
+                }
+            });
         }
 
         @Override
         public void onUserOffline(int uid, int reason) {
-            runOnUiThread(() -> onRemoteUserLeft());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    onRemoteUserLeft();
+                }
+            });
         }
 
         @Override
         public void onUserMuteVideo(final int uid, final boolean muted) {
-            runOnUiThread(() -> onRemoteUserVideoMuted(uid, muted));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    onRemoteUserVideoMuted(uid, muted);
+                }
+            });
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_video_chat_view);
 
-        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+        if (!(checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
                 checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
-                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)))
+            return;
 
-            initAgoraEngine();
+        initAgoraEngine();
 
-            Intent intent = getIntent();
-            String channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-            joinChannel(channel);
+        Intent intent = getIntent();
+        String channel =
+                intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN); // production
+//                "channel"; // debug
+
+        this.videoMode =
+                intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
+//                true; // debug
+
+        if (!this.videoMode) {
+            enableVideoMode(false);
         }
+        else {
+            enableVideoMode(true);
+        }
+        joinChannel(channel);
+    }
+
+    private void enableVideoMode(boolean enable) {
+        int visibility = enable ? View.VISIBLE : View.GONE;
+
+        ImageView audioVideoImg = (ImageView) findViewById(R.id.audioVideoImg);
+        ImageView changeCameraImg = (ImageView) findViewById(R.id.changeCameraImg);
+        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
+        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
+
+        changeCameraImg.setVisibility(visibility);
+        surfaceView.setVisibility(visibility);
+        container.setVisibility(visibility);
+
+        if (enable) {
+            mRtcEngine.enableVideo();
+            audioVideoImg.setImageResource(R.drawable.video);
+
+        }
+        else {
+            mRtcEngine.disableVideo();
+            audioVideoImg.setImageResource(R.drawable.audio_only);
+            changeCameraImg.setVisibility(View.GONE);
+        }
+
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
         Log.i(LOG_TAG, "checkSelfPermission " + permission + " " + requestCode);
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+                != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, requestCode);
+            ActivityCompat.requestPermissions(this,
+                    REQUESTED_PERMISSIONS,
+                    requestCode);
             return false;
         }
         return true;
     }
 
     private void initAgoraEngine() {
-        try {
-
-            // TODO: try/catch to avoid crashing with Agoda :((
-
-            initializeAgoraEngine();
-            setupVideoProfile();
-            setupLocalVideo();
-
-        } catch (Exception e) {
-            ShowToast.lengthShort(this, e.getMessage());
-        }
+        initializeAgoraEngine();
+        setupVideoProfile();
+        setupLocalVideo();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         Log.i(LOG_TAG, "onRequestPermissionsResult " + grantResults[0] + " " + requestCode);
 
         switch (requestCode) {
             case PERMISSION_REQ_ID: {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED ||
-                        grantResults[1] != PackageManager.PERMISSION_GRANTED ||
-                        grantResults[2] != PackageManager.PERMISSION_GRANTED) {
-
-                    showLongToast("Need permissions " +
-                            Manifest.permission.RECORD_AUDIO + "/" +
-                            Manifest.permission.CAMERA + "/" +
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED || grantResults[2] != PackageManager.PERMISSION_GRANTED) {
+                    showLongToast("Need permissions " + Manifest.permission.RECORD_AUDIO + "/" + Manifest.permission.CAMERA + "/" + Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     finish();
-
-                } else {
-                    initAgoraEngine();
+                    break;
                 }
 
+                initAgoraEngine();
                 break;
             }
         }
     }
 
     public final void showLongToast(final String msg) {
-        this.runOnUiThread(() -> Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show());
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -186,9 +228,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
 
-            // TODO: avoid crashing :((
-            ShowToast.lengthShort(this, e.getMessage());
-            // throw new RuntimeException("NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(e));
+            throw new RuntimeException("NEED TO check rtc sdk init fatal error\n" + Log.getStackTraceString(e));
         }
     }
 
@@ -246,67 +286,8 @@ public class VideoChatViewActivity extends AppCompatActivity {
         }
     }
 
-    // public void onLocalViewClick(View view) {
-    //     // Toggle local view visibility
-    //     FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
-    //     boolean isVisible = container.getVisibility() == View.VISIBLE;
-    //     enableLocalView(!isVisible);
-    // }
-
-    private void enableLocalView(boolean enable) {
-        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
-
-        int visibility = enable ? View.VISIBLE : View.INVISIBLE;
-        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
-        container.setVisibility(visibility);
-        surfaceView.setVisibility(visibility);
-    }
-
-    // private void enableRemoteView(boolean enable) {
-    //     FrameLayout container = (FrameLayout) findViewById(R.id.remote_video_view_container);
-    //     int visibility = (enable ? View.VISIBLE : View.GONE);
-    //     SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
-    //     surfaceView.setVisibility(visibility);
-    // }
-
-
     public void onAudioVideoChangeClick(View view) {
-        ImageView iv = (ImageView) view;
-        iv.setSelected(!iv.isSelected());
-        boolean audioMode = iv.isSelected();
-
-        if (audioMode) {
-            // Disable all video streams
-            iv.setImageResource(R.drawable.audio_only);  // show video icon, if user want to change to video
-            mRtcEngine.muteLocalVideoStream(true);
-            mRtcEngine.muteAllRemoteVideoStreams(true);
-            this.enableLocalView(false);
-            // this.enableRemoteView(false);
-        } else {
-            iv.setImageResource(R.drawable.video);
-            mRtcEngine.muteLocalVideoStream(false);
-            mRtcEngine.muteAllRemoteVideoStreams(false);
-            this.enableLocalView(true);
-            // this.enableRemoteView(true);
-        }
-    }
-
-    public void onQualityButtonClick(View view) {
-        final String[] qualities = {"360p", "720p"};
-        Button button = (Button) view;
-        if (button.getText().toString().equals(qualities[0])) {
-            mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_1280x720, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
-                    VideoEncoderConfiguration.STANDARD_BITRATE,
-                    VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
-
-            button.setText(qualities[1]);
-        } else if (button.getText().toString().equals(qualities[1])) {
-            mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(VideoEncoderConfiguration.VD_640x360, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
-                    VideoEncoderConfiguration.STANDARD_BITRATE,
-                    VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT));
-
-            button.setText(qualities[0]);
-        }
-
+        this.videoMode = !this.videoMode;
+        this.enableVideoMode(this.videoMode);
     }
 }
