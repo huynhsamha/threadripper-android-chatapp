@@ -2,6 +2,7 @@ package com.chatapp.threadripper.authenticated;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
@@ -39,6 +41,8 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
     private boolean videoMode;
     private String channel;
+    enum LocalViewSize {NORMAL, BIG, SMALL};
+    private LocalViewSize localViewSize = LocalViewSize.NORMAL;
 
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
@@ -228,6 +232,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
         surfaceView.setZOrderMediaOverlay(true);
         container.addView(surfaceView);
         mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
+//        surfaceView.setOnClickListener(view -> onLocalVideoClick(view));
     }
 
     private void joinChannel(String channel) {
@@ -271,5 +276,33 @@ public class VideoChatViewActivity extends AppCompatActivity {
     public void onAudioVideoChangeClick(View view) {
         this.videoMode = !this.videoMode;
         this.enableVideoMode(this.videoMode);
+    }
+
+    public void onLocalVideoClick(View view) {
+//        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.local_video_view_container);
+        FrameLayout frameLayout = (FrameLayout) view;
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) frameLayout.getLayoutParams();
+
+        if (this.localViewSize == LocalViewSize.NORMAL) { // normal view to smaller view
+            this.localViewSize = LocalViewSize.SMALL;
+            params.height /= 2;
+            params.width /= 2;
+        }
+        else if (this.localViewSize == LocalViewSize.SMALL) { // smaller view to larger view
+            this.localViewSize = LocalViewSize.BIG;
+            params.height *= 3;
+            params.width *= 3;
+        }
+        else {
+            this.localViewSize = LocalViewSize.NORMAL;
+            params.height /= 1.5;
+            params.width /= 1.5;
+        }
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        params.addRule(RelativeLayout.ALIGN_END, R.id.remote_video_view_container);
+        params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.remote_video_view_container);
+
+
+        frameLayout.setLayoutParams(params);
     }
 }
