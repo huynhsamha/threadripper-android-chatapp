@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -39,36 +38,22 @@ public class VideoChatViewActivity extends AppCompatActivity {
     private RtcEngine mRtcEngine;
 
     private boolean videoMode;
+    private String channel;
 
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setupRemoteVideo(uid);
-                }
-            });
+            runOnUiThread(() -> setupRemoteVideo(uid));
         }
 
         @Override
         public void onUserOffline(int uid, int reason) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    onRemoteUserLeft();
-                }
-            });
+            runOnUiThread(() -> onRemoteUserLeft());
         }
 
         @Override
         public void onUserMuteVideo(final int uid, final boolean muted) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    onRemoteUserVideoMuted(uid, muted);
-                }
-            });
+            runOnUiThread(() -> onRemoteUserVideoMuted(uid, muted));
         }
     };
 
@@ -82,47 +67,40 @@ public class VideoChatViewActivity extends AppCompatActivity {
                 checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)))
             return;
 
-        initAgoraEngine();
 
+        setupAgoraEngine();
+    }
+
+    private void getIntentData(){
         Intent intent = getIntent();
-        String channel =
-                intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN); // production
-//                "channel"; // debug
+        this.channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
+        if (this.channel == null || this.channel.isEmpty())
+            this.channel = "dummy-channel-for-debugging";
 
         this.videoMode =
-                intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false);
-//                true; // debug
-
-        if (!this.videoMode) {
-            enableVideoMode(false);
-        }
-        else {
-            enableVideoMode(true);
-        }
-        joinChannel(channel);
+                intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, true); // default is audio
     }
 
     private void enableVideoMode(boolean enable) {
-        int visibility = enable ? View.VISIBLE : View.GONE;
 
         ImageView audioVideoImg = (ImageView) findViewById(R.id.audioVideoImg);
         ImageView changeCameraImg = (ImageView) findViewById(R.id.changeCameraImg);
         FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
         SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
 
+        int visibility = enable ? View.VISIBLE : View.GONE;
         changeCameraImg.setVisibility(visibility);
         surfaceView.setVisibility(visibility);
         container.setVisibility(visibility);
+        audioVideoImg.setVisibility(View.GONE);
 
         if (enable) {
             mRtcEngine.enableVideo();
-            audioVideoImg.setImageResource(R.drawable.video);
-
+//            audioVideoImg.setImageResource(R.drawable.video);
         }
         else {
             mRtcEngine.disableVideo();
-            audioVideoImg.setImageResource(R.drawable.audio_only);
-            changeCameraImg.setVisibility(View.GONE);
+//            audioVideoImg.setImageResource(R.drawable.audio_only);
         }
 
     }
@@ -140,10 +118,19 @@ public class VideoChatViewActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initAgoraEngine() {
+    private void setupAgoraEngine() {
+        getIntentData();
         initializeAgoraEngine();
         setupVideoProfile();
         setupLocalVideo();
+
+        if (this.videoMode) {
+            enableVideoMode(true);
+        }
+        else {
+            enableVideoMode(false);
+        }
+        joinChannel(this.channel);
     }
 
     @Override
@@ -159,19 +146,14 @@ public class VideoChatViewActivity extends AppCompatActivity {
                     break;
                 }
 
-                initAgoraEngine();
+                setupAgoraEngine();
                 break;
             }
         }
     }
 
     public final void showLongToast(final String msg) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-            }
-        });
+        this.runOnUiThread(() -> Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show());
     }
 
     @Override

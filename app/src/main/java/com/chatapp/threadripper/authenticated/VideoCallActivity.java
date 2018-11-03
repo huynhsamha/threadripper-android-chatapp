@@ -59,9 +59,8 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         initSocketReceiver();
 
         if (callerSide) {
-            SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId);
-        } else {
-            // waiting the callee accept or not by send socket
+            SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId); // 1
+//            showVideoCall();
         }
     }
 
@@ -135,18 +134,17 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         } else {
             // the callee accept the calling
             SocketManager.getInstance().sendCalling(targetUser, Constants.CALLEE_ACCEPT_REQUEST_CALL, channelId);
-            callingSuccessful();
+            showVideoCall();
             finish();
         }
     }
 
-    void callingSuccessful() {
+    void showVideoCall() {
         Intent intent = new Intent(this, VideoChatViewActivity.class);
         intent.putExtra(Constants.USER_MODEL, targetUser);
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
         intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, callingAudioOrVideo);
         startActivity(intent);
-        finish();
     }
 
     private void changeStatusBarColor() {
@@ -186,9 +184,8 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         }
 
         switch (typeCalling) {
-            case Constants.CALLEE_ACCEPT_REQUEST_CALL:
-                callingSuccessful();
-
+            case Constants.CALLEE_ACCEPT_REQUEST_CALL: // caller side
+                showVideoCall();
                 break;
 
             case Constants.CALLEE_REJECT_REQUEST_CALL:
