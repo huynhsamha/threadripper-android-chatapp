@@ -55,6 +55,13 @@ public class SocketManager {
 
     }
 
+    /**
+     * Socket is disconnect, but service still be running
+     */
+    public void onlyDisconnectSocket() {
+        mSocketService.disconnectSocket();
+    }
+
     public void connectSocketService(Context context) {
         Intent intent = new Intent(context, SocketService.class);
         context.bindService(intent, mSocketServiceConnection, Context.BIND_AUTO_CREATE);
@@ -92,15 +99,6 @@ public class SocketManager {
     public boolean leave() { // leave the socket
         Message message = new Message();
         message.setType(Message.MessageType.LEAVE);
-
-        return pushMessage(message);
-    }
-
-    public boolean readMessage(String conversationId, String lastMessageId) {
-        Message message = new Message();
-        message.setType(Message.MessageType.READ);
-        message.setConversationId(conversationId);
-        message.setContent(lastMessageId);
 
         return pushMessage(message);
     }

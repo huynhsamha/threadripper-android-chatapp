@@ -97,14 +97,6 @@ public class SocketService extends Service {
         sendBroadcast(intent);
     }
 
-    void sendBroadcastRead(Message message) {
-        Intent intent = new Intent();
-        intent.setAction(Constants.ACTION_STRING_RECEIVER_READ);
-        intent.putExtra(Constants.CONVERSATION_ID, message.getConversationId());
-        intent.putExtra(Constants.USER_USERNAME, message.getUsername());
-        sendBroadcast(intent);
-    }
-
     void sendBroadcastCall(Message message) {
         Intent intent = new Intent();
         intent.setAction(Constants.ACTION_STRING_RECEIVER_CALL);
@@ -128,6 +120,10 @@ public class SocketService extends Service {
                             break;
                         case ERROR:
                             Log.d(TAG, "initSocket: ERROR" + lifecycleEvent.getException());
+                            if (!closeSocket) {
+                                // not force close socket, try reconnect socket
+                                initSocket();
+                            }
                             break;
                         case CLOSED:
                             Log.d(TAG, "initSocket: CLOSED" + lifecycleEvent.getMessage());
@@ -178,7 +174,6 @@ public class SocketService extends Service {
                             break;
 
                         case Message.MessageType.READ:
-                            // sendBroadcastRead(message);
                             break;
 
                         case Message.MessageType.TYPING:
