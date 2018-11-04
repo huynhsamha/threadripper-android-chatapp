@@ -27,9 +27,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity implements SocketReceiver.OnCallbackListener {
 
+
     /**
      * Screen for waiting 2 sides accept calling
      */
+
+    /**
+     * This screen is only start once time
+     * use isActive for check before startActivity()
+     */
+    private static boolean isActive = false;
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
@@ -61,19 +68,28 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
             SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId); // 1
 //            showVideoCall();
         }
+
+        isActive = true;
     }
 
     private boolean decodeVideoMode(String encodedText) {
         String code = encodedText.substring(encodedText.length() - 5);
-        Toast.makeText(this, "Video or audio: " + code, Toast.LENGTH_SHORT).show();
         return code.equals("video");
     }
+
+    public static boolean isAvailable() { return !isActive; }
 
     @Override
     public void onResume() {
         super.onResume();
 
         registerReceiver(mSocketReceiver, mIntentFilter);
+    }
+
+    @Override
+    public void onDestroy() {
+        isActive = false;
+        super.onDestroy();
     }
 
     void getIntentData() {

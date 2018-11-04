@@ -733,6 +733,8 @@ public class ConversationActivity extends BaseMainActivity implements SocketRece
     }
 
     void onCallComing(User targetUser, String channelId) {
+        if (!VideoCallActivity.isAvailable()) return;
+
         Intent intent = new Intent(this, VideoCallActivity.class);
 
         User user = new User();

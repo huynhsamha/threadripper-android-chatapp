@@ -79,7 +79,7 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        friends = CacheService.getInstance().retrieveCacheFriends();
+        friends = CacheService.getInstance().retrieveCacheFriendsOnline();
         mAdapter = new VideoCallListAdapter(getContext(), friends);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -254,6 +254,8 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
     }
 
     void onCallComing(User targetUser, String channelId) {
+        if (!VideoCallActivity.isAvailable()) return;
+
         Intent intent = new Intent(mContext, VideoCallActivity.class);
 
         User user = new User();

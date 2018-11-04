@@ -372,6 +372,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
     }
 
     void onCallComing(User targetUser, String channelId) {
+        if (!VideoCallActivity.isAvailable()) return;
+
         Intent intent = new Intent(mContext, VideoCallActivity.class);
 
         User user = new User();
