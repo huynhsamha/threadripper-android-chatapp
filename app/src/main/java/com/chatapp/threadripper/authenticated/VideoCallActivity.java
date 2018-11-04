@@ -53,21 +53,22 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         }
         changeStatusBarColor();
         getIntentData();
+        Toast.makeText(this, "middle " + channelId, Toast.LENGTH_SHORT).show();
         initViews();
         initSocketReceiver();
 
-        // decode to get video or audio mode
         if (callerSide) {
-            SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId); // 1
-//            showVideoCall();
+            SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId);
         }
     }
 
-    private boolean decodeVideoMode(String encodedText) {
-        String code = encodedText.substring(encodedText.length() - 5);
-        Toast.makeText(this, "Video or audio: " + code, Toast.LENGTH_SHORT).show();
-        return code.equals("video");
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
+
+
 
     @Override
     public void onResume() {
@@ -81,8 +82,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         callerSide = intent.getBooleanExtra(Constants.IS_CALLER_SIDE, false);
         targetUser = (User) intent.getSerializableExtra(Constants.USER_MODEL);
         channelId = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-//        isVideoMode = intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false); // default is call audio
-        isVideoMode = decodeVideoMode(channelId);
     }
 
     void initSocketReceiver() {
@@ -149,7 +148,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         Intent intent = new Intent(this, VideoChatViewActivity.class);
         intent.putExtra(Constants.USER_MODEL, targetUser);
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, isVideoMode);
         startActivity(intent);
     }
 
@@ -192,6 +190,7 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         switch (typeCalling) {
             case Constants.CALLEE_ACCEPT_REQUEST_CALL: // caller side
                 showVideoCall();
+                finish();
                 break;
 
             case Constants.CALLEE_REJECT_REQUEST_CALL:

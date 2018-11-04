@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
@@ -79,7 +80,6 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
 
         intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
         intent.putExtra(Constants.USER_MODEL, user);
-//        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, callVideoOrAudio);
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, encode(channelId, callVideoOrAudio));
 
         mContext.startActivity(intent);
@@ -87,8 +87,9 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
 
     private String encode(String channelId, boolean isVideoMode) {
         if (isVideoMode)
-            channelId += "_video";
-        else channelId += "_audio";
+            channelId += "_1";
+        else channelId += "_0";
+        Toast.makeText(mContext, "start " + channelId, Toast.LENGTH_SHORT).show();
         return channelId;
     }
 

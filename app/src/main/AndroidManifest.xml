@@ -56,12 +56,15 @@
             android:theme="@style/AppThemeFull" />
         <activity
             android:name=".authenticated.VideoCallActivity"
-            android:theme="@style/AppThemeFull" />
+            android:theme="@style/AppThemeFull"
+            android:launchMode="singleTask" />
         <activity
             android:name=".authenticated.PhotoViewActivity"
             android:theme="@style/AppThemeFull" />
 
-        <activity android:name=".authenticated.VideoChatViewActivity" />
+        <activity
+            android:name=".authenticated.VideoChatViewActivity"
+            android:launchMode="singleTask" />
 
         <service
             android:name=".services.SocketService"
