@@ -217,6 +217,26 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         });
     }
 
+    void updateStateConversations() {
+        if (conversations.isEmpty()) {
+            tvNoAnyConversations.setVisibility(View.VISIBLE);
+            mRcvConversations.setVisibility(View.GONE);
+        } else {
+            tvNoAnyConversations.setVisibility(View.GONE);
+            mRcvConversations.setVisibility(View.VISIBLE);
+        }
+    }
+
+    void updateStateOnlineFriends() {
+        if (onlineFriends.isEmpty()) {
+            tvNoAnyFriends.setVisibility(View.VISIBLE);
+            mRcvHorizontalAvatar.setVisibility(View.GONE);
+        } else {
+            tvNoAnyFriends.setVisibility(View.GONE);
+            mRcvHorizontalAvatar.setVisibility(View.VISIBLE);
+        }
+    }
+
     void fetchFriends() {
 
         ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
@@ -239,17 +259,23 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                         showError(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        showError(e.getMessage());
                     }
                 }
 
+                updateStateOnlineFriends();
                 swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Conversation>> call, Throwable t) {
-                showError(t.getMessage());
-                swipeContainer.setRefreshing(false);
+                try {
+                    showError(t.getMessage());
+                    swipeContainer.setRefreshing(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    updateStateOnlineFriends();
+                }
             }
         });
 
@@ -285,6 +311,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
                 }
 
+                updateStateConversations();
                 swipeContainer.setRefreshing(false);
             }
 
@@ -295,6 +322,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     swipeContainer.setRefreshing(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    updateStateConversations();
                 }
             }
         });

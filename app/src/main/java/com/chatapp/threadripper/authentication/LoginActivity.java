@@ -99,11 +99,10 @@ public class LoginActivity extends BaseActivity {
                         LoginActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        LoginActivity.this.ShowErrorDialog(e.getMessage());
 
                         // For Test
-                        startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
-                        finish();
+                        // startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+                        // finish();
                     }
                 }
             }
@@ -111,11 +110,16 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                LoginActivity.this.ShowErrorDialog(t.getMessage());
+
+                try {
+                    LoginActivity.this.ShowErrorDialog(t.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 // For Test
-                startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
-                finish();
+                // startActivity(new Intent(LoginActivity.this, LayoutFragmentActivity.class));
+                // finish();
             }
         });
     }

@@ -93,6 +93,9 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
             }
         });
 
+        tvNoAnyFriends.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+
         // Pull to refresh
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
@@ -112,6 +115,16 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
         initSocketReceiver();
 
         return view;
+    }
+
+    void updateStateFriends() {
+        if (friends.isEmpty()) {
+            tvNoAnyFriends.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            tvNoAnyFriends.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     void fetchFriends() {
@@ -140,8 +153,8 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
                     }
                 }
 
+                updateStateFriends();
                 swipeContainer.setRefreshing(false);
-
             }
 
             @Override
@@ -151,6 +164,8 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
                     swipeContainer.setRefreshing(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    updateStateFriends();
                 }
             }
         });

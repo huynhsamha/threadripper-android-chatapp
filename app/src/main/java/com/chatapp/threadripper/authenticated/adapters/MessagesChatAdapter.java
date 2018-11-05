@@ -68,7 +68,7 @@ public class MessagesChatAdapter extends RealmRecyclerViewAdapter<Conversation, 
         } else {
             vh.tvTime.setVisibility(View.VISIBLE);
             if (lastMessage.getDateTime() != null) {
-                vh.tvTime.setText(DateTimeUtils.formatBestDateTime(lastMessage.getDateTime()));
+                vh.tvTime.setText(DateTimeUtils.formatBestShortDateTime(lastMessage.getDateTime()));
             }
 
             String username = lastMessage.getUsername();

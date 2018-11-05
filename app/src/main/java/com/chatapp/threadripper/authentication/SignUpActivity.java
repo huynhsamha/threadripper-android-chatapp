@@ -65,7 +65,7 @@ public class SignUpActivity extends BaseActivity {
         if (email.isEmpty()) throw new Exception("Email can't be empty");
         if (displayName.isEmpty()) throw new Exception("Display name can't be empty");
         if (password.isEmpty()) throw new Exception("Password can't be empty");
-        if (confirmPassword.equals(password) == false)
+        if (!confirmPassword.equals(password))
             throw new Exception("Confirm password isn't match");
     }
 
@@ -112,7 +112,6 @@ public class SignUpActivity extends BaseActivity {
                         SignUpActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        SignUpActivity.this.ShowErrorDialog(e.getMessage());
                     }
                 }
             }
@@ -120,7 +119,11 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onFailure(Call<ApiResponseData> call, Throwable t) {
                 SweetDialog.hideLoading();
-                SignUpActivity.this.ShowErrorDialog(t.getMessage());
+                try {
+                    SignUpActivity.this.ShowErrorDialog(t.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
