@@ -37,14 +37,16 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".authenticated.SearchUsersActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".authenticated.LayoutFragmentActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.Trans" />
         <activity
             android:name=".authenticated.ConversationActivity"
-            android:theme="@style/AppTheme.Trans" />
+            android:theme="@style/AppTheme.Trans"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".authentication.LoginActivity"
             android:theme="@style/AppThemeFull" />
@@ -56,12 +58,16 @@
             android:theme="@style/AppThemeFull" />
         <activity
             android:name=".authenticated.VideoCallActivity"
-            android:theme="@style/AppThemeFull" />
+            android:theme="@style/AppThemeFull"
+            android:launchMode="singleTask" />
         <activity
             android:name=".authenticated.PhotoViewActivity"
-            android:theme="@style/AppThemeFull" />
+            android:theme="@style/AppThemeFull"
+            android:launchMode="singleTask"/>
 
-        <activity android:name=".authenticated.VideoChatViewActivity" />
+        <activity
+            android:name=".authenticated.VideoChatViewActivity"
+            android:launchMode="singleTask" />
 
         <service
             android:name=".services.SocketService"

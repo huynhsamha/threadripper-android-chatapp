@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.chatapp.threadripper.R;
 import com.chatapp.threadripper.api.CacheService;
+import com.chatapp.threadripper.api.SocketManager;
 import com.chatapp.threadripper.authenticated.fragments.FragmentMessagesChat;
 import com.chatapp.threadripper.authenticated.fragments.FragmentVideoCallList;
 import com.chatapp.threadripper.authentication.LoginActivity;
@@ -173,6 +174,11 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
     }
 
     void handleLogout() {
+        // leave socket
+        // SocketManager.getInstance().leave();
+        // SocketManager.getInstance().disconnectSocketService(this);
+        SocketManager.getInstance().onlyDisconnectSocket();
+
         Preferences.resetAll();
         CacheService.getInstance().clearAllCache();
 

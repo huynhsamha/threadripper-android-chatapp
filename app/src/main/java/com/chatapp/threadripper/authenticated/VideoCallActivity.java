@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andexert.library.RippleView;
 import com.chatapp.threadripper.R;
@@ -26,9 +27,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VideoCallActivity extends BaseMainActivity implements SocketReceiver.OnCallbackListener {
 
+
     /**
      * Screen for waiting 2 sides accept calling
      */
+
+    /**
+     * This screen is only start once time
+     * use isActive for check before startActivity()
+     */
+    private static boolean isActive = false;
 
     CircleImageView cirImgUserAvatar;
     RippleView rvCall, rvCallEnd;
@@ -36,7 +44,7 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
     LinearLayout linLayoutCall;
 
     User targetUser;
-    boolean callerSide, callingAudioOrVideo; // me, caller or callee
+    boolean callerSide, isVideoMode; // me, caller or callee
     String channelId; // not me, the caller or callee
 
     IntentFilter mIntentFilter;
@@ -51,19 +59,25 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
         changeStatusBarColor();
-
         getIntentData();
-
+        // Toast.makeText(this, "middle " + channelId, Toast.LENGTH_SHORT).show();
         initViews();
-
         initSocketReceiver();
 
         if (callerSide) {
             SocketManager.getInstance().sendCalling(targetUser, Constants.CALLER_REQUEST_CALLING, channelId);
-        } else {
-            // waiting the callee accept or not by send socket
         }
+
+        isActive = true;
     }
+
+    private boolean decodeVideoMode(String encodedText) {
+        String code = encodedText.substring(encodedText.length() - 5);
+        return code.equals("video");
+
+    }
+
+    public static boolean isAvailable() { return !isActive; }
 
     @Override
     public void onResume() {
@@ -72,12 +86,17 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         registerReceiver(mSocketReceiver, mIntentFilter);
     }
 
+    @Override
+    public void onDestroy() {
+        isActive = false;
+        super.onDestroy();
+    }
+
     void getIntentData() {
         Intent intent = getIntent();
         callerSide = intent.getBooleanExtra(Constants.IS_CALLER_SIDE, false);
         targetUser = (User) intent.getSerializableExtra(Constants.USER_MODEL);
         channelId = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-        callingAudioOrVideo = intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, false); // default is call audio
     }
 
     void initSocketReceiver() {
@@ -135,18 +154,16 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         } else {
             // the callee accept the calling
             SocketManager.getInstance().sendCalling(targetUser, Constants.CALLEE_ACCEPT_REQUEST_CALL, channelId);
-            callingSuccessful();
+            showVideoCall();
             finish();
         }
     }
 
-    void callingSuccessful() {
+    void showVideoCall() {
         Intent intent = new Intent(this, VideoChatViewActivity.class);
         intent.putExtra(Constants.USER_MODEL, targetUser);
         intent.putExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN, channelId);
-        intent.putExtra(Constants.CALLING_VIDEO_OR_AUDIO, callingAudioOrVideo);
         startActivity(intent);
-        finish();
     }
 
     private void changeStatusBarColor() {
@@ -186,9 +203,9 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         }
 
         switch (typeCalling) {
-            case Constants.CALLEE_ACCEPT_REQUEST_CALL:
-                callingSuccessful();
-
+            case Constants.CALLEE_ACCEPT_REQUEST_CALL: // caller side
+                showVideoCall();
+                finish();
                 break;
 
             case Constants.CALLEE_REJECT_REQUEST_CALL:

@@ -174,7 +174,18 @@ public class CacheService {
 
     public RealmResults<Conversation> retrieveCacheConversationsByLastActiveTime() {
         return realm.where(Conversation.class)
+                /**
+                 * TODO: sort by time of last message
+                 * last message maybe null -> cannot sort by realm
+                 * Trick: first sort by isYou (for null to bottom) -> next sort by time
+                 */
+                // .beginGroup()
+                    // .isNotNull("lastMessage")
+                    // .sort("lastMessage.dateTime", Sort.DESCENDING)
+                // .endGroup()
                 // .sort("lastMessage.dateTime", Sort.DESCENDING)
+                // .sort("notiCount", Sort.DESCENDING)
+                .sort("lastMessage.isYou", Sort.ASCENDING, "lastMessage.dateTime", Sort.DESCENDING)
                 .findAll();
     }
 
