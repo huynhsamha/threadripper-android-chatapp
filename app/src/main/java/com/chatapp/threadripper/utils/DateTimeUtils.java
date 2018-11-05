@@ -26,6 +26,13 @@ public class DateTimeUtils {
         return formatTime(date);
     }
 
+    public static String formatBestShortDateTime(Date date) {
+        if (differentInDays(date, new Date()) > 1) {
+            return formatDate(date);
+        }
+        return formatTime(date);
+    }
+
     public static int differentInDays(Date sm, Date lg) {
         return (int) ((lg.getTime() - sm.getTime()) / (1000 * 60 * 60 * 24));
     }

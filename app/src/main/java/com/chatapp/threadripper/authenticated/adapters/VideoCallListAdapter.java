@@ -75,7 +75,7 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
                 + user.getUsername();
 
         // CALLING_VIDEO_OR_AUDIO is not transfer correctly but EXTRA_VIDEO_CHANNEL_TOKEN does
-        // so I encode video and audio mode into the channelId
+        // so I encode videocall and audio mode into the channelId
         // VideoCallActivity will decode it
 
         intent.putExtra(Constants.IS_CALLER_SIDE, true); // user who start a calling is a caller
@@ -86,11 +86,7 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
     }
 
     private String encode(String channelId, boolean isVideoMode) {
-        if (isVideoMode)
-            channelId += "_1";
-        else channelId += "_0";
-        // Toast.makeText(mContext, "start " + channelId, Toast.LENGTH_SHORT).show();
-        return channelId;
+        return channelId.concat(isVideoMode ? "1" : "0");
     }
 
 

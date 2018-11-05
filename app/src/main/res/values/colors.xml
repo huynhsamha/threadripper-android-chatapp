@@ -36,6 +36,6 @@
     <color name="trans_success_stroke_color">#8991f25a</color>
     <color name="warning_stroke_color">#ff9d48</color>
 
-    <!-- video call -->
+    <!-- videocall call -->
     <color name="colorPrimary">#3F51B5</color>
 </resources>
