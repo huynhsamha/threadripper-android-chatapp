@@ -59,13 +59,19 @@ public class SocketManager {
      * Socket is disconnect, but service still be running
      */
     public void onlyDisconnectSocket() {
-        mSocketService.disconnectSocket();
+        if (mSocketService != null) {
+            mSocketService.disconnectSocket();
+        }
     }
 
     /**
      * Try to connect socket without restart service
      */
-    public void onlyConnectSocket() { mSocketService.connectSocket(); }
+    public void onlyConnectSocket() {
+        if (mSocketService != null) {
+            mSocketService.connectSocket();
+        }
+    }
 
     public void connectSocketService(Context context) {
         Intent intent = new Intent(context, SocketService.class);

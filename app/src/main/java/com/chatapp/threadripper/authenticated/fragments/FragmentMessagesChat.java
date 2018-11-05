@@ -175,8 +175,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
             }
         });
 
-        tvNoAnyConversations.setVisibility(View.GONE);
-        mRcvConversations.setVisibility(View.VISIBLE);
+        tvNoAnyConversations.setVisibility(View.VISIBLE);
+        mRcvConversations.setVisibility(View.GONE);
 
         // Horizontal Avatar Recycler View
         mRcvHorizontalAvatar = (RecyclerView) view.findViewById(R.id.rcvHorizontalAvatar);
@@ -188,8 +188,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
         mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);
 
-        tvNoAnyFriends.setVisibility(View.GONE);
-        mRcvHorizontalAvatar.setVisibility(View.VISIBLE);
+        tvNoAnyFriends.setVisibility(View.VISIBLE);
+        mRcvHorizontalAvatar.setVisibility(View.GONE);
 
         onlineFriends.addChangeListener(users -> {
             if (users.isEmpty()) {
@@ -217,6 +217,26 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         });
     }
 
+    void updateStateConversations() {
+        if (conversations.isEmpty()) {
+            tvNoAnyConversations.setVisibility(View.VISIBLE);
+            mRcvConversations.setVisibility(View.GONE);
+        } else {
+            tvNoAnyConversations.setVisibility(View.GONE);
+            mRcvConversations.setVisibility(View.VISIBLE);
+        }
+    }
+
+    void updateStateOnlineFriends() {
+        if (onlineFriends.isEmpty()) {
+            tvNoAnyFriends.setVisibility(View.VISIBLE);
+            mRcvHorizontalAvatar.setVisibility(View.GONE);
+        } else {
+            tvNoAnyFriends.setVisibility(View.GONE);
+            mRcvHorizontalAvatar.setVisibility(View.VISIBLE);
+        }
+    }
+
     void fetchFriends() {
 
         ApiService.getInstance().getFriends().enqueue(new Callback<List<Conversation>>() {
@@ -242,6 +262,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
                 }
 
+                updateStateOnlineFriends();
                 swipeContainer.setRefreshing(false);
             }
 
@@ -252,6 +273,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     swipeContainer.setRefreshing(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    updateStateOnlineFriends();
                 }
             }
         });
@@ -288,6 +311,7 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     }
                 }
 
+                updateStateConversations();
                 swipeContainer.setRefreshing(false);
             }
 
@@ -298,6 +322,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                     swipeContainer.setRefreshing(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    updateStateConversations();
                 }
             }
         });

@@ -58,11 +58,6 @@ public class ProfileSettingsActivity extends BaseMainActivity {
         configHideKeyboardOnTouchOutsideEditText(findViewById(R.id.wrapperView));
 
         initDetectNetworkStateChange();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         checkRunWalkThrough();
     }
@@ -236,7 +231,6 @@ public class ProfileSettingsActivity extends BaseMainActivity {
                         ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ProfileSettingsActivity.this.ShowErrorDialog(e.getMessage());
                     }
                 }
             }
@@ -359,9 +353,9 @@ public class ProfileSettingsActivity extends BaseMainActivity {
             postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
+            err.printStackTrace();
             ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
         }
-
     }
 
     void handleCaptureImageSuccess(Intent data) {
@@ -374,6 +368,7 @@ public class ProfileSettingsActivity extends BaseMainActivity {
             postAvatarToServerWithFile(file);
 
         } catch (Exception err) {
+            err.printStackTrace();
             ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
         }
     }
@@ -396,14 +391,17 @@ public class ProfileSettingsActivity extends BaseMainActivity {
                         ProfileSettingsActivity.this.ShowErrorDialog(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ProfileSettingsActivity.this.ShowErrorDialog(e.getMessage());
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponseData> call, Throwable t) {
-                ProfileSettingsActivity.this.ShowErrorDialog(t.getMessage());
+                try {
+                    ProfileSettingsActivity.this.ShowErrorDialog(t.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
