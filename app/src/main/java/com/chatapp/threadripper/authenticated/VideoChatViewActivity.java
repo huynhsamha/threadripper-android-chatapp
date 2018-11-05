@@ -41,7 +41,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
     private boolean videoMode;
     private String channel;
-    enum LocalViewSize {NORMAL, BIG, SMALL};
+    private enum LocalViewSize {NORMAL, BIG, SMALL};
     private LocalViewSize localViewSize = LocalViewSize.NORMAL;
 
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
@@ -75,18 +75,27 @@ public class VideoChatViewActivity extends AppCompatActivity {
         setupAgoraEngine();
     }
 
+
+
     private void getIntentData(){
         Intent intent = getIntent();
         this.channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-        if (this.channel == null || this.channel.isEmpty())
-            this.channel = "dummy-channel-for-debugging";
+        if (this.channel == null || this.channel.isEmpty()) {
+//            this.channel = "dummy-channel-for-debugging";
+            Toast.makeText(this, "Channel is null or empty", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        Toast.makeText(this, "final " + channel, Toast.LENGTH_SHORT).show();
 
-        this.videoMode =
-                intent.getBooleanExtra(Constants.CALLING_VIDEO_OR_AUDIO, true); // default is audio
+        videoMode = decodeVideoMode(this.channel);
+    }
+
+    private boolean decodeVideoMode(String encodedText) {
+        String code = encodedText.substring(encodedText.length() - 1);
+        return code.equals("1");
     }
 
     private void enableVideoMode(boolean enable) {
-
         ImageView audioVideoImg = (ImageView) findViewById(R.id.audioVideoImg);
         ImageView changeCameraImg = (ImageView) findViewById(R.id.changeCameraImg);
         FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
@@ -163,7 +172,6 @@ public class VideoChatViewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         leaveChannel();
         RtcEngine.destroy();
         mRtcEngine = null;
@@ -254,7 +262,8 @@ public class VideoChatViewActivity extends AppCompatActivity {
     }
 
     private void leaveChannel() {
-        mRtcEngine.leaveChannel();
+        if (mRtcEngine != null)
+            mRtcEngine.leaveChannel();
     }
 
     private void onRemoteUserLeft() {
