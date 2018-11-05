@@ -282,7 +282,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                         showError(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        showError(e.getMessage());
                     }
                 }
 
@@ -291,8 +290,12 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
             @Override
             public void onFailure(@NonNull Call<List<Conversation>> call, @NonNull Throwable t) {
-                showError(t.getMessage());
-                swipeContainer.setRefreshing(false);
+                try {
+                    showError(t.getMessage());
+                    swipeContainer.setRefreshing(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

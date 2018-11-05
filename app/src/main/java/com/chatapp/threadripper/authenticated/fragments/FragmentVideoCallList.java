@@ -137,7 +137,6 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
                         showError(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        showError(e.getMessage());
                     }
                 }
 
@@ -147,8 +146,12 @@ public class FragmentVideoCallList extends Fragment implements SocketReceiver.On
 
             @Override
             public void onFailure(Call<List<Conversation>> call, Throwable t) {
-                showError(t.getMessage());
-                swipeContainer.setRefreshing(false);
+                try {
+                    showError(t.getMessage());
+                    swipeContainer.setRefreshing(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

@@ -75,9 +75,6 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         String code = encodedText.substring(encodedText.length() - 5);
         return code.equals("video");
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     public static boolean isAvailable() { return !isActive; }
