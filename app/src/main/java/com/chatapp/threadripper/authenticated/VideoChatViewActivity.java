@@ -2,7 +2,6 @@ package com.chatapp.threadripper.authenticated;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -41,6 +40,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
 
     private boolean videoMode;
     private String channel;
+
     private enum LocalViewSize {NORMAL, BIG, SMALL};
     private LocalViewSize localViewSize = LocalViewSize.NORMAL;
 
@@ -75,47 +75,55 @@ public class VideoChatViewActivity extends AppCompatActivity {
         setupAgoraEngine();
     }
 
-
-
     private void getIntentData(){
         Intent intent = getIntent();
         this.channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
-        if (this.channel == null || this.channel.isEmpty()) {
-//            this.channel = "dummy-channel-for-debugging";
-//             Toast.makeText(this, "Channel is null or empty", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        // Toast.makeText(this, "final " + channel, Toast.LENGTH_SHORT).show();
 
-        videoMode = decodeVideoMode(this.channel);
+        if (this.channel == null || this.channel.isEmpty()) {
+            finish();
+            return;
+        }
+
+        this.videoMode = decodeVideoMode(this.channel);
+        this.channel = decodeChannel(this.channel);
     }
 
     private boolean decodeVideoMode(String encodedText) {
-        String code = encodedText.substring(encodedText.length() - 1);
-        return code.equals("1");
+        return encodedText.substring(encodedText.length() - 1).equals("1");
+    }
+
+    private String decodeChannel(String text) {
+        return text.substring(0, text.length() - 1);
     }
 
     private void enableVideoMode(boolean enable) {
         ImageView audioVideoImg = (ImageView) findViewById(R.id.audioVideoImg);
-        ImageView changeCameraImg = (ImageView) findViewById(R.id.changeCameraImg);
-        FrameLayout container = (FrameLayout) findViewById(R.id.local_video_view_container);
-        SurfaceView surfaceView = (SurfaceView) container.getChildAt(0);
+        View changeCameraImg = findViewById(R.id.changeCameraImg);
+        View muteLocalVideoImg = findViewById(R.id.muteLocalVideoImg);
+        FrameLayout localFrame = (FrameLayout) findViewById(R.id.local_video_view_container);
+        SurfaceView localSurfaceView = (SurfaceView) localFrame.getChildAt(0);
+        FrameLayout remoteFrame = (FrameLayout) findViewById(R.id.remote_video_view_container);
+        SurfaceView remoteSurfaceView = (SurfaceView) remoteFrame.getChildAt(0);
 
         int visibility = enable ? View.VISIBLE : View.GONE;
         changeCameraImg.setVisibility(visibility);
-        surfaceView.setVisibility(visibility);
-        container.setVisibility(visibility);
-        audioVideoImg.setVisibility(View.GONE);
+        muteLocalVideoImg.setVisibility(visibility);
+        localFrame.setVisibility(visibility);
+
+        if (localSurfaceView != null)
+            localSurfaceView.setVisibility(visibility);
+
+        if (remoteSurfaceView != null)
+            remoteSurfaceView.setVisibility(visibility);
 
         if (enable) {
             mRtcEngine.enableVideo();
-//            audioVideoImg.setImageResource(R.drawable.video);
+            audioVideoImg.setImageResource(R.drawable.videocall);
         }
         else {
             mRtcEngine.disableVideo();
-//            audioVideoImg.setImageResource(R.drawable.audio_only);
+            audioVideoImg.setImageResource(R.drawable.audiocall);
         }
-
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
@@ -137,12 +145,7 @@ public class VideoChatViewActivity extends AppCompatActivity {
         setupVideoProfile();
         setupLocalVideo();
 
-        if (this.videoMode) {
-            enableVideoMode(true);
-        }
-        else {
-            enableVideoMode(false);
-        }
+        enableVideoMode(this.videoMode);
         joinChannel(this.channel);
     }
 
@@ -240,7 +243,6 @@ public class VideoChatViewActivity extends AppCompatActivity {
         surfaceView.setZOrderMediaOverlay(true);
         container.addView(surfaceView);
         mRtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_HIDDEN, 0));
-//        surfaceView.setOnClickListener(view -> onLocalVideoClick(view));
     }
 
     private void joinChannel(String channel) {

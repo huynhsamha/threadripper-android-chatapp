@@ -47,7 +47,7 @@ public class PathUtils {
                 final String type = split[0];
                 if ("image".equals(type)) {
                     uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
+                } else if ("videocall".equals(type)) {
                     uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 } else if ("audio".equals(type)) {
                     uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;

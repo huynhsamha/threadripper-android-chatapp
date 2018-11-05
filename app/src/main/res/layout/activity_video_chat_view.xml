@@ -68,9 +68,10 @@
                 android:layout_weight="20"
                 android:onClick="onAudioVideoChangeClick"
                 android:scaleType="centerInside"
-                android:src="@drawable/video" />
+                android:src="@drawable/audiocall" />
 
             <ImageView
+                android:id="@+id/muteLocalVideoImg"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"

@@ -73,7 +73,7 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
 
     private boolean decodeVideoMode(String encodedText) {
         String code = encodedText.substring(encodedText.length() - 5);
-        return code.equals("video");
+        return code.equals("videocall");
 
     }
 
