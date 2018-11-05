@@ -73,14 +73,12 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         super.onResume();
 
         try {
-
             // Update displayName and photoUrl of user in drawer
             configDrawerUserInfo();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -114,7 +112,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
         } else {
             //Double back to exit
             this.setupDoubleBackToExit();
-            // super.onBackPressed();
         }
     }
 
@@ -175,8 +172,6 @@ public class LayoutFragmentActivity extends BaseMainActivity implements Navigati
 
     void handleLogout() {
         // leave socket
-        // SocketManager.getInstance().leave();
-        // SocketManager.getInstance().disconnectSocketService(this);
         SocketManager.getInstance().onlyDisconnectSocket();
 
         Preferences.resetAll();

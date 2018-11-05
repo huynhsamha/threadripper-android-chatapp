@@ -175,8 +175,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
             }
         });
 
-        tvNoAnyConversations.setVisibility(View.VISIBLE);
-        mRcvConversations.setVisibility(View.GONE);
+        tvNoAnyConversations.setVisibility(View.GONE);
+        mRcvConversations.setVisibility(View.VISIBLE);
 
         // Horizontal Avatar Recycler View
         mRcvHorizontalAvatar = (RecyclerView) view.findViewById(R.id.rcvHorizontalAvatar);
@@ -188,8 +188,8 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
         mAdapterHorizontalAvatar = new HorizontalAvatarAdapter(getContext(), onlineFriends);
         mRcvHorizontalAvatar.setAdapter(mAdapterHorizontalAvatar);
 
-        tvNoAnyFriends.setVisibility(View.VISIBLE);
-        mRcvHorizontalAvatar.setVisibility(View.GONE);
+        tvNoAnyFriends.setVisibility(View.GONE);
+        mRcvHorizontalAvatar.setVisibility(View.VISIBLE);
 
         onlineFriends.addChangeListener(users -> {
             if (users.isEmpty()) {
@@ -239,7 +239,6 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
                         showError(err.getMessage());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        showError(e.getMessage());
                     }
                 }
 
@@ -248,8 +247,12 @@ public class FragmentMessagesChat extends Fragment implements SocketReceiver.OnC
 
             @Override
             public void onFailure(Call<List<Conversation>> call, Throwable t) {
-                showError(t.getMessage());
-                swipeContainer.setRefreshing(false);
+                try {
+                    showError(t.getMessage());
+                    swipeContainer.setRefreshing(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

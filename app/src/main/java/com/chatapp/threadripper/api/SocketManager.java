@@ -62,6 +62,11 @@ public class SocketManager {
         mSocketService.disconnectSocket();
     }
 
+    /**
+     * Try to connect socket without restart service
+     */
+    public void onlyConnectSocket() { mSocketService.connectSocket(); }
+
     public void connectSocketService(Context context) {
         Intent intent = new Intent(context, SocketService.class);
         context.bindService(intent, mSocketServiceConnection, Context.BIND_AUTO_CREATE);

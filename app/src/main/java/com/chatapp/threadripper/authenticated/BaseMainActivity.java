@@ -20,6 +20,7 @@ public class BaseMainActivity extends BaseActivity {
             SocketManager.getInstance().connectSocketService(this);
 
             // On Resume, if socket service is running, join to socket
+            SocketManager.getInstance().onlyConnectSocket();
             SocketManager.getInstance().join();
 
         } catch (Exception e) {
