@@ -60,7 +60,7 @@ public class VideoCallActivity extends BaseMainActivity implements SocketReceive
         }
         changeStatusBarColor();
         getIntentData();
-        Toast.makeText(this, "middle " + channelId, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "middle " + channelId, Toast.LENGTH_SHORT).show();
         initViews();
         initSocketReceiver();
 

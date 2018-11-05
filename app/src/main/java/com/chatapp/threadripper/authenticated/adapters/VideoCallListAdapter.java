@@ -89,7 +89,7 @@ public class VideoCallListAdapter extends RealmRecyclerViewAdapter<User, VideoCa
         if (isVideoMode)
             channelId += "_1";
         else channelId += "_0";
-        Toast.makeText(mContext, "start " + channelId, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(mContext, "start " + channelId, Toast.LENGTH_SHORT).show();
         return channelId;
     }
 

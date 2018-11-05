@@ -82,10 +82,10 @@ public class VideoChatViewActivity extends AppCompatActivity {
         this.channel = intent.getStringExtra(Constants.EXTRA_VIDEO_CHANNEL_TOKEN);
         if (this.channel == null || this.channel.isEmpty()) {
 //            this.channel = "dummy-channel-for-debugging";
-            Toast.makeText(this, "Channel is null or empty", Toast.LENGTH_SHORT).show();
+//             Toast.makeText(this, "Channel is null or empty", Toast.LENGTH_SHORT).show();
             finish();
         }
-        Toast.makeText(this, "final " + channel, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "final " + channel, Toast.LENGTH_SHORT).show();
 
         videoMode = decodeVideoMode(this.channel);
     }
