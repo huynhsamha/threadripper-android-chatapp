@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn okhttp3.internal.platform.*
+-dontwarn ua.naiksoftware.stomp.*
+-dontwarn retrofit2.*
