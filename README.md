@@ -7,7 +7,7 @@ Assignment 1 Computer Network
 https://github.com/ititandev/threadripper-chat-api
 
 ## Features:
-###Authentication
+### Authentication
 + Create account
 + Login
 
