@@ -6,7 +6,11 @@ let out = '';
 
 files.forEach(file => {
     console.log(file);
-    out = out + `<img src="snapshots/${file}" width="30%">\n`;
+    out = out + `
+<p align="center">
+    <img src="snapshots/${file}" width="30%">
+</p>
+    `;
 })
 
 console.log(out);
